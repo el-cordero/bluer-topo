@@ -2,17 +2,16 @@ Package: bluertopo
 Title: Download and Extract NOAA BlueTopo Bathymetry with Terra
 Version: 0.0.1
 Authors@R: c(
-    person("Eliseo", "Custodio", email = "eliseo@example.com", role = c("aut", "cre"))
+    person("Elvin", "Cordero", email = "elvin.cordero@seamountgeo.com", role = c("aut", "cre")),
+    person("SeaMount Geospatial Labs", role = "cph")
   )
-Author: Eliseo Custodio [aut, cre]
-Maintainer: Eliseo Custodio <eliseo@example.com>
 Description: Discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
     GeoTIFF assets for user supplied areas of interest. The package keeps source
     files intact by default, uses terra for spatial data access, supports
     explicit native-resolution selection policies, and records provenance for
     reproducible extraction workflows.
 License: MIT + file LICENSE
-URL: https://github.com/el-cordero/bluer-topo
+URL: https://el-cordero.github.io/bluer-topo/, https://github.com/el-cordero/bluer-topo
 BugReports: https://github.com/el-cordero/bluer-topo/issues
 Depends:
     R (>= 4.1)
@@ -29,6 +28,7 @@ Imports:
 Suggests:
     knitr,
     lintr,
+    pkgdown,
     rmarkdown,
     roxygen2,
     sf,
@@ -38,6 +38,7 @@ Suggests:
     withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/Needs/website: r-lib/pkgdown
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

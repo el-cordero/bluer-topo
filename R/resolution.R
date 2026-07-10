@@ -10,7 +10,8 @@
 #' @param values One or more exact meter values.
 #' @param min_m,max_m Inclusive meter bounds.
 #' @param n Rank or count for rank-based strategies.
-#' @param scope `"global"` or `"local"`.
+#' @param scope `"global"`. `"local"` is reserved for a future AOI-local
+#' ranking implementation and is rejected in this release.
 #' @param tie Tie preference for nearest/target strategies.
 #' @param prefer Preference direction for coverage/rank strategies.
 #' @param strict Whether fallback must remain inside hard constraints.
@@ -50,6 +51,12 @@ bluertopo_resolution <- function(
     strategy
   )
   scope <- .bt_match_arg(scope, c("global", "local"), "scope")
+  if (!identical(scope, "global")) {
+    .bt_abort(
+      "`scope = \"local\"` is reserved for a future AOI-local resolution ranking implementation.",
+      class = "bluertopo_error_resolution"
+    )
+  }
   tie <- .bt_match_arg(tie, c("finer", "coarser"), "tie")
   prefer <- .bt_match_arg(prefer, c("finest", "coarsest"), "prefer")
   strict <- .bt_validate_bool(strict, "strict")
@@ -62,7 +69,7 @@ bluertopo_resolution <- function(
   values <- if (is.null(values)) NULL else .bt_parse_resolution_m(values, allow_na = FALSE)
   min_m <- if (is.null(min_m)) NULL else .bt_parse_resolution_m(min_m, allow_na = FALSE)
   max_m <- if (is.null(max_m)) NULL else .bt_parse_resolution_m(max_m, allow_na = FALSE)
-  n <- if (is.null(n)) NULL else as.integer(.bt_validate_number(n, "n"))
+  n <- if (is.null(n)) NULL else .bt_validate_count(n, "n", class = "bluertopo_error_resolution")
 
   .bt_validate_resolution_strategy(strategy, value, values, min_m, max_m, n)
 

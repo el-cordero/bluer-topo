@@ -4,6 +4,8 @@ test_that("resolution constructor validates meter semantics", {
   expect_equal(x$value, 10)
   expect_error(bluertopo_resolution("exact", values = 0), class = "bluertopo_error_resolution")
   expect_error(bluertopo_resolution("between", min_m = 16, max_m = 4), class = "bluertopo_error_resolution")
+  expect_error(bluertopo_resolution("rank", n = 1.5), class = "bluertopo_error_resolution")
+  expect_error(bluertopo_resolution("finest", scope = "local"), class = "bluertopo_error_resolution")
 })
 
 test_that("resolution plans cover shortcuts and are deterministic", {

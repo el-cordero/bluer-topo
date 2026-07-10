@@ -66,9 +66,11 @@
     .bt_abort("`min_coverage` must be between 0 and 1.", class = "bluertopo_error_resolution")
   }
   spec <- .bt_resolution_spec(resolution)
+  effective_min_coverage <- if (identical(spec$strategy, "coverage")) spec$min_coverage else min_coverage
   df <- as.data.frame(candidates)
   area_named <- stats::setNames(df$intersection_area_m2, df$resolution_m)
   plan <- .bt_resolution_plan(spec, df$resolution_m, area = area_named)
+  plan$effective_min_coverage <- effective_min_coverage
   initial_values <- plan$initial
   selected_values <- initial_values
   valid_ids <- as.character(df$tile_id)
@@ -76,7 +78,12 @@
   inter_df <- as.data.frame(intersections)
   published_intersections <- intersections[inter_df$tile_id %in% valid_ids, ]
   selected_intersections <- intersections[inter_df$tile_id %in% selected_ids, ]
-  diagnostics <- .bt_coverage_diagnostics(aoi, published_intersections, selected_intersections, min_coverage)
+  diagnostics <- .bt_coverage_diagnostics(aoi, published_intersections, selected_intersections, effective_min_coverage)
+  diagnostics$target_source <- if (identical(spec$strategy, "coverage")) {
+    "resolution"
+  } else {
+    "min_coverage"
+  }
   fallback_steps <- list()
 
   if (identical(coverage, "fill") && !isTRUE(diagnostics$target_met)) {
@@ -87,7 +94,17 @@
       selected_values <- sort(unique(c(selected_values, value)))
       selected_ids <- valid_ids[df$resolution_m %in% selected_values]
       selected_intersections <- intersections[inter_df$tile_id %in% selected_ids, ]
-      diagnostics <- .bt_coverage_diagnostics(aoi, published_intersections, selected_intersections, min_coverage)
+      diagnostics <- .bt_coverage_diagnostics(
+        aoi,
+        published_intersections,
+        selected_intersections,
+        effective_min_coverage
+      )
+      diagnostics$target_source <- if (identical(spec$strategy, "coverage")) {
+        "resolution"
+      } else {
+        "min_coverage"
+      }
       fallback_steps[[length(fallback_steps) + 1L]] <- list(
         added_resolution_m = value,
         selected_coverage_fraction = diagnostics$selected_coverage_fraction,

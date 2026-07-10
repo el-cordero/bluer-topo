@@ -11,6 +11,12 @@ test_that("tile discovery applies resolution and coverage policies", {
     coverage <- attr(filled, "coverage")
     expect_true(coverage$target_met)
 
+    coverage_policy <- bluertopo_resolution("coverage", prefer = "finest", min_coverage = 0.5)
+    policy_tiles <- bluertopo_tiles(fixture$aoi, resolution = coverage_policy, coverage = "error", min_coverage = 1)
+    policy_coverage <- attr(policy_tiles, "coverage")
+    expect_equal(policy_coverage$target_coverage, 0.5)
+    expect_equal(policy_coverage$target_source, "resolution")
+
     expect_error(
       bluertopo_tiles(fixture$aoi, resolution = "finest", coverage = "error", min_coverage = 1),
       class = "bluertopo_error_no_coverage"
@@ -43,6 +49,13 @@ test_that("downloader supports dry run, SHA-256 validation, RAT sidecars, and re
     expect_true(all(manifest$verified))
     expect_true(any(manifest$asset_type == "rat"))
     expect_true(file.exists(file.path(fixture$downloads, "bluertopo-download-manifest.csv")))
+    query_manifests <- list.files(
+      file.path(fixture$downloads, "manifests"),
+      pattern = "bluertopo-download-manifest-",
+      full.names = TRUE
+    )
+    expect_true(any(grepl("\\.csv$", query_manifests)))
+    expect_true(any(grepl("\\.json$", query_manifests)))
 
     reused <- bluertopo_download(
       fixture$aoi,
@@ -51,6 +64,27 @@ test_that("downloader supports dry run, SHA-256 validation, RAT sidecars, and re
       progress = FALSE
     )
     expect_true(all(reused$status == "reused_verified"))
+
+    expect_error(
+      bluertopo_download(
+        fixture$aoi,
+        path = file.path(fixture$root, "workers"),
+        coverage = "fill",
+        workers = 2,
+        progress = FALSE
+      ),
+      class = "bluertopo_error_download"
+    )
+    expect_error(
+      bluertopo_download(
+        fixture$aoi,
+        path = file.path(fixture$root, "size-verify"),
+        coverage = "fill",
+        verify = "size",
+        progress = FALSE
+      ),
+      class = "bluertopo_error_download"
+    )
   })
 })
 

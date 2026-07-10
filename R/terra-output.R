@@ -109,6 +109,7 @@
   if (length(paths) == 1L) {
     r <- rasters[[1L]]
   } else {
+    cache_dir <- .bt_init_cache(cache_dir)
     vrt_dir <- .bt_cache_paths(cache_dir)$vrt
     .bt_ensure_dir(vrt_dir)
     vrt_hash <- .bt_hash_object(list(paths = paths, layers = layers, behavior = .bt_behavior_version))

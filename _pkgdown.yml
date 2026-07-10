@@ -1,17 +1,59 @@
-url: https://ecustodio.github.io/bluertopo/
+url: https://el-cordero.github.io/bluer-topo/
+destination: pkgdown
+
 template:
   bootstrap: 5
+  bootswatch: flatly
+  light-switch: true
+  bslib:
+    primary: "#005f73"
+    base_font:
+      google: "Source Sans 3"
+    heading_font:
+      google: "Source Sans 3"
+    code_font:
+      google: "Source Code Pro"
+
+home:
+  title: "bluertopo"
+  description: "Verified NOAA BlueTopo downloads and terra extraction for submerged terrain."
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: articles/get-bluetopo.html
+    articles:
+      text: Articles
+      menu:
+        - text: Get BlueTopo
+          href: articles/get-bluetopo.html
+        - text: Resolution policies
+          href: articles/resolution-policies.html
+        - text: Downloads, cache, and reproducibility
+          href: articles/downloads-cache-reproducibility.html
+        - text: Mixed UTM collections
+          href: articles/mixed-utm-collections.html
+        - text: Layers and RAT metadata
+          href: articles/layers-rat-metadata.html
+
 reference:
   - title: Core workflows
+    desc: Discover, download, and open NOAA BlueTopo assets.
     contents:
       - bluertopo
       - bluertopo_download
       - bluertopo_tiles
-  - title: Resolution and cache
+  - title: Policies and cache
+    desc: Configure native-resolution selection and package cache behavior.
     contents:
       - bluertopo_resolution
       - bluertopo_cache_dir
       - bluertopo_cache_clear
+
 articles:
   - title: Guides
     navbar: ~
@@ -21,3 +63,12 @@ articles:
       - downloads-cache-reproducibility
       - mixed-utm-collections
       - layers-rat-metadata
+
+authors:
+  "Elvin Cordero":
+    href: https://github.com/el-cordero
+  "SeaMount Geospatial Labs":
+    href: https://github.com/el-cordero
+
+development:
+  mode: release

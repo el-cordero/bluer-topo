@@ -29,7 +29,8 @@ bluertopo_resolution(
 
 \item{n}{Rank or count for rank-based strategies.}
 
-\item{scope}{\code{"global"} or \code{"local"}.}
+\item{scope}{\code{"global"}. \code{"local"} is reserved for a future AOI-local
+ranking implementation and is rejected in this release.}
 
 \item{tie}{Tie preference for nearest/target strategies.}
 

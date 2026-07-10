@@ -1,31 +1,39 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
 
 # bluertopo
 
 [![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
-[![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
-`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo
-bathymetry for an area of interest using `terra`. The package keeps
-source GeoTIFF and RAT sidecar files intact by default, records query
-and catalog provenance, and makes native source-resolution choices
-explicit.
+`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
+for an area of interest using `terra`. The package keeps source GeoTIFF and RAT
+sidecar files intact by default, records query and catalog provenance, and makes
+native source-resolution choices explicit.
 
 BlueTopo is not for navigation. This package performs no vertical-datum
-conversion and is not affiliated with, endorsed by, or supported by
-NOAA.
+conversion and is not affiliated with, endorsed by, or supported by NOAA.
 
 ## Installation
 
-``` r
+```{r}
 # install.packages("pak")
 pak::pak("el-cordero/bluer-topo")
 ```
 
 ## Basic workflow
 
-``` r
+```{r}
 library(bluertopo)
 library(terra)
 
@@ -46,11 +54,10 @@ bathy$provenance
 
 ## Download original NOAA assets
 
-Use `bluertopo_download()` when the durable deliverable is the original
-NOAA GeoTIFF plus optional RAT sidecars rather than an extracted raster
-object.
+Use `bluertopo_download()` when the durable deliverable is the original NOAA
+GeoTIFF plus optional RAT sidecars rather than an extracted raster object.
 
-``` r
+```{r}
 files <- bluertopo_download(
   aoi,
   path = "data/bluetopo",
@@ -62,17 +69,16 @@ files <- bluertopo_download(
 
 `verify = "sha256"` is the default and requires NOAA-provided checksums.
 `verify = "none"` is available only for explicitly unverified workflows.
-`verify = "size"` is rejected unless trustworthy expected byte counts
-are available before any transfer starts.
+`verify = "size"` is rejected unless trustworthy expected byte counts are
+available before any transfer starts.
 
 ## Native resolution policies
 
-`resolution` filters NOAA BlueTopo source tiles by their native cell
-size. Smaller meter values mean finer native source detail.
-`output_resolution` requests an explicit output grid and therefore
-resamples the output.
+`resolution` filters NOAA BlueTopo source tiles by their native cell size.
+Smaller meter values mean finer native source detail. `output_resolution`
+requests an explicit output grid and therefore resamples the output.
 
-``` r
+```{r}
 # Exact native resolution
 bathy_8m <- bluertopo(aoi, resolution = 8)
 
@@ -98,11 +104,11 @@ bathy_range <- bluertopo(
 ## Mixed source grids
 
 Native BlueTopo tiles can span multiple UTM zones, resolutions, or grid
-alignments. When the selected source files are not compatible,
-`bluertopo()` returns a `terra::SpatRasterCollection` unless the user
-explicitly requests an output grid.
+alignments. When the selected source files are not compatible, `bluertopo()`
+returns a `terra::SpatRasterCollection` unless the user explicitly requests an
+output grid.
 
-``` r
+```{r}
 bathy_10m <- bluertopo(
   aoi,
   resolution = "native",
@@ -114,12 +120,12 @@ bathy_10m <- bluertopo(
 
 ## Cache operations
 
-Package cache operations are intentionally conservative.
-`bluertopo_cache_clear()` clears only the configured `bluertopo` cache,
-requires confirmation in noninteractive sessions, and refuses to remove
-content unless a package-owned cache marker is present.
+Package cache operations are intentionally conservative. `bluertopo_cache_clear()`
+clears only the configured `bluertopo` cache, requires confirmation in
+noninteractive sessions, and refuses to remove content unless a package-owned
+cache marker is present.
 
-``` r
+```{r}
 bluertopo_cache_dir()
 bluertopo_cache_clear(confirm = TRUE)
 ```

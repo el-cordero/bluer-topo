@@ -9,6 +9,7 @@
     return(.bt_catalog_from_local(override))
   }
 
+  cache_dir <- .bt_init_cache(cache_dir)
   paths <- .bt_cache_paths(cache_dir)
   ttl <- getOption("bluertopo.catalog_ttl_seconds", .bt_catalog_ttl_seconds)
   ttl <- .bt_validate_number(ttl, "bluertopo.catalog_ttl_seconds", positive = TRUE)
@@ -47,10 +48,10 @@
     tmp <- tempfile(pattern = "catalog-", tmpdir = paths$catalog, fileext = ".gpkg")
     on.exit(unlink(tmp, force = TRUE), add = TRUE)
     invisible(.bt_curl_download(remote$url, tmp, retries = 3, timeout = NULL))
-    .bt_validate_catalog_file(tmp, remote)
-    if (!file.rename(tmp, paths$catalog_gpkg)) {
-      .bt_abort("Could not replace cached BlueTopo catalog atomically.", class = "bluertopo_error_catalog")
-    }
+    .bt_install_file_transactionally(tmp, paths$catalog_gpkg, validate = function(staged) {
+      .bt_validate_catalog_file(staged, remote)
+      TRUE
+    })
     meta <- .bt_catalog_metadata(paths$catalog_gpkg, remote)
     .bt_atomic_write_json(meta, paths$catalog_metadata)
     .bt_catalog_from_cache(paths)

@@ -12,13 +12,19 @@ as file-backed \code{terra} objects.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://el-cordero.github.io/bluer-topo/}
   \item \url{https://github.com/el-cordero/bluer-topo}
   \item Report bugs at \url{https://github.com/el-cordero/bluer-topo/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Eliseo Custodio \email{eliseo@example.com}
+\strong{Maintainer}: Elvin Cordero \email{elvin.cordero@seamountgeo.com}
+
+Other contributors:
+\itemize{
+  \item SeaMount Geospatial Labs [copyright holder]
+}
 
 }
 \keyword{internal}

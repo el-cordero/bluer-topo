@@ -40,8 +40,8 @@ bluertopo_download(
 
 \item{verify}{Verification mode: \code{"sha256"}, \code{"size"}, or \code{"none"}.}
 
-\item{workers}{Maximum bounded worker count. The current implementation
-performs deterministic atomic downloads with a validated upper bound.}
+\item{workers}{Worker count. Only \code{NULL}/\code{1} is currently supported; higher
+values are rejected until bounded parallel downloads are implemented.}
 
 \item{on_exists}{Existing-file policy: \code{"verify"}, \code{"skip"}, or \code{"replace"}.}
 

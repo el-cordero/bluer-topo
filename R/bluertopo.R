@@ -21,7 +21,8 @@
 #' CRS units.
 #' @param resampling Optional named resampling methods by layer.
 #' @param verify Download verification mode.
-#' @param workers Maximum bounded worker count.
+#' @param workers Worker count. Only `NULL`/`1` is currently supported; higher
+#' values are rejected until bounded parallel downloads are implemented.
 #' @param progress Show routine progress messages.
 #' @param quiet Suppress routine messages.
 #' @param details Return a `bluertopo_result` instead of only the terra object.
@@ -57,6 +58,7 @@ bluertopo <- function(
   layers <- .bt_normalize_layers(layers)
   access <- .bt_match_arg(access, c("download", "stream"), "access")
   details <- .bt_validate_bool(details, "details")
+  cache_dir <- .bt_init_cache(cache_dir)
   if (identical(access, "stream")) {
     .bt_warn(
       "Streaming BlueTopo assets is opt-in and depends on GDAL virtual file access and network performance.",
@@ -169,7 +171,9 @@ bluertopo <- function(
 .bt_geotiffs_from_downloads <- function(downloads, tiles) {
   geotiffs <- downloads[downloads$asset_type == "geotiff" & downloads$status != "failed", , drop = FALSE]
   tile_df <- as.data.frame(tiles)
-  geotiffs$overlap_priority <- tile_df$overlap_priority[match(geotiffs$tile_id, tile_df$tile_id)]
+  geotiff_key <- paste(geotiffs$tile_id, geotiffs$source_url, sep = "\r")
+  tile_key <- paste(tile_df$tile_id, tile_df$geotiff_url, sep = "\r")
+  geotiffs$overlap_priority <- tile_df$overlap_priority[match(geotiff_key, tile_key)]
   geotiffs <- geotiffs[order(geotiffs$overlap_priority, geotiffs$tile_id), , drop = FALSE]
   geotiffs
 }

@@ -3,3 +3,4 @@
 *.tar.gz
 .Rproj.user/
 .DS_Store
+pkgdown/

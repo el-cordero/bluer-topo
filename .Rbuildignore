@@ -2,6 +2,7 @@
 ^docs($|/)
 ^cran-comments\.md$
 ^README\.Rmd$
+^README\.html$
 ^pkgdown$
 ^\.lintr$
 ^_pkgdown\.yml$

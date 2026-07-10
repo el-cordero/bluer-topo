@@ -1,15 +1,94 @@
 ---
-title: "Original Downloads, Caching, and Reproducibility"
+title: "Downloads, Cache, and Reproducibility"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Original Downloads, Caching, and Reproducibility}
+  %\VignetteIndexEntry{Downloads, Cache, and Reproducibility}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, eval=FALSE}
-manifest <- bluertopo_download(aoi, path = "data/raw/bluetopo")
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-The downloader preserves NOAA basenames, downloads RAT sidecars by default,
-verifies SHA-256 checksums, and writes CSV and JSON manifests.
+`bluertopo_download()` is for workflows where the durable deliverable is the
+original NOAA BlueTopo source file set. The function preserves NOAA basenames,
+keeps GeoTIFF and RAT sidecar files unmodified, verifies SHA-256 checksums by
+default, and writes manifests for future auditing.
+
+## Plan first
+
+```{r}
+plan <- bluertopo_download(
+  aoi,
+  path = "data/raw/bluetopo",
+  coverage = "fill",
+  dry_run = TRUE
+)
+```
+
+Dry runs return planned assets without creating the destination directory.
+
+## Download with verification
+
+```{r}
+manifest <- bluertopo_download(
+  aoi,
+  path = "data/raw/bluetopo",
+  rat = TRUE,
+  verify = "sha256",
+  on_exists = "verify"
+)
+```
+
+Each row records the tile identifier, asset type, source URL, destination path,
+verification status, SHA-256 value, attempts, and timestamps. A fixed manifest
+is written at the download root for convenience, and query-addressed manifest
+copies are written under `manifests/` when a query hash is available.
+
+## Existing files
+
+`on_exists = "verify"` reuses an existing file only when verification succeeds.
+`on_exists = "skip"` records a skipped file without verification. `on_exists =
+"replace"` redownloads the asset.
+
+```{r}
+reused <- bluertopo_download(
+  aoi,
+  path = "data/raw/bluetopo",
+  on_exists = "verify"
+)
+```
+
+## Package cache
+
+`bluertopo()` uses the package cache for catalog files, downloaded source
+assets, and VRTs. Cache roots are marked with `.bluertopo-cache.json` before
+package-owned content is written.
+
+```{r}
+bluertopo_cache_dir()
+```
+
+`bluertopo_cache_clear()` clears only the configured package cache. It refuses
+unmarked directories, suspicious roots, and symlinked cache paths.
+
+```{r}
+bluertopo_cache_clear(confirm = TRUE)
+```
+
+## Concurrency and retries
+
+Downloads are currently deterministic and single-worker. `workers = NULL` and
+`workers = 1` are accepted; higher values are rejected until bounded parallel
+downloads are implemented. Individual assets still use retry/backoff behavior
+for transient transfer failures.
+
+```{r}
+manifest <- bluertopo_download(
+  aoi,
+  path = "data/raw/bluetopo",
+  workers = 1,
+  retries = 3
+)
+```

@@ -11,8 +11,8 @@
 #' @param rat Download RAT sidecars when available.
 #' @param refresh Catalog refresh policy.
 #' @param verify Verification mode: `"sha256"`, `"size"`, or `"none"`.
-#' @param workers Maximum bounded worker count. The current implementation
-#' performs deterministic atomic downloads with a validated upper bound.
+#' @param workers Worker count. Only `NULL`/`1` is currently supported; higher
+#' values are rejected until bounded parallel downloads are implemented.
 #' @param on_exists Existing-file policy: `"verify"`, `"skip"`, or `"replace"`.
 #' @param on_error Error policy: `"stop"` or `"continue"`.
 #' @param retries Number of download attempts for each asset.
@@ -118,6 +118,15 @@ bluertopo_download <- function(
   tiles <- tiles_result$tiles
   .bt_inform(sprintf("BlueTopo tiles selected: %d.", nrow(tiles)), quiet = quiet || !progress)
   plan <- .bt_download_plan(tiles, path = path, rat = rat, verify = verify)
+  if (identical(verify, "size") && any(is.na(plan$expected_bytes))) {
+    .bt_abort(
+      c(
+        "`verify = \"size\"` requires expected byte counts in the catalog.",
+        "i" = "Use `verify = \"sha256\"` or `verify = \"none\"`."
+      ),
+      class = "bluertopo_error_download"
+    )
+  }
   .bt_inform(sprintf("BlueTopo assets planned: %d.", nrow(plan)), quiet = quiet || !progress)
   if (dry_run) {
     plan$status <- "planned"
@@ -178,8 +187,14 @@ bluertopo_download <- function(
   if (is.null(workers)) {
     return(1L)
   }
-  workers <- as.integer(.bt_validate_number(workers, "workers"))
-  max(1L, min(4L, workers))
+  workers <- .bt_validate_count(workers, "workers")
+  if (!identical(workers, 1L)) {
+    .bt_abort(
+      "Parallel BlueTopo downloads are not implemented yet; use `workers = 1` or leave `workers = NULL`.",
+      class = "bluertopo_error_download"
+    )
+  }
+  workers
 }
 
 .bt_download_plan <- function(tiles, path, rat, verify) {
@@ -270,15 +285,10 @@ bluertopo_download <- function(
     on.exit(unlink(tmp, force = TRUE), add = TRUE)
     downloaded_tmp <- .bt_curl_download(row$source_url, tmp, retries = retries, timeout = timeout)
     attempts <- attr(downloaded_tmp, "attempts", exact = TRUE) %||% retries
-    .bt_validate_downloaded_asset(tmp, row, verify)
-    if (file.exists(dest)) {
-      unlink(dest, force = TRUE)
-    }
-    if (!file.rename(tmp, dest)) {
-      .bt_abort(sprintf("Could not move verified download into place: `%s`.", dest),
-        class = "bluertopo_error_filesystem"
-      )
-    }
+    .bt_install_file_transactionally(tmp, dest, validate = function(staged) {
+      .bt_validate_downloaded_asset(staged, row, verify)
+      TRUE
+    })
     row$status <- "downloaded"
     row$verified <- !identical(verify, "none")
     row$actual_sha256 <- if (file.exists(dest)) .bt_sha256_file(dest) else NA_character_

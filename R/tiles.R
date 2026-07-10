@@ -100,8 +100,17 @@ bluertopo_tiles <- function(
     resolution = .bt_resolution_label(attr(selected, "resolution_spec")),
     coverage = coverage,
     min_coverage = min_coverage,
+    effective_min_coverage = attr(selected, "coverage")$target_coverage,
+    coverage_target_source = attr(selected, "coverage")$target_source %||% "min_coverage",
     request_timestamp = .bt_now_iso()
   )
+  stable_query <- query
+  stable_query$request_timestamp <- NULL
+  query$query_hash <- .bt_hash_object(list(
+    query = stable_query,
+    catalog_checksum = catalog$metadata$local_checksum %||% NA_character_,
+    behavior_version = .bt_behavior_version
+  ))
   list(
     tiles = selected,
     intersections = intersections,

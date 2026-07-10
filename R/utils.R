@@ -7,7 +7,7 @@
 }
 
 .bt_user_agent <- function() {
-  sprintf("bluertopo/%s (https://github.com/ecustodio/bluertopo)", .bt_package_version())
+  sprintf("bluertopo/%s (https://github.com/el-cordero/bluer-topo)", .bt_package_version())
 }
 
 .bt_is_scalar_character <- function(x) {
@@ -42,6 +42,17 @@
     .bt_abort(sprintf("`%s` must be greater than zero.", name), class = "bluertopo_error_argument")
   }
   x
+}
+
+.bt_validate_count <- function(x, name, allow_null = FALSE, class = "bluertopo_error_argument") {
+  value <- .bt_validate_number(x, name, positive = TRUE, allow_null = allow_null)
+  if (is.null(value)) {
+    return(NULL)
+  }
+  if (isTRUE(value != floor(value))) {
+    .bt_abort(sprintf("`%s` must be a positive whole number.", name), class = class)
+  }
+  as.integer(value)
 }
 
 .bt_file_exists_nonzero <- function(path) {
@@ -147,9 +158,10 @@
   tmp <- tempfile(pattern = paste0(basename(path), "-"), tmpdir = dirname(path))
   on.exit(unlink(tmp, force = TRUE), add = TRUE)
   jsonlite::write_json(x, tmp, auto_unbox = TRUE, pretty = pretty, null = "null")
-  if (!file.rename(tmp, path)) {
-    .bt_abort(sprintf("Could not write `%s` atomically.", path), class = "bluertopo_error_filesystem")
-  }
+  .bt_install_file_transactionally(tmp, path, validate = function(staged) {
+    jsonlite::read_json(staged, simplifyVector = FALSE)
+    TRUE
+  })
   invisible(path)
 }
 
@@ -158,10 +170,92 @@
   tmp <- tempfile(pattern = paste0(basename(path), "-"), tmpdir = dirname(path))
   on.exit(unlink(tmp, force = TRUE), add = TRUE)
   utils::write.csv(x, tmp, row.names = FALSE, na = "")
-  if (!file.rename(tmp, path)) {
-    .bt_abort(sprintf("Could not write `%s` atomically.", path), class = "bluertopo_error_filesystem")
-  }
+  .bt_install_file_transactionally(tmp, path, validate = function(staged) {
+    .bt_file_exists_nonzero(staged)
+  })
   invisible(path)
+}
+
+.bt_install_file_transactionally <- function(tmp, dest, validate = function(path) TRUE) {
+  if (!file.exists(tmp)) {
+    .bt_abort(sprintf("Staged file `%s` does not exist.", tmp), class = "bluertopo_error_filesystem")
+  }
+  if (dir.exists(dest)) {
+    .bt_abort(sprintf("Destination `%s` is a directory, not a file.", dest),
+      class = "bluertopo_error_filesystem"
+    )
+  }
+  .bt_ensure_dir(dirname(dest))
+  dest <- .bt_normalize_path(dest, must_work = FALSE)
+  tmp <- .bt_normalize_path(tmp, must_work = TRUE)
+  validated <- tryCatch(validate(tmp), error = function(e) {
+    if (inherits(e, "bluertopo_error")) {
+      stop(e)
+    }
+    .bt_abort(sprintf("Staged file `%s` failed validation before install.", tmp),
+      class = "bluertopo_error_filesystem",
+      parent = e
+    )
+  })
+  if (!isTRUE(validated)) {
+    .bt_abort(sprintf("Staged file `%s` failed validation before install.", tmp),
+      class = "bluertopo_error_filesystem"
+    )
+  }
+
+  backup <- NULL
+  restore_needed <- FALSE
+  if (file.exists(dest)) {
+    backup <- paste0(
+      dest,
+      ".backup-",
+      format(Sys.time(), "%Y%m%d%H%M%S", tz = "UTC"),
+      "-",
+      substr(.bt_hash_object(list(dest, tmp, Sys.getpid(), stats::runif(1L))), 1L, 8L)
+    )
+    if (!file.rename(dest, backup)) {
+      .bt_abort(sprintf("Could not back up existing file `%s` before install.", dest),
+        class = "bluertopo_error_filesystem"
+      )
+    }
+    restore_needed <- TRUE
+  }
+  on.exit({
+    if (!is.null(backup) && file.exists(backup)) {
+      unlink(backup, force = TRUE)
+    }
+  }, add = TRUE)
+
+  install_error <- NULL
+  tryCatch({
+    if (isTRUE(getOption("bluertopo.test_install_fail_after_backup", FALSE))) {
+      stop("Injected transactional install failure.", call. = FALSE)
+    }
+    if (!file.rename(tmp, dest)) {
+      stop("Could not move staged file into place.", call. = FALSE)
+    }
+  }, error = function(e) {
+    install_error <<- e
+  })
+
+  if (!is.null(install_error)) {
+    restored <- FALSE
+    if (isTRUE(restore_needed) && !file.exists(dest) && !is.null(backup) && file.exists(backup)) {
+      restored <- file.rename(backup, dest)
+    }
+    .bt_abort(c(
+      sprintf("Could not install staged file at `%s` transactionally.", dest),
+      "i" = if (isTRUE(restored)) {
+        "The previous file was restored."
+      } else if (isTRUE(restore_needed)) {
+        "The previous file could not be restored automatically."
+      } else {
+        "No previous file existed."
+      }
+    ), class = "bluertopo_error_filesystem", parent = install_error)
+  }
+
+  invisible(dest)
 }
 
 .bt_with_lock <- function(lock_dir, expr, timeout = 30, stale_seconds = 2 * 60 * 60) {

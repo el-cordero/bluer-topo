@@ -5,6 +5,20 @@
   )
 }
 
+.bt_query_manifest_paths <- function(path, query_hash) {
+  if (is.null(query_hash) || is.na(query_hash) || !nzchar(query_hash)) {
+    return(list())
+  }
+  hash <- gsub("[^A-Za-z0-9_-]", "", substr(query_hash, 1L, 16L))
+  if (!nzchar(hash)) {
+    return(list())
+  }
+  list(
+    csv = file.path(path, "manifests", paste0("bluertopo-download-manifest-", hash, ".csv")),
+    json = file.path(path, "manifests", paste0("bluertopo-download-manifest-", hash, ".json"))
+  )
+}
+
 .bt_write_download_manifests <- function(manifest, path, query = list(), coverage = list(), provenance = list()) {
   paths <- .bt_manifest_paths(path)
   .bt_atomic_write_csv(manifest, paths$csv)
@@ -17,6 +31,13 @@
     package_version = .bt_package_version()
   )
   .bt_atomic_write_json(payload, paths$json)
+  query_paths <- .bt_query_manifest_paths(path, query$query_hash %||% NA_character_)
+  if (length(query_paths)) {
+    .bt_atomic_write_csv(manifest, query_paths$csv)
+    .bt_atomic_write_json(payload, query_paths$json)
+    paths$query_csv <- query_paths$csv
+    paths$query_json <- query_paths$json
+  }
   invisible(paths)
 }
 

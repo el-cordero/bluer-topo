@@ -59,7 +59,8 @@ CRS units.}
 
 \item{verify}{Download verification mode.}
 
-\item{workers}{Maximum bounded worker count.}
+\item{workers}{Worker count. Only \code{NULL}/\code{1} is currently supported; higher
+values are rejected until bounded parallel downloads are implemented.}
 
 \item{progress}{Show routine progress messages.}
 

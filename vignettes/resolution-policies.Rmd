@@ -1,16 +1,101 @@
 ---
-title: "Understanding Resolution Policies"
+title: "Resolution Policies"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Understanding Resolution Policies}
+  %\VignetteIndexEntry{Resolution Policies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Smaller meter values are finer native source resolution. `resolution` filters
-NOAA source tiles; it does not resample output cells.
-
-```{r, eval=FALSE}
-bluertopo(aoi, resolution = "finest")
-bluertopo(aoi, resolution = bluertopo_resolution("between", min_m = 4, max_m = 16))
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
+
+BlueTopo tile metadata records each source tile's native cell size. Smaller
+meter values mean finer source detail. In `bluertopo`, `resolution` chooses
+which source tiles to use; `output_resolution` creates a new output grid and
+therefore resamples.
+
+## Shortcuts
+
+```{r}
+# Use every intersecting native source resolution.
+bluertopo(aoi, resolution = "native")
+
+# Prefer the finest available native source tiles.
+bluertopo(aoi, resolution = "finest")
+
+# Prefer the coarsest available native source tiles.
+bluertopo(aoi, resolution = "coarsest")
+
+# Keep all available resolutions as candidates.
+bluertopo(aoi, resolution = "best_available")
+```
+
+## Exact and nearest values
+
+Numeric `resolution` values request exact native meter values. Use
+`bluertopo_resolution()` for explicit nearest-neighbor behavior.
+
+```{r}
+bluertopo(aoi, resolution = 8)
+
+bluertopo(
+  aoi,
+  resolution = bluertopo_resolution(
+    "nearest",
+    value = 10,
+    tie = "finer"
+  )
+)
+```
+
+## Ranges and ranks
+
+```{r}
+bluertopo(
+  aoi,
+  resolution = bluertopo_resolution("between", min_m = 4, max_m = 16)
+)
+
+bluertopo(
+  aoi,
+  resolution = bluertopo_resolution("finest_n", n = 2)
+)
+```
+
+`n` must be a positive whole number. Fractional values are rejected rather than
+silently truncated.
+
+## Coverage-oriented selection
+
+Coverage diagnostics compare selected tile coverage against all published tile
+coverage intersecting the AOI. `coverage = "fill"` adds fallback native
+resolutions until the target is met or no fallback remains.
+
+```{r}
+bluertopo(
+  aoi,
+  resolution = "finest",
+  coverage = "fill",
+  min_coverage = 0.95
+)
+
+policy <- bluertopo_resolution(
+  "coverage",
+  prefer = "finest",
+  min_coverage = 0.90
+)
+
+bluertopo(aoi, resolution = policy, coverage = "fill")
+```
+
+For `strategy = "coverage"`, the coverage target stored in the resolution
+policy is used. For other strategies, the function-level `min_coverage` argument
+is used.
+
+## Scope
+
+Only global resolution ranking is currently implemented. `scope = "local"` is
+reserved for a future AOI-local ranking implementation and is rejected in this
+release instead of being accepted without effect.
