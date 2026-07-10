@@ -20,6 +20,7 @@ NOAA.
 ``` r
 
 
+
 # install.packages("pak")
 pak::pak("el-cordero/bluer-topo")
 ```
@@ -27,6 +28,7 @@ pak::pak("el-cordero/bluer-topo")
 ## Basic workflow
 
 ``` r
+
 
 
 library(bluertopo)
@@ -57,6 +59,7 @@ RAT sidecars rather than an extracted raster object.
 ``` r
 
 
+
 files <- bluertopo_download(
   aoi,
   path = "data/bluetopo",
@@ -79,6 +82,7 @@ size. Smaller meter values mean finer native source detail.
 resamples the output.
 
 ``` r
+
 
 
 # Exact native resolution
@@ -115,6 +119,7 @@ unless the user explicitly requests an output grid.
 ``` r
 
 
+
 bathy_10m <- bluertopo(
   aoi,
   resolution = "native",
@@ -133,6 +138,7 @@ noninteractive sessions, and refuses to remove content unless a
 package-owned cache marker is present.
 
 ``` r
+
 
 
 bluertopo_cache_dir()
