@@ -1,23 +1,28 @@
 # Compare Resolution Policies
 
+This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.
+
+BlueTopo is not for navigation. No vertical-datum conversion is
+performed. Smaller meter values mean finer native source resolution.
+`resolution` selects source tiles; it does not resample.
+`coverage = "fill"` can add fallback source tiles. `output_resolution`
+is the argument that changes the output grid.
+
+## Real Example Setup
+
 ``` r
 
 library(terra)
 #> terra 1.9.27
 
-example <- bt_example_setup()
-#> Synthetic miniature BlueTopo fixture for package demonstration.
-#> Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.
-example_aoi <- example$aoi
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+available_resolution <- sort(unique(as.data.frame(real$tiles)$resolution_m))
+exact_available <- max(available_resolution)
 ```
-
-Every rendered output on this page uses: **Synthetic miniature BlueTopo
-fixture for package demonstration.**
-
-Smaller meter values mean finer native source resolution. `resolution`
-selects source tiles; it does not resample. `coverage = "fill"` can add
-fallback source tiles. `output_resolution` is the argument that changes
-the output grid.
 
 ## Policies
 
@@ -28,13 +33,13 @@ policies <- list(
   finest = list(resolution = "finest", coverage = "ignore"),
   `finest + coverage fill` = list(resolution = "finest", coverage = "fill"),
   coarsest = list(resolution = "coarsest", coverage = "ignore"),
-  `exact 8 m` = list(resolution = 8, coverage = "ignore"),
+  `exact available native resolution` = list(resolution = exact_available, coverage = "ignore"),
   `nearest 6 m` = list(resolution = bluertopo_resolution("nearest", value = 6), coverage = "ignore")
 )
 
 policy_tiles <- lapply(policies, function(policy) {
   bluertopo_tiles(
-    example_aoi,
+    real_aoi,
     resolution = policy$resolution,
     coverage = policy$coverage,
     quiet = TRUE
@@ -61,12 +66,12 @@ bt_display_table(policy_summary)
 
 | policy | selected_tile_count | selected_resolutions | selected_coverage_fraction | selected_aoi_fraction | target_met |
 |:---|---:|:---|---:|---:|:---|
-| native | 3 | 4, 8, 16 | 1.000 | 1.000 | TRUE |
-| finest | 1 | 4 | 0.500 | 0.500 | FALSE |
-| finest + coverage fill | 3 | 4, 8, 16 | 1.000 | 1.000 | TRUE |
-| coarsest | 1 | 16 | 0.400 | 0.400 | FALSE |
-| exact 8 m | 1 | 8 | 0.667 | 0.667 | FALSE |
-| nearest 6 m | 1 | 4 | 0.500 | 0.500 | FALSE |
+| native | 3 | 4, 8 | 1.000 | 1.000 | TRUE |
+| finest | 2 | 4 | 0.333 | 0.333 | FALSE |
+| finest + coverage fill | 3 | 4, 8 | 1.000 | 1.000 | TRUE |
+| coarsest | 1 | 8 | 0.667 | 0.667 | FALSE |
+| exact available native resolution | 1 | 8 | 0.667 | 0.667 | FALSE |
+| nearest 6 m | 2 | 4 | 0.333 | 0.333 | FALSE |
 
 ## Tile Selection Maps
 
@@ -74,16 +79,16 @@ bt_display_table(policy_summary)
 
 old_par <- par(mfrow = c(2, 3), mar = c(2, 2, 3, 1))
 for (name in names(policy_tiles)) {
-  bt_plot_tiles(policy_tiles[[name]], example_aoi, main = name)
+  bt_plot_tiles(policy_tiles[[name]], real_aoi, main = name)
 }
 ```
 
-![Six maps showing tile selections for native, finest, coverage fill,
-coarsest, exact, and nearest
+![Six maps showing real BlueTopo tile selections for native, finest,
+coverage fill, coarsest, exact, and nearest
 policies.](example-resolution-policies_files/figure-html/policy-maps-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration: selected
-tiles under different native source-resolution policies.
+Actual NOAA BlueTopo source tiles: selected footprints under different
+native source-resolution policies.
 
 ``` r
 
@@ -109,7 +114,7 @@ abline(h = 1, col = "#d00000", lwd = 2, lty = 2)
 source-resolution
 policy.](example-resolution-policies_files/figure-html/policy-coverage-bars-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration: selected
-coverage fraction by resolution policy.
+Actual NOAA BlueTopo source tiles: selected coverage fraction by
+resolution policy.
 
 Use an explicit output grid only when resampling is intended.

@@ -82,29 +82,35 @@
 
     
     
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. The contributor band contains IDs, not continuous values.
+Contributor IDs must not be averaged. RAT sidecars carry contributor
+metadata, and <code>bluertopo</code> preserves original RAT files.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; terra 1.9.27</span></span>
 <span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p>The contributor band contains IDs, not continuous values. Contributor
-IDs must not be averaged. RAT sidecars carry contributor metadata, and
-<code>bluertopo</code> preserves original RAT files.</p>
+<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="all-layers">All Layers<a class="anchor" aria-label="anchor" href="#all-layers"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
+<span>  <span class="va">real_aoi</span>,</span>
 <span>  layers <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
 <span>  details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layer_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -115,7 +121,7 @@ IDs must not be averaged. RAT sidecars carry contributor metadata, and
 <span>    <span class="st">"source vertical uncertainty values"</span>,</span>
 <span>    <span class="st">"categorical contributor/source IDs"</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  `resampling rule` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  `default resampling rule` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"bilinear only when an explicit output grid is requested"</span>,</span>
 <span>    <span class="st">"bilinear only when an explicit output grid is requested; values are then resampled"</span>,</span>
 <span>    <span class="st">"nearest-neighbor only; never average contributor IDs"</span></span>
@@ -135,7 +141,7 @@ IDs must not be averaged. RAT sidecars carry contributor metadata, and
 <th align="left">layer</th>
 <th align="right">source band</th>
 <th align="left">meaning</th>
-<th align="left">resampling rule</th>
+<th align="left">default resampling rule</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -180,15 +186,13 @@ IDs</td>
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">rat_table</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="49%">
-<col width="4%">
-<col width="11%">
-<col width="26%">
-<col width="2%">
-<col width="4%">
+<col width="6%">
+<col width="28%">
+<col width="48%">
+<col width="6%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
-<th align="left"></th>
 <th align="left">tile_id</th>
 <th align="left">source_basename</th>
 <th align="left">local_path</th>
@@ -197,28 +201,25 @@ IDs</td>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">/private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_FINE_A/BlueTopo_TILE_FINE_A.tiff.aux.xml</td>
-<td align="left">TILE_FINE_A</td>
-<td align="left">BlueTopo_TILE_FINE_A.tiff.aux.xml</td>
-<td align="left">bluertopo-example-cache/tiles/TILE_FINE_A/BlueTopo_TILE_FINE_A.tiff.aux.xml</td>
+<td align="left">BH4SH55P</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+<td align="left">package-cache/tiles/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 <td align="left">TRUE</td>
-<td align="left">18905bdd9e1b</td>
+<td align="left">f2a5a151b745</td>
 </tr>
 <tr class="even">
-<td align="left">/private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff.aux.xml</td>
-<td align="left">TILE_COARSE_B</td>
-<td align="left">BlueTopo_TILE_COARSE_B.tiff.aux.xml</td>
-<td align="left">bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff.aux.xml</td>
+<td align="left">BH4SJ55P</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
+<td align="left">package-cache/tiles/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
 <td align="left">TRUE</td>
-<td align="left">d60feb25cf39</td>
+<td align="left">f3af3107d74d</td>
 </tr>
 <tr class="odd">
-<td align="left">/private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_UTM_C/BlueTopo_TILE_UTM_C.tiff.aux.xml</td>
-<td align="left">TILE_UTM_C</td>
-<td align="left">BlueTopo_TILE_UTM_C.tiff.aux.xml</td>
-<td align="left">bluertopo-example-cache/tiles/TILE_UTM_C/BlueTopo_TILE_UTM_C.tiff.aux.xml</td>
+<td align="left">BF2H62K7</td>
+<td align="left">BlueTopo_BF2H62K7_20241212.tiff.aux.xml</td>
+<td align="left">package-cache/tiles/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml</td>
 <td align="left">TRUE</td>
-<td align="left">7fe027d87e35</td>
+<td align="left">ea4bba3b305f</td>
 </tr>
 </tbody>
 </table>
@@ -231,53 +232,161 @@ IDs</td>
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">contributor_lookup</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="14%">
-<col width="19%">
-<col width="30%">
-<col width="35%">
+<col width="8%">
+<col width="13%">
+<col width="27%">
+<col width="5%">
+<col width="8%">
+<col width="7%">
+<col width="4%">
+<col width="6%">
+<col width="18%">
 </colgroup>
 <thead><tr class="header">
-<th align="right">contributor_id</th>
+<th align="left">contributor_value</th>
 <th align="left">source_survey_id</th>
 <th align="left">source_institution</th>
-<th align="left">source_type</th>
+<th align="left">license_name</th>
+<th align="left">survey_date_start</th>
+<th align="left">survey_date_end</th>
+<th align="left">coverage</th>
+<th align="left">bathy_coverage</th>
+<th align="left">rat_source</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">101</td>
-<td align="left">SYN_FINE_A_2024_A</td>
-<td align="left">Synthetic Coastal Survey Office</td>
-<td align="left">synthetic multibeam</td>
+<td align="left">49550</td>
+<td align="left">H08626</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">1961-01-01</td>
+<td align="left">1961-01-01</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="even">
-<td align="right">102</td>
-<td align="left">SYN_FINE_A_2024_B</td>
-<td align="left">Synthetic University Lab</td>
-<td align="left">synthetic lidar</td>
+<td align="left">51975</td>
+<td align="left">H08626.interpolated</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">1961-01-01</td>
+<td align="left">1961-01-01</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="odd">
-<td align="right">201</td>
-<td align="left">SYN_COARSE_B_2023_A</td>
-<td align="left">Synthetic NOAA Partner</td>
-<td align="left">synthetic chart compilation</td>
+<td align="left">29777</td>
+<td align="left">H12193_4m_MLLW_Xof9.combined</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="even">
-<td align="right">202</td>
-<td align="left">SYN_COARSE_B_2023_B</td>
-<td align="left">Synthetic Coastal Survey Office</td>
-<td align="left">synthetic multibeam</td>
+<td align="left">201512</td>
+<td align="left">H12193_VB_4m_MLLW_1of9</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="odd">
-<td align="right">301</td>
-<td align="left">SYN_UTM_C_2022_A</td>
-<td align="left">Synthetic Hydrographic Branch</td>
-<td align="left">synthetic multibeam</td>
+<td align="left">201594</td>
+<td align="left">W00406_MB_2m_MLLW_1of4</td>
+<td align="left">DOC/NOAA/NOS/ONMS – Office of National Marine
+Sanctuaries</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2015-06-07</td>
+<td align="left">2015-06-12</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="even">
-<td align="right">302</td>
-<td align="left">SYN_UTM_C_2022_B</td>
-<td align="left">Synthetic Academic Partner</td>
-<td align="left">synthetic backscatter classification</td>
+<td align="left">201508</td>
+<td align="left">H12193_MB_50cm_MLLW_6of9</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">29819</td>
+<td align="left">H12193_MB_50cm_MLLW_7of9</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+</tr>
+<tr class="even">
+<td align="left">29782</td>
+<td align="left">H12193_MB_2m_MLLW_2of9</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">201507</td>
+<td align="left">H12193_MB_50cm_MLLW_5of9</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2010-07-09</td>
+<td align="left">2010-08-24</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+</tr>
+<tr class="even">
+<td align="left">201594</td>
+<td align="left">W00406_MB_2m_MLLW_1of4</td>
+<td align="left">DOC/NOAA/NOS/ONMS – Office of National Marine
+Sanctuaries</td>
+<td align="left">cc0-1.0</td>
+<td align="left">2015-06-07</td>
+<td align="left">2015-06-12</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">49550</td>
+<td align="left">H08626</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">1961-01-01</td>
+<td align="left">1961-01-01</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
+</tr>
+<tr class="even">
+<td align="left">51975</td>
+<td align="left">H08626.interpolated</td>
+<td align="left">DOC/NOAA/NOS/OCS – Office of Coast Survey</td>
+<td align="left">cc0-1.0</td>
+<td align="left">1961-01-01</td>
+<td align="left">1961-01-01</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
 </tr>
 </tbody>
 </table>
@@ -289,9 +398,8 @@ IDs</td>
 <code class="sourceCode R"><span><span class="va">first_grid</span> <span class="op">&lt;-</span> <span class="fu">bt_rasters</span><span class="op">(</span><span class="va">all_layers</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"elevation"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Elevation"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/elevation-plot-1.png" class="r-plt" alt="Synthetic fixture elevation raster." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration:
-elevation layer.
+<img src="example-layers-rat_files/figure-html/elevation-plot-1.png" class="r-plt" alt="Real BlueTopo elevation raster." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: elevation layer.
 </p>
 </div>
 </div>
@@ -301,9 +409,8 @@ elevation layer.
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"uncertainty"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Uncertainty"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/uncertainty-plot-1.png" class="r-plt" alt="Synthetic fixture uncertainty raster." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration:
-uncertainty layer.
+<img src="example-layers-rat_files/figure-html/uncertainty-plot-1.png" class="r-plt" alt="Real BlueTopo uncertainty raster." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: uncertainty layer.
 </p>
 </div>
 </div>
@@ -311,16 +418,15 @@ uncertainty layer.
 <h2 id="contributor-ids">Contributor IDs<a class="anchor" aria-label="anchor" href="#contributor-ids"></a>
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"contributor"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Contributor IDs"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"contributor"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Contributor IDs"</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">12</span>, <span class="st">"Dark 3"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/contributor-plot-1.png" class="r-plt" alt="Synthetic fixture contributor ID raster." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration:
-contributor ID layer.
+<img src="example-layers-rat_files/figure-html/contributor-plot-1.png" class="r-plt" alt="Real BlueTopo contributor ID raster using categorical colors." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: contributor ID layer shown with
+categorical colors.
 </p>
 </div>
-<p>These sidecars are synthetic and compact, but they demonstrate the
-package boundary: original RAT files are verified and preserved, while
-interpretation of contributor IDs remains a metadata step.</p>
+<p>Contributor values are identifiers that point into RAT metadata. They
+are not continuous terrain values.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

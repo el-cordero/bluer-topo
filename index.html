@@ -81,6 +81,9 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
+<span></span>
+<span></span>
+<span></span>
 <span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"el-cordero/bluer-topo"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -89,6 +92,9 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://el-cordero.github.io/bluer-topo/">bluertopo</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
@@ -114,6 +120,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
+<span></span>
+<span></span>
+<span></span>
 <span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"data/bluetopo"</span>,</span>
@@ -129,6 +138,9 @@
 <p><code>resolution</code> filters NOAA BlueTopo source tiles by their native cell size. Smaller meter values mean finer native source detail. <code>output_resolution</code> requests an explicit output grid and therefore resamples the output.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Exact native resolution</span></span>
 <span><span class="va">bathy_8m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, resolution <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
@@ -158,6 +170,9 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
+<span></span>
+<span></span>
+<span></span>
 <span><span class="va">bathy_10m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
@@ -172,6 +187,9 @@
 <p>Package cache operations are intentionally conservative. <a href="https://el-cordero.github.io/bluer-topo/reference/bluertopo_cache_clear.md"><code>bluertopo_cache_clear()</code></a> clears only the configured <code>bluertopo</code> cache, requires confirmation in noninteractive sessions, and refuses to remove content unless a package-owned cache marker is present.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="fu"><a href="reference/bluertopo_cache_dir.html">bluertopo_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/bluertopo_cache_clear.html">bluertopo_cache_clear</a></span><span class="op">(</span>confirm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>

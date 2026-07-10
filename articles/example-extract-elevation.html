@@ -82,31 +82,37 @@
 
     
     
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. <code><a href="../reference/bluertopo.html">bluertopo()</a></code> returns terra objects and, with
+<code>details = TRUE</code>, exposes selected tiles, downloads, query
+metadata, provenance, and coverage diagnostics. Normal native extraction
+does not intentionally resample.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; terra 1.9.27</span></span>
 <span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p><code><a href="../reference/bluertopo.html">bluertopo()</a></code> returns terra objects and, with
-<code>details = TRUE</code>, exposes selected tiles, downloads, query
-metadata, provenance, and coverage diagnostics. Normal native extraction
-does not intentionally resample.</p>
+<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="extract-elevation">Extract Elevation<a class="anchor" aria-label="anchor" href="#extract-elevation"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
+<span>  <span class="va">real_aoi</span>,</span>
 <span>  layers <span class="op">=</span> <span class="st">"elevation"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
 <span>  details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -116,6 +122,7 @@ does not intentionally resample.</p>
 <code class="sourceCode R"><span><span class="va">rasters</span> <span class="op">&lt;-</span> <span class="fu">bt_rasters</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">object_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  element <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"object type"</span>,</span>
 <span>    <span class="st">"result$data class"</span>,</span>
 <span>    <span class="st">"number of layers"</span>,</span>
 <span>    <span class="st">"layer names"</span>,</span>
@@ -123,19 +130,14 @@ does not intentionally resample.</p>
 <span>    <span class="st">"resolution"</span>,</span>
 <span>    <span class="st">"source count"</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
-<span>    <span class="st">"integer"</span>,</span>
-<span>    <span class="st">"character"</span>,</span>
-<span>    <span class="st">"character"</span>,</span>
-<span>    <span class="st">"character"</span>,</span>
-<span>    <span class="st">"integer"</span></span>
-<span>  <span class="op">)</span>,</span>
 <span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span>, <span class="st">"SpatRasterCollection"</span><span class="op">)</span><span class="op">)</span> <span class="st">"SpatRasterCollection"</span> <span class="kw">else</span> <span class="st">"SpatRaster"</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="fu">terra</span><span class="fu">::</span><span class="va"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nlyr</a></span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="va">names</span><span class="op">)</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">r</span>, describe <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">code</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"EPSG:"</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">r</span>, describe <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">code</span><span class="op">)</span></span>
+<span>    <span class="op">}</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">res</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" x "</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"; "</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rasters</span>, <span class="fu">terra</span><span class="fu">::</span><span class="va"><a href="https://rspatial.github.io/terra/reference/sources.html" class="external-link">sources</a></span><span class="op">)</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -144,46 +146,38 @@ does not intentionally resample.</p>
 <span></span>
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">object_summary</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<colgroup>
-<col width="21%">
-<col width="24%">
-<col width="54%">
-</colgroup>
 <thead><tr class="header">
 <th align="left">element</th>
-<th align="left">class</th>
 <th align="left">value</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">object type</td>
+<td align="left">SpatRasterCollection</td>
+</tr>
+<tr class="even">
 <td align="left">result$data class</td>
 <td align="left">SpatRasterCollection</td>
-<td align="left">SpatRasterCollection</td>
-</tr>
-<tr class="even">
-<td align="left">number of layers</td>
-<td align="left">integer</td>
-<td align="left">3</td>
 </tr>
 <tr class="odd">
+<td align="left">number of layers</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
 <td align="left">layer names</td>
-<td align="left">character</td>
 <td align="left">elevation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">CRS summary</td>
-<td align="left">character</td>
-<td align="left">4326, 3857</td>
+<td align="left">EPSG:26917</td>
+</tr>
+<tr class="even">
+<td align="left">resolution</td>
+<td align="left">4 x 4; 8 x 8</td>
 </tr>
 <tr class="odd">
-<td align="left">resolution</td>
-<td align="left">character</td>
-<td align="left">0.25 x 0.25; 0.5 x 0.5; 33395.847 x 33397.462</td>
-</tr>
-<tr class="even">
 <td align="left">source count</td>
-<td align="left">integer</td>
-<td align="left">2</td>
+<td align="left">1</td>
 </tr>
 </tbody>
 </table>
@@ -194,24 +188,12 @@ does not intentionally resample.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_sources_table</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<colgroup>
-<col width="66%">
-<col width="33%">
-</colgroup>
 <thead><tr class="header">
-<th align="left"></th>
 <th align="left">source</th>
 </tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left"></td>
+<tbody><tr class="odd">
 <td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">/private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmpL2TdCv/bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff</td>
-<td align="left">bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff</td>
-</tr>
-</tbody>
+</tr></tbody>
 </table>
 </div>
 <div class="section level2">
@@ -247,16 +229,53 @@ does not intentionally resample.</p>
 </table>
 </div>
 <div class="section level2">
-<h2 id="elevation-preview">Elevation Preview<a class="anchor" aria-label="anchor" href="#elevation-preview"></a>
+<h2 id="provenance">Provenance<a class="anchor" aria-label="anchor" href="#provenance"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">preview_raster</span> <span class="op">&lt;-</span> <span class="fu">bt_plot_first_raster</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span>, main <span class="op">=</span> <span class="st">"Synthetic fixture elevation"</span><span class="op">)</span></span>
-<span><span class="va">aoi_projected</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">example_aoi</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">preview_raster</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aoi_projected</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_catalog_table</span><span class="op">(</span><span class="va">real</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">field</th>
+<th align="left">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">catalog_name</td>
+<td align="left">BlueTopo_Tile_Scheme_20260626_132625.gpkg</td>
+</tr>
+<tr class="even">
+<td align="left">catalog_last_modified</td>
+<td align="left">2026-06-26T17:35:52.000Z</td>
+</tr>
+<tr class="odd">
+<td align="left">package_version</td>
+<td align="left">0.0.1</td>
+</tr>
+<tr class="even">
+<td align="left">not_for_navigation</td>
+<td align="left">BlueTopo is not for navigation</td>
+</tr>
+<tr class="odd">
+<td align="left">vertical_datum_conversion</td>
+<td align="left">none performed by bluertopo</td>
+</tr>
+<tr class="even">
+<td align="left">planned_download_mb</td>
+<td align="left">5.205</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="elevation-preview">Elevation Preview<a class="anchor" aria-label="anchor" href="#elevation-preview"></a>
+</h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">preview_raster</span> <span class="op">&lt;-</span> <span class="fu">bt_plot_first_raster</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span>, main <span class="op">=</span> <span class="st">"NOAA BlueTopo elevation"</span><span class="op">)</span></span>
+<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">real_aoi</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">preview_raster</span><span class="op">)</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-extract-elevation_files/figure-html/elevation-figure-1.png" class="r-plt" alt="Synthetic fixture elevation raster with AOI outline." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration:
-elevation raster from the first native grid.
+<img src="example-extract-elevation_files/figure-html/elevation-figure-1.png" class="r-plt" alt="Real BlueTopo elevation raster with the example AOI outline." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: elevation raster from verified
+GeoTIFFs with AOI overlay.
 </p>
 </div>
 <p>When native source grids differ, the result can be a

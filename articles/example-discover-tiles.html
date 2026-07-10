@@ -82,44 +82,48 @@
 
     
     
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. Coverage is geometric tile-index coverage, not a statement
+about navigational fitness, data quality, or NOAA endorsement.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; terra 1.9.27</span></span>
 <span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p>This example shows how an AOI intersects BlueTopo-style tile
-footprints and how coverage diagnostics are reported. The fixture-only
-<code>bluertopo.allow_test_hosts = TRUE</code> option enables local
-<code>file://</code> assets; it is not part of normal live NOAA
-workflows.</p>
+<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="selected-tiles">Selected Tiles<a class="anchor" aria-label="anchor" href="#selected-tiles"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_tiles.html">bluertopo_tiles</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
+<span>  <span class="va">real_aoi</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"warn"</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_tile_table</span><span class="op">(</span><span class="va">tiles</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_tile_table</span><span class="op">(</span><span class="va">tiles</span>, include_urls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
 <colgroup>
-<col width="10%">
-<col width="9%">
+<col width="2%">
+<col width="3%">
+<col width="2%">
+<col width="5%">
 <col width="6%">
-<col width="11%">
-<col width="15%">
-<col width="16%">
-<col width="11%">
-<col width="12%">
 <col width="6%">
+<col width="4%">
+<col width="4%">
+<col width="2%">
+<col width="29%">
+<col width="31%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">tile_id</th>
@@ -131,40 +135,48 @@ workflows.</p>
 <th align="right">selection_rank</th>
 <th align="left">selection_reason</th>
 <th align="left">fallback</th>
+<th align="left">geotiff_url</th>
+<th align="left">rat_url</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">TILE_FINE_A</td>
+<td align="left">BH4SH55P</td>
 <td align="right">4</td>
-<td align="left">18</td>
-<td align="left">2026-01-15</td>
-<td align="right">6923621557</td>
-<td align="right">0.562</td>
+<td align="left">17</td>
+<td align="left">2024-12-16 16:38:56</td>
+<td align="right">1119850</td>
+<td align="right">0.018</td>
 <td align="right">1</td>
 <td align="left">native</td>
 <td align="left">FALSE</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
 </tr>
 <tr class="even">
-<td align="left">TILE_COARSE_B</td>
-<td align="right">8</td>
-<td align="left">18</td>
-<td align="left">2025-07-15</td>
-<td align="right">9231598597</td>
-<td align="right">0.750</td>
+<td align="left">BH4SJ55P</td>
+<td align="right">4</td>
+<td align="left">17</td>
+<td align="left">2024-10-07 15:42:50</td>
+<td align="right">2239700</td>
+<td align="right">0.036</td>
 <td align="right">2</td>
 <td align="left">native</td>
 <td align="left">FALSE</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
 </tr>
 <tr class="odd">
-<td align="left">TILE_UTM_C</td>
-<td align="right">16</td>
-<td align="left">19</td>
-<td align="left">2024-10-15</td>
-<td align="right">5538868590</td>
-<td align="right">0.556</td>
+<td align="left">BF2H62K7</td>
+<td align="right">8</td>
+<td align="left">17</td>
+<td align="left">2024-12-16 16:37:25</td>
+<td align="right">6718416</td>
+<td align="right">0.053</td>
 <td align="right">3</td>
 <td align="left">native</td>
 <td align="left">FALSE</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff</td>
+<td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml</td>
 </tr>
 </tbody>
 </table>
@@ -206,11 +218,11 @@ workflows.</p>
 <h2 id="aoi-and-selected-footprints">AOI And Selected Footprints<a class="anchor" aria-label="anchor" href="#aoi-and-selected-footprints"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">tiles</span>, <span class="va">example_aoi</span>, main <span class="op">=</span> <span class="st">"AOI intersection with selected tiles"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">tiles</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="st">"AOI intersection with NOAA BlueTopo tiles"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-discover-tiles_files/figure-html/footprint-figure-1.png" class="r-plt" alt="AOI outline over selected synthetic BlueTopo tile footprints." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: AOI and
-selected tile footprints.
+<img src="example-discover-tiles_files/figure-html/footprint-figure-1.png" class="r-plt" alt="Real BlueTopo tile footprints selected for the example AOI." width="576"><p class="caption">
+Actual NOAA BlueTopo source tiles: AOI outline over selected tile
+footprints colored by native resolution.
 </p>
 </div>
 </div>
@@ -235,13 +247,13 @@ selected tile footprints.
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="va">coverage</span><span class="op">$</span><span class="va">target_coverage</span>, col <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-discover-tiles_files/figure-html/coverage-bars-1.png" class="r-plt" alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: coverage
-fractions.
+Actual NOAA BlueTopo source tiles: coverage fractions for the selected
+AOI.
 </p>
 </div>
-<p>Coverage is geometric tile-index coverage. It is not a statement
-about data quality, navigational fitness, or vertical-datum
-compatibility.</p>
+<p>The selected tile table includes shortened NOAA GeoTIFF and RAT URLs
+so users can see that discovery is using the live BlueTopo catalog
+records.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

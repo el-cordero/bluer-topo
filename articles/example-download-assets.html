@@ -82,42 +82,35 @@
 
     
     
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. Example downloads are intentionally small and are cached
+during website builds, but they still access NOAA public data.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span>
-<span><span class="va">example_download_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-example-download-assets"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">example_download_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p><code><a href="../reference/bluertopo_download.html">bluertopo_download()</a></code> preserves original GeoTIFF and RAT
-sidecar files and verifies them with SHA-256 checksums. This page uses
-local fixture files, not live NOAA downloads.</p>
+<code class="sourceCode R"><span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="first-download">First Download<a class="anchor" aria-label="anchor" href="#first-download"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="va">example_download_dir</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
-<span>  rat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verify <span class="op">=</span> <span class="st">"sha256"</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu">bt_real_download_assets</span><span class="op">(</span><span class="va">real</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_manifest_table</span><span class="op">(</span><span class="va">manifest</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="10%">
+<col width="6%">
 <col width="7%">
-<col width="25%">
-<col width="7%">
+<col width="28%">
+<col width="11%">
 <col width="12%">
 <col width="6%">
-<col width="12%">
+<col width="10%">
 <col width="10%">
 <col width="6%">
 </colgroup>
@@ -128,76 +121,76 @@ local fixture files, not live NOAA downloads.</p>
 <th align="left">status</th>
 <th align="left">verification_mode</th>
 <th align="left">verified</th>
-<th align="right">downloaded_bytes</th>
+<th align="right">downloaded_mb</th>
 <th align="left">actual_sha256</th>
 <th align="right">attempts</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">TILE_FINE_A</td>
+<td align="left">BH4SH55P</td>
 <td align="left">geotiff</td>
-<td align="left">BlueTopo_TILE_FINE_A.tiff</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">2196</td>
-<td align="left">7e81b29b0dec</td>
-<td align="right">1</td>
+<td align="right">2.914</td>
+<td align="left">a49d92de8419</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">TILE_FINE_A</td>
+<td align="left">BH4SH55P</td>
 <td align="left">rat</td>
-<td align="left">BlueTopo_TILE_FINE_A.tiff.aux.xml</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">1326</td>
-<td align="left">18905bdd9e1b</td>
-<td align="right">1</td>
+<td align="right">0.007</td>
+<td align="left">f2a5a151b745</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">TILE_COARSE_B</td>
+<td align="left">BH4SJ55P</td>
 <td align="left">geotiff</td>
-<td align="left">BlueTopo_TILE_COARSE_B.tiff</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">2113</td>
-<td align="left">ed1ee11911be</td>
-<td align="right">1</td>
+<td align="right">1.289</td>
+<td align="left">ef8f39829788</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">TILE_COARSE_B</td>
+<td align="left">BH4SJ55P</td>
 <td align="left">rat</td>
-<td align="left">BlueTopo_TILE_COARSE_B.tiff.aux.xml</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">1356</td>
-<td align="left">d60feb25cf39</td>
-<td align="right">1</td>
+<td align="right">0.004</td>
+<td align="left">f3af3107d74d</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">TILE_UTM_C</td>
+<td align="left">BF2H62K7</td>
 <td align="left">geotiff</td>
-<td align="left">BlueTopo_TILE_UTM_C.tiff</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BF2H62K7_20241212.tiff</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">2156</td>
-<td align="left">20650649e253</td>
-<td align="right">1</td>
+<td align="right">0.986</td>
+<td align="left">8dcbdc1325c5</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">TILE_UTM_C</td>
+<td align="left">BF2H62K7</td>
 <td align="left">rat</td>
-<td align="left">BlueTopo_TILE_UTM_C.tiff.aux.xml</td>
-<td align="left">downloaded</td>
+<td align="left">BlueTopo_BF2H62K7_20241212.tiff.aux.xml</td>
+<td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">1363</td>
-<td align="left">7fe027d87e35</td>
-<td align="right">1</td>
+<td align="right">0.005</td>
+<td align="left">ea4bba3b305f</td>
+<td align="right">0</td>
 </tr>
 </tbody>
 </table>
@@ -206,14 +199,7 @@ local fixture files, not live NOAA downloads.</p>
 <h2 id="reuse-existing-verified-files">Reuse Existing Verified Files<a class="anchor" aria-label="anchor" href="#reuse-existing-verified-files"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reused</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="va">example_download_dir</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
-<span>  rat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verify <span class="op">=</span> <span class="st">"sha256"</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">reused</span> <span class="op">&lt;-</span> <span class="fu">bt_real_download_assets</span><span class="op">(</span><span class="va">real</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">reuse_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">reused</span><span class="op">)</span></span>
 <span><span class="va">reuse_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span></span>
@@ -243,65 +229,60 @@ local fixture files, not live NOAA downloads.</p>
 <h2 id="manifest-files">Manifest Files<a class="anchor" aria-label="anchor" href="#manifest-files"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">manifest_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_download_dir</span>,</span>
-<span>  pattern <span class="op">=</span> <span class="st">"manifest\\.(csv|json)$|manifest-[A-Za-z0-9]+\\.(csv|json)$"</span>,</span>
-<span>  recursive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  full.names <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">manifest_file_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  file <span class="op">=</span> <span class="fu">bt_short_path</span><span class="op">(</span><span class="va">manifest_files</span>, keep <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>,</span>
-<span>  exists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">manifest_files</span><span class="op">)</span>,</span>
-<span>  bytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.info</a></span><span class="op">(</span><span class="va">manifest_files</span><span class="op">)</span><span class="op">$</span><span class="va">size</span><span class="op">)</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">manifest_file_table</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_manifest_files_table</span><span class="op">(</span><span class="va">real</span><span class="op">$</span><span class="va">download_dir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="59%">
-<col width="35%">
-<col width="2%">
-<col width="2%">
+<col width="89%">
+<col width="5%">
+<col width="5%">
 </colgroup>
 <thead><tr class="header">
-<th align="left"></th>
 <th align="left">file</th>
 <th align="left">exists</th>
 <th align="right">bytes</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T//Rtmpkqq2un/bluertopo-example-download-assets/bluertopo-download-manifest.csv</td>
-<td align="left">Rtmpkqq2un/bluertopo-example-download-assets/bluertopo-download-manifest.csv</td>
+<td align="left">bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.csv</td>
 <td align="left">TRUE</td>
-<td align="right">3856</td>
+<td align="right">3475</td>
 </tr>
 <tr class="even">
-<td align="left">/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T//Rtmpkqq2un/bluertopo-example-download-assets/bluertopo-download-manifest.json</td>
-<td align="left">Rtmpkqq2un/bluertopo-example-download-assets/bluertopo-download-manifest.json</td>
+<td align="left">bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.json</td>
 <td align="left">TRUE</td>
-<td align="right">8728</td>
+<td align="right">8422</td>
 </tr>
 <tr class="odd">
-<td align="left">/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T//Rtmpkqq2un/bluertopo-example-download-assets/manifests/bluertopo-download-manifest-6861bed88d07c0b7.csv</td>
-<td align="left">bluertopo-example-download-assets/manifests/bluertopo-download-manifest-6861bed88d07c0b7.csv</td>
+<td align="left">downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.csv</td>
 <td align="left">TRUE</td>
-<td align="right">3856</td>
+<td align="right">3475</td>
 </tr>
 <tr class="even">
-<td align="left">/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T//Rtmpkqq2un/bluertopo-example-download-assets/manifests/bluertopo-download-manifest-6861bed88d07c0b7.json</td>
-<td align="left">bluertopo-example-download-assets/manifests/bluertopo-download-manifest-6861bed88d07c0b7.json</td>
+<td align="left">downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.json</td>
 <td align="left">TRUE</td>
-<td align="right">8728</td>
+<td align="right">8422</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level2">
-<h2 id="download-status-counts">Download Status Counts<a class="anchor" aria-label="anchor" href="#download-status-counts"></a>
+<h2 id="source-domain-summary">Source Domain Summary<a class="anchor" aria-label="anchor" href="#source-domain-summary"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_source_domain_summary</span><span class="op">(</span><span class="va">manifest</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">domain</th>
+<th align="left">asset_type</th>
+<th align="right">Freq</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="download-status-counts">Download Status Counts<a class="anchor" aria-label="anchor" href="#download-status-counts"></a>
+</h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">status_counts</span> <span class="op">&lt;-</span> <span class="fu">bt_status_counts</span><span class="op">(</span><span class="va">manifest</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
 <span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">status_counts</span><span class="op">$</span><span class="va">count</span>, <span class="va">status_counts</span><span class="op">$</span><span class="va">status</span><span class="op">)</span>,</span>
@@ -310,13 +291,14 @@ local fixture files, not live NOAA downloads.</p>
 <span>  main <span class="op">=</span> <span class="st">"First-call download statuses"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-download-assets_files/figure-html/status-bars-1.png" class="r-plt" alt="Bar plot of downloaded asset status counts from the synthetic fixture." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: verified
-download status counts.
+<img src="example-download-assets_files/figure-html/status-bars-1.png" class="r-plt" alt="Bar plot of downloaded and reused real BlueTopo asset statuses." width="576"><p class="caption">
+Actual NOAA BlueTopo source assets: SHA-256 verified download status
+counts.
 </p>
 </div>
 <p>The second call reports <code>reused_verified</code> for files that
-already exist and still match the expected SHA-256 checksums.</p>
+already exist and still match NOAA SHA-256 checksums. RAT sidecars are
+downloaded and verified with the GeoTIFF assets.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

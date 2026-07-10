@@ -82,33 +82,43 @@
 
     
     
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. Mixed native grids are preserved unless the user asks for a
+single output grid. <code>combine = "single"</code> needs an explicit
+output grid when native grids are incompatible. Resampled uncertainty
+values are not original source cells, and contributor resampling must be
+nearest-neighbor.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; terra 1.9.27</span></span>
 <span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p>Mixed native grids are preserved unless the user asks for a single
-output grid. <code>combine = "single"</code> needs an explicit output
-grid when native grids are incompatible. Resampled uncertainty values
-are not original source cells, and contributor resampling must be
-nearest-neighbor.</p>
+<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="native-mixed-grid-extraction">Native Mixed-Grid Extraction<a class="anchor" aria-label="anchor" href="#native-mixed-grid-extraction"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">native</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
+<span>  <span class="va">real_aoi</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
 <span>  combine <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">native</span><span class="op">$</span><span class="va">data</span>, <span class="st">"SpatRasterCollection"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The documented real AOI no longer produces mixed native grids."</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">native_table</span> <span class="op">&lt;-</span> <span class="fu">bt_raster_summary</span><span class="op">(</span><span class="va">native</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">native_table</span><span class="op">$</span><span class="va">output_object_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">native</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span></span>
@@ -124,12 +134,12 @@ nearest-neighbor.</p>
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">native_table</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="18%">
-<col width="30%">
-<col width="8%">
-<col width="19%">
-<col width="11%">
-<col width="10%">
+<col width="23%">
+<col width="24%">
+<col width="12%">
+<col width="12%">
+<col width="14%">
+<col width="13%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">output_object_class</th>
@@ -142,25 +152,17 @@ nearest-neighbor.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SpatRasterCollection</td>
-<td align="left">grid_01_epsg4326_0_25x0_25</td>
-<td align="left">EPSG:4326</td>
-<td align="left">0.25 x 0.25</td>
+<td align="left">grid_01_epsg26917_4x4</td>
+<td align="left">EPSG:26917</td>
+<td align="left">4 x 4</td>
 <td align="right">1</td>
 <td align="left">elevation</td>
 </tr>
 <tr class="even">
 <td align="left">SpatRasterCollection</td>
-<td align="left">grid_02_epsg4326_0_5x0_5</td>
-<td align="left">EPSG:4326</td>
-<td align="left">0.5 x 0.5</td>
-<td align="right">1</td>
-<td align="left">elevation</td>
-</tr>
-<tr class="odd">
-<td align="left">SpatRasterCollection</td>
-<td align="left">grid_03_epsg3857_33395_85x33397_46</td>
-<td align="left">EPSG:3857</td>
-<td align="left">33395.847 x 33397.462</td>
+<td align="left">grid_02_epsg26917_8x8</td>
+<td align="left">EPSG:26917</td>
+<td align="left">8 x 8</td>
 <td align="right">1</td>
 <td align="left">elevation</td>
 </tr>
@@ -171,12 +173,11 @@ nearest-neighbor.</p>
 <h2 id="native-grid-footprints">Native Grid Footprints<a class="anchor" aria-label="anchor" href="#native-grid-footprints"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">native_tiles</span> <span class="op">&lt;-</span> <span class="va">native</span><span class="op">$</span><span class="va">tiles</span></span>
-<span><span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">native_tiles</span>, <span class="va">example_aoi</span>, main <span class="op">=</span> <span class="st">"Selected mixed native grids"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">native</span><span class="op">$</span><span class="va">tiles</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="st">"Selected mixed native grids"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-mixed-grids_files/figure-html/native-footprints-1.png" class="r-plt" alt="Synthetic fixture tile footprints selected for mixed native grids." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: native
-grid footprints selected for the mixed-grid extraction.
+<img src="example-mixed-grids_files/figure-html/native-footprints-1.png" class="r-plt" alt="Real BlueTopo tile footprints selected for mixed native grids." width="576"><p class="caption">
+Actual NOAA BlueTopo source tiles: native grid footprints selected for
+mixed-grid extraction.
 </p>
 </div>
 </div>
@@ -185,14 +186,16 @@ grid footprints selected for the mixed-grid extraction.
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">single</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">example_aoi</span>,</span>
+<span>  <span class="va">real_aoi</span>,</span>
+<span>  layers <span class="op">=</span> <span class="st">"elevation"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
-<span>  output_crs <span class="op">=</span> <span class="st">"EPSG:3857"</span>,</span>
-<span>  output_resolution <span class="op">=</span> <span class="fl">50000</span>,</span>
+<span>  output_crs <span class="op">=</span> <span class="st">"EPSG:26917"</span>,</span>
+<span>  output_resolution <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  combine <span class="op">=</span> <span class="st">"single"</span>,</span>
 <span>  details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">single_raster</span> <span class="op">&lt;-</span> <span class="va">single</span><span class="op">$</span><span class="va">data</span></span>
@@ -208,10 +211,10 @@ grid footprints selected for the mixed-grid extraction.
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">single_table</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="20%">
-<col width="10%">
-<col width="14%">
-<col width="38%">
+<col width="21%">
+<col width="11%">
+<col width="11%">
+<col width="39%">
 <col width="15%">
 </colgroup>
 <thead><tr class="header">
@@ -223,18 +226,18 @@ grid footprints selected for the mixed-grid extraction.
 </tr></thead>
 <tbody><tr class="odd">
 <td align="left">SpatRaster</td>
-<td align="left">EPSG:3857</td>
-<td align="left">50000 x 50000</td>
-<td align="left">27829.9, 177829.9, 16697.9, 116697.9</td>
+<td align="left">EPSG:26917</td>
+<td align="left">100 x 100</td>
+<td align="left">415613, 418713, 2744703.3, 2748003.3</td>
 <td align="left">TRUE</td>
 </tr></tbody>
 </table>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">single</span><span class="op">$</span><span class="va">data</span>, main <span class="op">=</span> <span class="st">"Explicit output grid elevation"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-mixed-grids_files/figure-html/output-raster-1.png" class="r-plt" alt="Synthetic fixture elevation raster on one explicit output grid." width="576"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration:
-elevation resampled onto an explicit output grid.
+<img src="example-mixed-grids_files/figure-html/output-raster-1.png" class="r-plt" alt="Real BlueTopo elevation raster on one explicit output grid." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: elevation resampled onto an explicit
+output grid.
 </p>
 </div>
 <p>The explicit grid is useful for workflows that require one raster,

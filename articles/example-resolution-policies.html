@@ -82,21 +82,28 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.9.27</span></span>
-<span></span>
-<span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">bt_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Synthetic miniature BlueTopo fixture for package demonstration.</span></span>
-<span><span class="co">#&gt; Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.</span></span>
-<span><span class="va">example_aoi</span> <span class="op">&lt;-</span> <span class="va">example</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
-<p>Every rendered output on this page uses: <strong>Synthetic miniature
-BlueTopo fixture for package demonstration.</strong></p>
-<p>Smaller meter values mean finer native source resolution.
+<p>This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.</p>
+<p>BlueTopo is not for navigation. No vertical-datum conversion is
+performed. Smaller meter values mean finer native source resolution.
 <code>resolution</code> selects source tiles; it does not resample.
 <code>coverage = "fill"</code> can add fallback source tiles.
 <code>output_resolution</code> is the argument that changes the output
 grid.</p>
+<div class="section level2">
+<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; terra 1.9.27</span></span>
+<span></span>
+<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span>
+<span><span class="va">available_resolution</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">real</span><span class="op">$</span><span class="va">tiles</span><span class="op">)</span><span class="op">$</span><span class="va">resolution_m</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">exact_available</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">available_resolution</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="policies">Policies<a class="anchor" aria-label="anchor" href="#policies"></a>
 </h2>
@@ -106,13 +113,13 @@ grid.</p>
 <span>  finest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="st">"finest"</span>, coverage <span class="op">=</span> <span class="st">"ignore"</span><span class="op">)</span>,</span>
 <span>  `finest + coverage fill` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="st">"finest"</span>, coverage <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span>,</span>
 <span>  coarsest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="st">"coarsest"</span>, coverage <span class="op">=</span> <span class="st">"ignore"</span><span class="op">)</span>,</span>
-<span>  `exact 8 m` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="fl">8</span>, coverage <span class="op">=</span> <span class="st">"ignore"</span><span class="op">)</span>,</span>
+<span>  `exact available native resolution` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="va">exact_available</span>, coverage <span class="op">=</span> <span class="st">"ignore"</span><span class="op">)</span>,</span>
 <span>  `nearest 6 m` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="fu"><a href="../reference/bluertopo_resolution.html">bluertopo_resolution</a></span><span class="op">(</span><span class="st">"nearest"</span>, value <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, coverage <span class="op">=</span> <span class="st">"ignore"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">policy_tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">policies</span>, <span class="kw">function</span><span class="op">(</span><span class="va">policy</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/bluertopo_tiles.html">bluertopo_tiles</a></span><span class="op">(</span></span>
-<span>    <span class="va">example_aoi</span>,</span>
+<span>    <span class="va">real_aoi</span>,</span>
 <span>    resolution <span class="op">=</span> <span class="va">policy</span><span class="op">$</span><span class="va">resolution</span>,</span>
 <span>    coverage <span class="op">=</span> <span class="va">policy</span><span class="op">$</span><span class="va">coverage</span>,</span>
 <span>    quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -137,11 +144,11 @@ grid.</p>
 <span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">policy_summary</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="18%">
+<col width="25%">
+<col width="14%">
+<col width="15%">
+<col width="20%">
 <col width="16%">
-<col width="16%">
-<col width="21%">
-<col width="17%">
 <col width="8%">
 </colgroup>
 <thead><tr class="header">
@@ -156,23 +163,23 @@ grid.</p>
 <tr class="odd">
 <td align="left">native</td>
 <td align="right">3</td>
-<td align="left">4, 8, 16</td>
+<td align="left">4, 8</td>
 <td align="right">1.000</td>
 <td align="right">1.000</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
 <td align="left">finest</td>
-<td align="right">1</td>
+<td align="right">2</td>
 <td align="left">4</td>
-<td align="right">0.500</td>
-<td align="right">0.500</td>
+<td align="right">0.333</td>
+<td align="right">0.333</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">finest + coverage fill</td>
 <td align="right">3</td>
-<td align="left">4, 8, 16</td>
+<td align="left">4, 8</td>
 <td align="right">1.000</td>
 <td align="right">1.000</td>
 <td align="left">TRUE</td>
@@ -180,13 +187,13 @@ grid.</p>
 <tr class="even">
 <td align="left">coarsest</td>
 <td align="right">1</td>
-<td align="left">16</td>
-<td align="right">0.400</td>
-<td align="right">0.400</td>
+<td align="left">8</td>
+<td align="right">0.667</td>
+<td align="right">0.667</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
-<td align="left">exact 8 m</td>
+<td align="left">exact available native resolution</td>
 <td align="right">1</td>
 <td align="left">8</td>
 <td align="right">0.667</td>
@@ -195,10 +202,10 @@ grid.</p>
 </tr>
 <tr class="even">
 <td align="left">nearest 6 m</td>
-<td align="right">1</td>
+<td align="right">2</td>
 <td align="left">4</td>
-<td align="right">0.500</td>
-<td align="right">0.500</td>
+<td align="right">0.333</td>
+<td align="right">0.333</td>
 <td align="left">FALSE</td>
 </tr>
 </tbody>
@@ -210,12 +217,12 @@ grid.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">old_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">name</span> <span class="kw">in</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">policy_tiles</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">policy_tiles</span><span class="op">[[</span><span class="va">name</span><span class="op">]</span><span class="op">]</span>, <span class="va">example_aoi</span>, main <span class="op">=</span> <span class="va">name</span><span class="op">)</span></span>
+<span>  <span class="fu">bt_plot_tiles</span><span class="op">(</span><span class="va">policy_tiles</span><span class="op">[[</span><span class="va">name</span><span class="op">]</span><span class="op">]</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="figure">
-<img src="example-resolution-policies_files/figure-html/policy-maps-1.png" class="r-plt" alt="Six maps showing tile selections for native, finest, coverage fill, coarsest, exact, and nearest policies." width="672"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: selected
-tiles under different native source-resolution policies.
+<img src="example-resolution-policies_files/figure-html/policy-maps-1.png" class="r-plt" alt="Six maps showing real BlueTopo tile selections for native, finest, coverage fill, coarsest, exact, and nearest policies." width="672"><p class="caption">
+Actual NOAA BlueTopo source tiles: selected footprints under different
+native source-resolution policies.
 </p>
 </div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -236,8 +243,8 @@ tiles under different native source-resolution policies.
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-resolution-policies_files/figure-html/policy-coverage-bars-1.png" class="r-plt" alt="Bar plot comparing selected coverage fractions by native source-resolution policy." width="672"><p class="caption">
-Synthetic miniature BlueTopo fixture for package demonstration: selected
-coverage fraction by resolution policy.
+Actual NOAA BlueTopo source tiles: selected coverage fraction by
+resolution policy.
 </p>
 </div>
 <p>Use an explicit output grid only when resampling is intended.</p>

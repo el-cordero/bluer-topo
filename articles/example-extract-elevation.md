@@ -1,35 +1,40 @@
 # Extract Elevation with terra
 
+This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.
+
+BlueTopo is not for navigation. No vertical-datum conversion is
+performed.
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
+returns terra objects and, with `details = TRUE`, exposes selected
+tiles, downloads, query metadata, provenance, and coverage diagnostics.
+Normal native extraction does not intentionally resample.
+
+## Real Example Setup
+
 ``` r
 
 library(terra)
 #> terra 1.9.27
 
-example <- bt_example_setup()
-#> Synthetic miniature BlueTopo fixture for package demonstration.
-#> Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.
-example_aoi <- example$aoi
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
 ```
-
-Every rendered output on this page uses: **Synthetic miniature BlueTopo
-fixture for package demonstration.**
-
-[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
-returns terra objects and, with `details = TRUE`, exposes selected
-tiles, downloads, query metadata, provenance, and coverage diagnostics.
-Normal native extraction does not intentionally resample.
 
 ## Extract Elevation
 
 ``` r
 
 result <- bluertopo(
-  example_aoi,
+  real_aoi,
   layers = "elevation",
   resolution = "native",
   coverage = "fill",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 )
 ```
 
@@ -40,6 +45,7 @@ result <- bluertopo(
 rasters <- bt_rasters(result$data)
 object_summary <- data.frame(
   element = c(
+    "object type",
     "result$data class",
     "number of layers",
     "layer names",
@@ -47,19 +53,14 @@ object_summary <- data.frame(
     "resolution",
     "source count"
   ),
-  class = c(
-    paste(class(result$data), collapse = ", "),
-    "integer",
-    "character",
-    "character",
-    "character",
-    "integer"
-  ),
   value = c(
+    if (inherits(result$data, "SpatRasterCollection")) "SpatRasterCollection" else "SpatRaster",
     paste(class(result$data), collapse = ", "),
     sum(vapply(rasters, terra::nlyr, numeric(1L))),
     paste(unique(unlist(lapply(rasters, names), use.names = FALSE)), collapse = ", "),
-    paste(unique(vapply(rasters, function(r) as.character(terra::crs(r, describe = TRUE)$code), "")), collapse = ", "),
+    paste(unique(vapply(rasters, function(r) {
+      paste0("EPSG:", terra::crs(r, describe = TRUE)$code)
+    }, "")), collapse = ", "),
     paste(unique(vapply(rasters, function(r) paste(round(terra::res(r), 3), collapse = " x "), "")), collapse = "; "),
     length(unique(unlist(lapply(rasters, terra::sources), use.names = FALSE)))
   ),
@@ -69,14 +70,15 @@ object_summary <- data.frame(
 bt_display_table(object_summary)
 ```
 
-| element | class | value |
-|:---|:---|:---|
-| result\$data class | SpatRasterCollection | SpatRasterCollection |
-| number of layers | integer | 3 |
-| layer names | character | elevation |
-| CRS summary | character | 4326, 3857 |
-| resolution | character | 0.25 x 0.25; 0.5 x 0.5; 33395.847 x 33397.462 |
-| source count | integer | 2 |
+| element            | value                |
+|:-------------------|:---------------------|
+| object type        | SpatRasterCollection |
+| result\$data class | SpatRasterCollection |
+| number of layers   | 2                    |
+| layer names        | elevation            |
+| CRS summary        | EPSG:26917           |
+| resolution         | 4 x 4; 8 x 8         |
+| source count       | 1                    |
 
 ## File-Backed Sources
 
@@ -85,10 +87,9 @@ bt_display_table(object_summary)
 bt_display_table(bt_sources_table(result$data))
 ```
 
-|  | source |
-|:---|:---|
-|  | NA |
-| /private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmpL2TdCv/bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff | bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff |
+| source |
+|:-------|
+| NA     |
 
 ## Coverage
 
@@ -101,20 +102,35 @@ bt_display_table(bt_coverage_table(result$coverage))
 |---:|---:|---:|---:|:---|:---|
 | 1 | 1 | 1 | 1 | TRUE | geometric tile-index coverage |
 
+## Provenance
+
+``` r
+
+bt_display_table(bt_catalog_table(real))
+```
+
+| field                     | value                                     |
+|:--------------------------|:------------------------------------------|
+| catalog_name              | BlueTopo_Tile_Scheme_20260626_132625.gpkg |
+| catalog_last_modified     | 2026-06-26T17:35:52.000Z                  |
+| package_version           | 0.0.1                                     |
+| not_for_navigation        | BlueTopo is not for navigation            |
+| vertical_datum_conversion | none performed by bluertopo               |
+| planned_download_mb       | 5.205                                     |
+
 ## Elevation Preview
 
 ``` r
 
-preview_raster <- bt_plot_first_raster(result$data, main = "Synthetic fixture elevation")
-aoi_projected <- terra::project(example_aoi, terra::crs(preview_raster))
-terra::plot(aoi_projected, add = TRUE, border = "#d00000", lwd = 2)
+preview_raster <- bt_plot_first_raster(result$data, main = "NOAA BlueTopo elevation")
+terra::plot(terra::project(real_aoi, terra::crs(preview_raster)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
-![Synthetic fixture elevation raster with AOI
+![Real BlueTopo elevation raster with the example AOI
 outline.](example-extract-elevation_files/figure-html/elevation-figure-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration:
-elevation raster from the first native grid.
+Actual NOAA BlueTopo source data: elevation raster from verified
+GeoTIFFs with AOI overlay.
 
 When native source grids differ, the result can be a
 `SpatRasterCollection`. Each member can still be file-backed by verified

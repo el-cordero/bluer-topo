@@ -1,33 +1,37 @@
 # Layers and RAT Metadata
 
+This page uses real NOAA BlueTopo source tiles when rendered for the
+public pkgdown site. This example uses actual NOAA BlueTopo source tiles
+downloaded from the public NOAA National Bathymetric Source bucket
+during the pkgdown build.
+
+BlueTopo is not for navigation. No vertical-datum conversion is
+performed. The contributor band contains IDs, not continuous values.
+Contributor IDs must not be averaged. RAT sidecars carry contributor
+metadata, and `bluertopo` preserves original RAT files.
+
+## Real Example Setup
+
 ``` r
 
 library(terra)
 #> terra 1.9.27
 
-example <- bt_example_setup()
-#> Synthetic miniature BlueTopo fixture for package demonstration.
-#> Fixture-only option: bluertopo.allow_test_hosts = TRUE enables local file URLs.
-example_aoi <- example$aoi
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
 ```
-
-Every rendered output on this page uses: **Synthetic miniature BlueTopo
-fixture for package demonstration.**
-
-The contributor band contains IDs, not continuous values. Contributor
-IDs must not be averaged. RAT sidecars carry contributor metadata, and
-`bluertopo` preserves original RAT files.
 
 ## All Layers
 
 ``` r
 
 all_layers <- bluertopo(
-  example_aoi,
+  real_aoi,
   layers = "all",
   coverage = "fill",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 )
 ```
 
@@ -41,7 +45,7 @@ layer_table <- data.frame(
     "source vertical uncertainty values",
     "categorical contributor/source IDs"
   ),
-  `resampling rule` = c(
+  `default resampling rule` = c(
     "bilinear only when an explicit output grid is requested",
     "bilinear only when an explicit output grid is requested; values are then resampled",
     "nearest-neighbor only; never average contributor IDs"
@@ -52,7 +56,7 @@ layer_table <- data.frame(
 bt_display_table(layer_table)
 ```
 
-| layer | source band | meaning | resampling rule |
+| layer | source band | meaning | default resampling rule |
 |:---|---:|:---|:---|
 | elevation | 1 | source elevation values | bilinear only when an explicit output grid is requested |
 | uncertainty | 2 | source vertical uncertainty values | bilinear only when an explicit output grid is requested; values are then resampled |
@@ -76,11 +80,11 @@ rat_table <- data.frame(
 bt_display_table(rat_table)
 ```
 
-|  | tile_id | source_basename | local_path | verified | actual_sha256 |
-|:---|:---|:---|:---|:---|:---|
-| /private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_FINE_A/BlueTopo_TILE_FINE_A.tiff.aux.xml | TILE_FINE_A | BlueTopo_TILE_FINE_A.tiff.aux.xml | bluertopo-example-cache/tiles/TILE_FINE_A/BlueTopo_TILE_FINE_A.tiff.aux.xml | TRUE | 18905bdd9e1b |
-| /private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff.aux.xml | TILE_COARSE_B | BlueTopo_TILE_COARSE_B.tiff.aux.xml | bluertopo-example-cache/tiles/TILE_COARSE_B/BlueTopo_TILE_COARSE_B.tiff.aux.xml | TRUE | d60feb25cf39 |
-| /private/var/folders/7j/dr505g_j3zd9z6m9qdykzc4w0000gn/T/RtmptFBf17/bluertopo-example-cache/tiles/TILE_UTM_C/BlueTopo_TILE_UTM_C.tiff.aux.xml | TILE_UTM_C | BlueTopo_TILE_UTM_C.tiff.aux.xml | bluertopo-example-cache/tiles/TILE_UTM_C/BlueTopo_TILE_UTM_C.tiff.aux.xml | TRUE | 7fe027d87e35 |
+| tile_id | source_basename | local_path | verified | actual_sha256 |
+|:---|:---|:---|:---|:---|
+| BH4SH55P | BlueTopo_BH4SH55P_20241212.tiff.aux.xml | package-cache/tiles/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml | TRUE | f2a5a151b745 |
+| BH4SJ55P | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml | package-cache/tiles/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml | TRUE | f3af3107d74d |
+| BF2H62K7 | BlueTopo_BF2H62K7_20241212.tiff.aux.xml | package-cache/tiles/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml | TRUE | ea4bba3b305f |
 
 ## Contributor Lookup
 
@@ -90,14 +94,20 @@ contributor_lookup <- bt_parse_rat(rat_manifest$local_path)
 bt_display_table(contributor_lookup)
 ```
 
-| contributor_id | source_survey_id | source_institution | source_type |
-|---:|:---|:---|:---|
-| 101 | SYN_FINE_A_2024_A | Synthetic Coastal Survey Office | synthetic multibeam |
-| 102 | SYN_FINE_A_2024_B | Synthetic University Lab | synthetic lidar |
-| 201 | SYN_COARSE_B_2023_A | Synthetic NOAA Partner | synthetic chart compilation |
-| 202 | SYN_COARSE_B_2023_B | Synthetic Coastal Survey Office | synthetic multibeam |
-| 301 | SYN_UTM_C_2022_A | Synthetic Hydrographic Branch | synthetic multibeam |
-| 302 | SYN_UTM_C_2022_B | Synthetic Academic Partner | synthetic backscatter classification |
+| contributor_value | source_survey_id | source_institution | license_name | survey_date_start | survey_date_end | coverage | bathy_coverage | rat_source |
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| 49550 | H08626 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 51975 | H08626.interpolated | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 0 | 0 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 29777 | H12193_4m_MLLW_Xof9.combined | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 0 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 201512 | H12193_VB_4m_MLLW_1of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 201594 | W00406_MB_2m_MLLW_1of4 | DOC/NOAA/NOS/ONMS – Office of National Marine Sanctuaries | cc0-1.0 | 2015-06-07 | 2015-06-12 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 201508 | H12193_MB_50cm_MLLW_6of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 29819 | H12193_MB_50cm_MLLW_7of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 29782 | H12193_MB_2m_MLLW_2of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 201507 | H12193_MB_50cm_MLLW_5of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
+| 201594 | W00406_MB_2m_MLLW_1of4 | DOC/NOAA/NOS/ONMS – Office of National Marine Sanctuaries | cc0-1.0 | 2015-06-07 | 2015-06-12 | 1 | 1 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
+| 49550 | H08626 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 1 | 1 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
+| 51975 | H08626.interpolated | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 0 | 0 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
 
 ## Elevation
 
@@ -107,11 +117,10 @@ first_grid <- bt_rasters(all_layers$data)[[1L]]
 terra::plot(first_grid[["elevation"]], main = "Elevation")
 ```
 
-![Synthetic fixture elevation
+![Real BlueTopo elevation
 raster.](example-layers-rat_files/figure-html/elevation-plot-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration:
-elevation layer.
+Actual NOAA BlueTopo source data: elevation layer.
 
 ## Uncertainty
 
@@ -120,25 +129,23 @@ elevation layer.
 terra::plot(first_grid[["uncertainty"]], main = "Uncertainty")
 ```
 
-![Synthetic fixture uncertainty
+![Real BlueTopo uncertainty
 raster.](example-layers-rat_files/figure-html/uncertainty-plot-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration:
-uncertainty layer.
+Actual NOAA BlueTopo source data: uncertainty layer.
 
 ## Contributor IDs
 
 ``` r
 
-terra::plot(first_grid[["contributor"]], main = "Contributor IDs")
+terra::plot(first_grid[["contributor"]], main = "Contributor IDs", col = hcl.colors(12, "Dark 3"))
 ```
 
-![Synthetic fixture contributor ID
-raster.](example-layers-rat_files/figure-html/contributor-plot-1.png)
+![Real BlueTopo contributor ID raster using categorical
+colors.](example-layers-rat_files/figure-html/contributor-plot-1.png)
 
-Synthetic miniature BlueTopo fixture for package demonstration:
-contributor ID layer.
+Actual NOAA BlueTopo source data: contributor ID layer shown with
+categorical colors.
 
-These sidecars are synthetic and compact, but they demonstrate the
-package boundary: original RAT files are verified and preserved, while
-interpretation of contributor IDs remains a metadata step.
+Contributor values are identifiers that point into RAT metadata. They
+are not continuous terrain values.
