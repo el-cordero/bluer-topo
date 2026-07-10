@@ -1,0 +1,113 @@
+# Get BlueTopo
+
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
+is the main workflow for opening NOAA BlueTopo source bathymetry with
+`terra`. It discovers the current BlueTopo tile-scheme catalog,
+intersects that catalog with an area of interest, downloads verified
+original source files when needed, and returns file-backed `terra`
+rasters.
+
+BlueTopo is not for navigation. `bluertopo` performs no vertical-datum
+conversion and is not affiliated with, endorsed by, or supported by
+NOAA.
+
+Reference: NOAA,
+[BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html).
+
+## Define an AOI
+
+Use a
+[`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html),
+`sf` object, bbox vector, WKT string, GeoJSON string, or a local vector
+file path. Remote AOI URLs are intentionally refused.
+
+``` r
+
+library(bluertopo)
+library(terra)
+
+aoi <- vect("project_area.gpkg")
+
+# Or a bbox: c(xmin, ymin, xmax, ymax) in EPSG:4326.
+aoi <- c(-66.2, 18.2, -66.1, 18.3)
+```
+
+## Discover tiles first
+
+Inspect tile choices before downloading large GeoTIFFs.
+
+``` r
+
+tiles <- bluertopo_tiles(
+  aoi,
+  resolution = "native",
+  coverage = "warn"
+)
+
+as.data.frame(tiles)[
+  c("tile_id", "resolution_m", "delivered_date", "selection_reason")
+]
+```
+
+## Open bathymetry
+
+By default,
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
+downloads original NOAA assets into the package cache, verifies SHA-256
+checksums, and opens the elevation band.
+
+``` r
+
+bathy <- bluertopo(
+  aoi,
+  layers = "elevation",
+  resolution = "native",
+  coverage = "warn",
+  details = TRUE
+)
+
+bathy$data
+bathy$downloads
+bathy$coverage
+```
+
+Set `details = TRUE` when provenance matters. The result includes
+selected tiles, download statuses, query metadata, coverage diagnostics,
+and catalog provenance.
+
+## Choose layers
+
+BlueTopo source GeoTIFFs currently expose elevation, vertical
+uncertainty, and contributor/source identifier bands.
+
+``` r
+
+all_layers <- bluertopo(
+  aoi,
+  layers = "all",
+  coverage = "fill"
+)
+```
+
+## Avoid accidental resampling
+
+Native BlueTopo tiles may differ in CRS, resolution, origin, or
+alignment. When selected source grids are incompatible,
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
+returns a
+[`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html)
+rather than silently resampling.
+
+Request a single output grid only when resampling is an intentional
+analytical choice.
+
+``` r
+
+bathy_10m <- bluertopo(
+  aoi,
+  resolution = "native",
+  output_crs = "EPSG:26918",
+  output_resolution = 10,
+  combine = "single"
+)
+```
