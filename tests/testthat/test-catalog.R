@@ -34,3 +34,12 @@ test_that("fixture catalog normalizes the current NOAA schema names", {
     expect_equal(sort(stats::na.omit(unique(as.data.frame(v)$resolution_m))), c(2, 4, 8, 16))
   })
 })
+
+test_that("catalog metadata records schema fingerprints", {
+  with_bt_fixture({
+    catalog <- .bt_get_catalog(refresh = "never")
+    schema <- .bt_catalog_schema_fingerprint(catalog$path)
+    expect_type(schema$fingerprint, "character")
+    expect_true(all(.bt_expected_catalog_fields %in% schema$fields))
+  })
+})

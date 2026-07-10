@@ -7,7 +7,7 @@ authors:
   - family-names: Custodio
     given-names: Eliseo
 license: MIT
-repository-code: "https://github.com/ecustodio/bluertopo"
+repository-code: "https://github.com/el-cordero/bluer-topo"
 references:
   - type: dataset
     title: "NOAA National Bathymetric Source Data"

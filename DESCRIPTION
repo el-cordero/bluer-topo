@@ -12,6 +12,8 @@ Description: Discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
     explicit native-resolution selection policies, and records provenance for
     reproducible extraction workflows.
 License: MIT + file LICENSE
+URL: https://github.com/el-cordero/bluer-topo
+BugReports: https://github.com/el-cordero/bluer-topo/issues
 Depends:
     R (>= 4.1)
 Imports:

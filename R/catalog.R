@@ -34,13 +34,19 @@
     .bt_ensure_dir(paths$catalog)
     .bt_ensure_dir(paths$locks)
     remote <- .bt_discover_remote_catalog()
+    if (.bt_remote_matches_cached(paths, remote)) {
+      meta <- jsonlite::read_json(paths$catalog_metadata, simplifyVector = TRUE)
+      meta$retrieved_at <- .bt_now_iso()
+      .bt_atomic_write_json(meta, paths$catalog_metadata)
+      return(.bt_catalog_from_cache(paths))
+    }
     .bt_inform(
       sprintf("Downloading BlueTopo tile scheme `%s`.", basename(remote$key)),
       quiet = quiet
     )
     tmp <- tempfile(pattern = "catalog-", tmpdir = paths$catalog, fileext = ".gpkg")
     on.exit(unlink(tmp, force = TRUE), add = TRUE)
-    .bt_curl_download(remote$url, tmp, retries = 3, timeout = NULL)
+    invisible(.bt_curl_download(remote$url, tmp, retries = 3, timeout = NULL))
     .bt_validate_catalog_file(tmp, remote)
     if (!file.rename(tmp, paths$catalog_gpkg)) {
       .bt_abort("Could not replace cached BlueTopo catalog atomically.", class = "bluertopo_error_catalog")
@@ -98,6 +104,27 @@
   }
   age <- as.numeric(difftime(Sys.time(), retrieved, units = "secs"))
   is.finite(age) && age <= ttl
+}
+
+.bt_remote_matches_cached <- function(paths, remote) {
+  if (!file.exists(paths$catalog_gpkg) || !file.exists(paths$catalog_metadata)) {
+    return(FALSE)
+  }
+  meta <- tryCatch(jsonlite::read_json(paths$catalog_metadata, simplifyVector = TRUE), error = function(e) NULL)
+  if (is.null(meta)) {
+    return(FALSE)
+  }
+  same_key <- identical(meta$source_key %||% NA_character_, remote$key %||% NA_character_)
+  same_etag <- nzchar(meta$etag %||% "") &&
+    nzchar(remote$etag %||% "") &&
+    identical(meta$etag, remote$etag)
+  same_last_modified <- nzchar(meta$last_modified %||% "") &&
+    nzchar(remote$last_modified %||% "") &&
+    identical(meta$last_modified, remote$last_modified)
+  same_size <- !is.na(meta$content_length %||% NA_real_) &&
+    !is.na(remote$content_length %||% NA_real_) &&
+    identical(as.numeric(meta$content_length), as.numeric(remote$content_length))
+  same_key && (same_etag || (same_last_modified && same_size))
 }
 
 .bt_discover_remote_catalog <- function() {
@@ -218,7 +245,9 @@
 .bt_curl_download <- function(url, dest, retries = 3, timeout = NULL) {
   .bt_validate_source_url(url, role = "download")
   last_error <- NULL
+  attempts <- 0L
   for (attempt in seq_len(max(1L, retries))) {
+    attempts <- attempt
     handle <- curl::new_handle(
       useragent = .bt_user_agent(),
       followlocation = TRUE,
@@ -235,6 +264,7 @@
       FALSE
     })
     if (ok) {
+      attr(dest, "attempts") <- attempts
       return(dest)
     }
     if (attempt < retries) {
@@ -248,6 +278,7 @@
 }
 
 .bt_catalog_metadata <- function(path, remote) {
+  schema <- .bt_catalog_schema_fingerprint(path)
   list(
     catalog_path = path,
     catalog_name = basename(remote$key %||% path),
@@ -259,7 +290,19 @@
     retrieved_at = .bt_now_iso(),
     package_version = .bt_package_version(),
     local_checksum = .bt_sha256_file(path),
+    schema_fingerprint = schema$fingerprint,
+    schema_fields = schema$fields,
     behavior_version = .bt_behavior_version
+  )
+}
+
+.bt_catalog_schema_fingerprint <- function(path) {
+  layer <- .bt_catalog_layer(path)
+  v <- terra::vect(path, layer = layer)
+  fields <- names(v)
+  list(
+    fields = fields,
+    fingerprint = .bt_hash_object(fields)
   )
 }
 

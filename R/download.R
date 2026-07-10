@@ -268,7 +268,8 @@ bluertopo_download <- function(
     }
     tmp <- tempfile(pattern = paste0(basename(dest), "-"), tmpdir = dirname(dest), fileext = ".part")
     on.exit(unlink(tmp, force = TRUE), add = TRUE)
-    .bt_curl_download(row$source_url, tmp, retries = retries, timeout = timeout)
+    downloaded_tmp <- .bt_curl_download(row$source_url, tmp, retries = retries, timeout = timeout)
+    attempts <- attr(downloaded_tmp, "attempts", exact = TRUE) %||% retries
     .bt_validate_downloaded_asset(tmp, row, verify)
     if (file.exists(dest)) {
       unlink(dest, force = TRUE)
@@ -282,7 +283,7 @@ bluertopo_download <- function(
     row$verified <- !identical(verify, "none")
     row$actual_sha256 <- if (file.exists(dest)) .bt_sha256_file(dest) else NA_character_
     row$downloaded_bytes <- file.info(dest)$size
-    row$attempts <- retries
+    row$attempts <- attempts
     row$started_at <- started
     row$completed_at <- .bt_now_iso()
     row$error_class <- NA_character_

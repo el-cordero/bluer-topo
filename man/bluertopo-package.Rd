@@ -9,6 +9,14 @@
 GeoTIFF/RAT assets with checksum validation, and opens selected raster bands
 as file-backed \code{terra} objects.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/el-cordero/bluer-topo}
+  \item Report bugs at \url{https://github.com/el-cordero/bluer-topo/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Eliseo Custodio \email{eliseo@example.com}
 

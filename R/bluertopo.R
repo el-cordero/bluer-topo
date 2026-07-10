@@ -106,7 +106,19 @@ bluertopo <- function(
     resampling = resampling,
     quiet = quiet
   )
+  query <- .bt_enrich_query(
+    query = tiles_result$query,
+    layers = layers,
+    access = access,
+    crop = crop,
+    mask = mask,
+    combine = combine,
+    output_crs = output_crs,
+    output_resolution = output_resolution,
+    resampling = resampling
+  )
   provenance <- .bt_result_provenance(tiles_result, downloads, geotiffs)
+  provenance$query_hash <- query$query_hash
   if (!details) {
     return(data)
   }
@@ -115,12 +127,43 @@ bluertopo <- function(
       data = data,
       tiles = tiles_result$tiles,
       downloads = downloads,
-      query = tiles_result$query,
+      query = query,
       provenance = provenance,
       coverage = tiles_result$coverage
     ),
     class = "bluertopo_result"
   )
+}
+
+.bt_enrich_query <- function(
+  query,
+  layers,
+  access,
+  crop,
+  mask,
+  combine,
+  output_crs,
+  output_resolution,
+  resampling
+) {
+  query$package_version <- .bt_package_version()
+  query$requested_layers <- layers
+  query$access <- access
+  query$crop <- crop
+  query$mask <- mask
+  query$combine <- combine
+  query$output_grid <- list(
+    output_crs = output_crs %||% NA_character_,
+    output_resolution = output_resolution %||% NA_real_,
+    resampling = resampling %||% list()
+  )
+  stable <- query
+  stable$request_timestamp <- NULL
+  query$query_hash <- .bt_hash_object(list(
+    query = stable,
+    behavior_version = .bt_behavior_version
+  ))
+  query
 }
 
 .bt_geotiffs_from_downloads <- function(downloads, tiles) {

@@ -10,6 +10,13 @@ test_that("tile discovery applies resolution and coverage policies", {
     expect_true(any(as.data.frame(filled)$fallback))
     coverage <- attr(filled, "coverage")
     expect_true(coverage$target_met)
+
+    expect_error(
+      bluertopo_tiles(fixture$aoi, resolution = "finest", coverage = "error", min_coverage = 1),
+      class = "bluertopo_error_no_coverage"
+    )
+    ignored <- bluertopo_tiles(fixture$aoi, resolution = "finest", coverage = "ignore", min_coverage = 1)
+    expect_equal(as.data.frame(ignored)$resolution_m, 4)
   })
 })
 
@@ -61,6 +68,10 @@ test_that("bluertopo returns lazy terra outputs and detailed provenance", {
     expect_equal(names(result$data), "elevation")
     expect_true(result$coverage$target_met)
     expect_true(result$provenance$no_vertical_datum_conversion_performed)
+    expect_equal(result$query$requested_layers, "elevation")
+    expect_equal(result$query$access, "download")
+    expect_type(result$query$query_hash, "character")
+    expect_identical(result$provenance$query_hash, result$query$query_hash)
 
     all_layers <- bluertopo(
       fixture$aoi_left,
