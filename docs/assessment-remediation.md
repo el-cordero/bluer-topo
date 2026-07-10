@@ -22,8 +22,9 @@ Evidence:
 - `CITATION.cff` and `inst/CITATION` use the same maintainer identity and cite
   NOAA BlueTopo at `https://nauticalcharts.noaa.gov/data/bluetopo.html`.
 - `R/utils.R` uses the canonical repository URL in the HTTP user agent.
-- `_pkgdown.yml` follows the `blueterra` Bootstrap 5/Flatly/Source Sans 3 visual
-  system and targets the GitHub Pages URL.
+- `_pkgdown.yml` follows the `blueterra` Bootstrap 5/Flatly visual system,
+  uses local system fonts for network-free builds, and targets the GitHub Pages
+  URL.
 
 ### CI and website readiness
 
@@ -141,6 +142,8 @@ Evidence:
 - Vignettes in `vignettes/` were expanded into practical guides for getting
   BlueTopo, resolution policies, downloads/cache/reproducibility, mixed UTM
   collections, and layers/RAT metadata.
+- The top-level pkgdown Examples section now renders deterministic synthetic
+  fixture tables and figures without live NOAA downloads.
 
 ## Intentionally deferred items
 
@@ -271,24 +274,26 @@ Future implementation target:
 Validation commands and outcomes from this remediation run:
 
 - `Rscript -e 'roxygen2::roxygenise()'`: succeeded.
-- `Rscript -e 'rmarkdown::render("README.Rmd", output_format = "github_document", quiet = TRUE)'`:
-  succeeded. Pandoc warned that sandboxed rendering could not fetch remote badge
-  SVGs, but the Markdown links were generated.
-- `Rscript -e 'devtools::test()'`: succeeded with 81 passed and 1 intentionally
-  skipped live-network test.
+- `Rscript -e 'rmarkdown::render("README.Rmd", quiet = TRUE)'`: succeeded.
+  Pandoc warned that sandboxed rendering could not fetch remote badge SVGs, but
+  the Markdown links were generated.
+- `Rscript -e 'testthat::test_local()'`: succeeded with 108 passed and 1
+  intentionally skipped live-network test.
 - `Rscript -e 'lintr::lint_package()'`: succeeded with no lints.
 - `Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
-  succeeded after rerunning with elevated permissions. The sandboxed first run
-  could not resolve `cloud.r-project.org` for pkgdown CRAN metadata and could
-  not write the normal R sass cache. This builds local site files but does not
-  itself enable or publish GitHub Pages.
-- `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE, clean = FALSE)'`:
-  succeeded and pushed the generated site to `gh-pages`.
+  succeeded after rerunning with elevated permissions because pkgdown article
+  rendering uses processx/callr in this desktop sandbox. This builds local site
+  files but does not itself enable or publish GitHub Pages.
+- `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE)'`:
+  succeeded and pushed the generated site to `gh-pages` with the Examples
+  section.
 - GitHub Pages is configured from `gh-pages` at `/`, and
-  `https://el-cordero.github.io/bluer-topo/` returns HTTP 200.
+  `https://el-cordero.github.io/bluer-topo/` and
+  `https://el-cordero.github.io/bluer-topo/articles/examples.html` return
+  HTTP 200.
 - `R CMD build .`: succeeded and built `bluertopo_0.0.1.tar.gz`.
-- `R CMD check --as-cran --no-manual bluertopo_0.0.1.tar.gz`: 0 errors,
-  0 warnings, 1 note.
+- `R CMD check --as-cran bluertopo_0.0.1.tar.gz`: 0 errors, 0 warnings,
+  1 note.
 
 Remaining check note:
 
