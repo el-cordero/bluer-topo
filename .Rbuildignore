@@ -4,6 +4,8 @@
 ^data-raw$
 ^README\.Rmd$
 ^README\.html$
+^index\.Rmd$
+^index\.md$
 ^pkgdown$
 ^\.lintr$
 ^\.Rprofile$
@@ -14,6 +16,7 @@
 ^LICENSE\.md$
 ^\.Rproj\.user$
 ^.*\.Rproj$
+^.* 2(\.[^/]+)?$
 ^.*\.Rcheck$
 ^\.\.Rcheck$
 ^.*\.tar\.gz$

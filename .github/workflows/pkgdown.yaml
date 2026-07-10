@@ -44,7 +44,11 @@ jobs:
             bluertopo-real-examples-${{ runner.os }}-${{ steps.real-example-key.outputs.behavior_version }}-
       - name: Preflight real BlueTopo examples
         run: Rscript -e 'source("vignettes/real-example-helpers.R"); bt_real_example_preflight()'
+      - name: Clean generated site output
+        run: Rscript -e 'pkgdown::clean_site(force = TRUE)'
+      - name: Render real-data homepage
+        run: Rscript tools/build-pkgdown-index.R
       - name: Build pkgdown site
         run: Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'
       - name: Deploy pkgdown site
-        run: Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE, clean = FALSE)'
+        run: Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE, clean = TRUE)'

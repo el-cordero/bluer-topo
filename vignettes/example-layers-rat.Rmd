@@ -21,6 +21,11 @@ real_mode <- bt_real_examples_enabled()
 This page uses real NOAA BlueTopo source tiles when rendered for the public
 pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
+This page opens real New York Harbor NOAA BlueTopo elevation, uncertainty, and
+contributor layers from verified source GeoTIFFs, then reads real RAT sidecars
+for contributor metadata. Elevation is shown with hillshade and contours;
+uncertainty and contributor IDs are plotted as their own source layers.
+
 BlueTopo is not for navigation. No vertical-datum conversion is performed. The
 contributor band contains IDs, not continuous values. Contributor IDs must not
 be averaged. RAT sidecars carry contributor metadata, and `bluertopo` preserves
@@ -94,21 +99,23 @@ bt_display_table(contributor_lookup)
 
 ## Elevation
 
-```{r elevation-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: elevation layer.", fig.alt="Real BlueTopo elevation raster."}
+```{r elevation-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: New York Harbor elevation layer with hillshade and contours.", fig.alt="Hillshaded real BlueTopo elevation layer with contours."}
 first_grid <- bt_rasters(all_layers$data)[[1L]]
-terra::plot(first_grid[["elevation"]], main = "Elevation")
+bt_plot_bathy_map(first_grid[["elevation"]], real_aoi, main = "New York Harbor elevation")
 ```
 
 ## Uncertainty
 
 ```{r uncertainty-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: uncertainty layer.", fig.alt="Real BlueTopo uncertainty raster."}
-terra::plot(first_grid[["uncertainty"]], main = "Uncertainty")
+terra::plot(first_grid[["uncertainty"]], main = "Uncertainty", col = grDevices::hcl.colors(80, "BluYl"))
+terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 ## Contributor IDs
 
 ```{r contributor-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: contributor ID layer shown with categorical colors.", fig.alt="Real BlueTopo contributor ID raster using categorical colors."}
 terra::plot(first_grid[["contributor"]], main = "Contributor IDs", col = hcl.colors(12, "Dark 3"))
+terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 Contributor values are identifiers that point into RAT metadata. They are not

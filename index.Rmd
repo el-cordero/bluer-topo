@@ -1,0 +1,132 @@
+---
+output:
+  md_document:
+    variant: gfm
+---
+
+```{r, include=FALSE}
+helper <- "vignettes/real-example-helpers.R"
+source(helper)
+if (!bt_real_examples_enabled()) {
+  stop(
+    "Render index.Rmd with BLUERTOPO_BUILD_REAL_EXAMPLES=true for the pkgdown homepage.",
+    call. = FALSE
+  )
+}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/home-",
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 144
+)
+```
+
+# bluertopo
+
+<img src="man/figures/logo.png" align="right" height="139" alt="bluertopo logo" />
+
+[![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+
+`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
+for an area of interest using `terra`. The package keeps source GeoTIFF and RAT
+sidecar files intact by default, records query and catalog provenance, and makes
+native source-resolution choices explicit.
+
+BlueTopo is not for navigation. This package performs no vertical-datum
+conversion and is not affiliated with, endorsed by, or supported by NOAA.
+
+Reference: NOAA, [BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html)
+and [BlueTopo specifications](https://nauticalcharts.noaa.gov/data/bluetopo_specs.html).
+
+## Real NOAA Proof
+
+```{r real-proof-setup, include=FALSE}
+library(terra)
+
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+real_tiles <- real$tiles
+real_manifest <- bt_real_download_assets(real)
+real_bathy <- bluertopo(
+  real_aoi,
+  layers = "elevation",
+  resolution = "native",
+  coverage = "fill",
+  details = TRUE,
+  progress = FALSE,
+  quiet = TRUE
+)
+```
+
+Example AOI: New York Harbor, centered on Lower Manhattan, the Upper Bay,
+Governors Island, and the East River mouth. This homepage proof uses actual NOAA
+BlueTopo source tiles downloaded during the pkgdown build.
+
+```{r proof-map, echo=FALSE, fig.cap="Actual NOAA BlueTopo source data: New York Harbor elevation with hillshade, contours, and AOI outline.", fig.alt="Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline."}
+bt_plot_bathy_map(real_bathy$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
+```
+
+```{r proof-tiles, echo=FALSE}
+tile_table <- bt_tile_table(real_tiles)
+bt_display_table(tile_table[c(
+  "tile_id",
+  "resolution_m",
+  "utm_zone",
+  "intersection_fraction",
+  "selection_reason"
+)])
+```
+
+```{r proof-manifest, echo=FALSE}
+manifest_table <- bt_manifest_table(real_manifest)
+bt_display_table(manifest_table[c(
+  "tile_id",
+  "asset_type",
+  "status",
+  "verified",
+  "downloaded_mb",
+  "actual_sha256"
+)])
+```
+
+## Basic Workflow
+
+```r
+library(bluertopo)
+library(terra)
+
+aoi <- vect("my_area.gpkg")
+bathy <- bluertopo(aoi)
+plot(bathy)
+```
+
+## Provenance Workflow
+
+```r
+result <- bluertopo(aoi, details = TRUE)
+
+result$tiles
+result$downloads
+result$coverage
+result$provenance
+```
+
+## Examples
+
+The [Examples tab](articles/examples.html) is rendered from actual NOAA
+BlueTopo source tiles for New York Harbor. Normal package tests use small
+synthetic fixtures so checks remain network-free. The mixed-grid example uses a
+documented secondary real AOI near Key West and Boca Chica Channel because the
+current New York Harbor plan is one compatible 4 m native grid.
+
+- [Example gallery](articles/examples.html)
+- [Discover tiles and coverage](articles/example-discover-tiles.html)
+- [Download original assets](articles/example-download-assets.html)
+- [Extract elevation with terra](articles/example-extract-elevation.html)
+- [Compare resolution policies](articles/example-resolution-policies.html)
+- [Mixed grids and output grid](articles/example-mixed-grids.html)
+- [Layers and RAT metadata](articles/example-layers-rat.html)

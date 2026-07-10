@@ -168,29 +168,64 @@ test_that("real example AOI metadata is documented", {
   metadata <- file.path(vignette_dir, "real-example-aoi.md")
   expect_true(file.exists(metadata))
   text <- paste(readLines(metadata, warn = FALSE), collapse = "\n")
-  expect_match(text, "key-west-boca-chica-2026-07-10", fixed = TRUE)
-  expect_match(text, "xmin = -81.835", fixed = TRUE)
-  expect_match(text, "Expected total download size", fixed = TRUE)
+  expect_match(text, "new-york-harbor-upper-bay-2026-07-10", fixed = TRUE)
+  expect_match(text, "New York Harbor", fixed = TRUE)
+  expect_match(text, "xmin = -74.045", fixed = TRUE)
+  expect_match(text, "Expected primary total download size", fixed = TRUE)
+  expect_match(text, "key-west-boca-chica-mixed-grid-2026-07-10", fixed = TRUE)
+  expect_match(text, "Expected secondary total download size", fixed = TRUE)
   expect_match(text, "Date last verified: 2026-07-10", fixed = TRUE)
 })
 
 test_that("README and pkgdown config describe real public examples", {
   readme_path <- project_file("README.Rmd")
   config_path <- project_file("_pkgdown.yml")
+  index_path <- project_file("index.Rmd")
   skip_if(
-    is.na(readme_path) || is.na(config_path),
-    "source README/pkgdown config are not available in this installed test context"
+    is.na(readme_path) || is.na(config_path) || is.na(index_path),
+    "source README/pkgdown config/index are not available in this installed test context"
   )
 
   readme <- paste(readLines(readme_path, warn = FALSE), collapse = "\n")
   expect_false(grepl("Examples tab uses synthetic", readme, fixed = TRUE))
   expect_match(readme, "rendered from actual NOAA BlueTopo source tiles", fixed = TRUE)
+  expect_match(readme, "New\\s+York Harbor")
   expect_match(readme, "Normal\\s+package tests use small synthetic fixtures")
+  expect_match(readme, "bathy <- bluertopo\\(aoi\\)")
+  expect_match(readme, "https://nauticalcharts.noaa.gov/data/bluetopo_specs.html", fixed = TRUE)
+
+  index <- paste(readLines(index_path, warn = FALSE), collapse = "\n")
+  expect_match(index, "bt_plot_bathy_map\\(real_bathy\\$data")
+  expect_match(index, "This homepage proof uses actual NOAA\\s+BlueTopo source tiles")
 
   config <- paste(readLines(config_path, warn = FALSE), collapse = "\n")
   expect_match(config, "left: \\[intro, reference, examples, articles, news\\]")
   expect_match(config, "text: Examples", fixed = TRUE)
   expect_match(config, "href: articles/examples.html", fixed = TRUE)
+  expect_match(config, "div.sourceCode pre", fixed = TRUE)
+})
+
+test_that("public markdown chunks do not start with blank lines", {
+  source_files <- c(
+    project_file("README.Rmd"),
+    project_file("index.Rmd"),
+    public_example_vignettes()
+  )
+  source_files <- source_files[!is.na(source_files) & file.exists(source_files)]
+  skip_if(!length(source_files), "source markdown files are not available in this test context")
+
+  for (path in source_files) {
+    lines <- readLines(path, warn = FALSE)
+    starts <- grep("^```\\{r", lines)
+    for (start in starts) {
+      if (start < length(lines)) {
+        expect_false(
+          identical(lines[start + 1L], ""),
+          info = sprintf("%s has a blank line immediately after chunk header line %d", basename(path), start)
+        )
+      }
+    }
+  }
 })
 
 test_that("real example live workflow works when explicitly enabled", {
@@ -212,6 +247,7 @@ test_that("real example live workflow works when explicitly enabled", {
   expect_lte(setup$planned_bytes, env$bt_real_example_size_cap())
   expect_lte(nrow(setup$tiles), 4L)
   expect_gte(nrow(setup$tiles), 1L)
+  expect_identical(setup$place, "New York Harbor")
 
   manifest <- env$bt_real_download_assets(setup)
   expect_s3_class(manifest, "bluertopo_downloads")
@@ -221,4 +257,10 @@ test_that("real example live workflow works when explicitly enabled", {
   geotiff <- manifest$local_path[manifest$asset_type == "geotiff"][1L]
   expect_true(file.exists(geotiff))
   expect_gte(terra::nlyr(terra::rast(geotiff)), 3L)
+
+  mixed_setup <- env$bt_mixed_example_setup()
+  withr::defer(mixed_setup$restore())
+  expect_lte(mixed_setup$planned_bytes, env$bt_real_example_size_cap())
+  expect_lte(nrow(mixed_setup$tiles), 4L)
+  expect_true(length(unique(as.data.frame(mixed_setup$tiles)$resolution_m)) > 1L)
 })

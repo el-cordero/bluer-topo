@@ -10,6 +10,18 @@ template:
     base_font: system-ui
     heading_font: system-ui
     code_font: ui-monospace
+  includes:
+    in_header: |
+      <style>
+      div.sourceCode pre {
+        min-height: 0 !important;
+        padding-top: 0.9rem !important;
+        padding-bottom: 0.9rem !important;
+      }
+      div.sourceCode pre code span:empty {
+        display: none;
+      }
+      </style>
 
 home:
   title: "bluertopo"

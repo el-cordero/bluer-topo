@@ -19,7 +19,9 @@ conversion and is not affiliated with, endorsed by, or supported by
 NOAA.
 
 Reference: NOAA,
-[BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html).
+[BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html) and
+[BlueTopo
+specifications](https://nauticalcharts.noaa.gov/data/bluetopo_specs.html).
 
 ## Installation
 
@@ -36,17 +38,19 @@ library(terra)
 
 aoi <- vect("my_area.gpkg")
 
-bathy <- bluertopo(
-  aoi,
-  layers = "elevation",
-  resolution = "native",
-  coverage = "warn",
-  details = TRUE
-)
+bathy <- bluertopo(aoi)
+plot(bathy)
+```
 
-bathy$data
-bathy$tiles
-bathy$provenance
+## Provenance workflow
+
+``` r
+result <- bluertopo(aoi, details = TRUE)
+
+result$tiles
+result$downloads
+result$coverage
+result$provenance
 ```
 
 ## Download original NOAA assets
@@ -133,11 +137,13 @@ bluertopo_cache_clear(confirm = TRUE)
 
 The [Examples
 tab](https://el-cordero.github.io/bluer-topo/articles/examples.html) on
-the pkgdown site is rendered from actual NOAA BlueTopo source tiles.
-Normal package tests use small synthetic fixtures so checks remain
-network-free. Example downloads are intentionally small and cached
-during website builds, but they still access NOAA public data. Users
-should expect real BlueTopo tiles to vary in size by location.
+the pkgdown site is rendered from actual NOAA BlueTopo source tiles for
+New York Harbor, with a documented secondary real AOI only for the
+mixed-grid page. Normal package tests use small synthetic fixtures so
+checks remain network-free. Example downloads are intentionally small
+and cached during website builds, but they still access NOAA public
+data. Users should expect real BlueTopo tiles to vary in size by
+location.
 
 - [Example
   gallery](https://el-cordero.github.io/bluer-topo/articles/examples.html)
@@ -157,3 +163,6 @@ should expect real BlueTopo tiles to vary in size by location.
 ## Reference
 
 NOAA. BlueTopo. <https://nauticalcharts.noaa.gov/data/bluetopo.html>
+
+NOAA. BlueTopo specifications.
+<https://nauticalcharts.noaa.gov/data/bluetopo_specs.html>

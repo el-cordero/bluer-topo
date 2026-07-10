@@ -21,6 +21,10 @@ real_mode <- bt_real_examples_enabled()
 This page uses real NOAA BlueTopo source tiles when rendered for the public
 pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
+This page downloads the real New York Harbor NOAA BlueTopo GeoTIFFs and RAT
+sidecars, verifies SHA-256 checksums, shows the manifest, and demonstrates
+reuse of already verified local files.
+
 BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Example downloads are intentionally small and are cached during website builds,
 but they still access NOAA public data.
