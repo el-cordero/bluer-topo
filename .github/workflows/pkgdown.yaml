@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      BLUERTOPO_BUILD_REAL_EXAMPLES: "true"
       BLUERTOPO_RUN_NETWORK_TESTS: "false"
+      BLUERTOPO_REAL_EXAMPLE_CACHE: ~/.cache/bluertopo-pkgdown-real-examples
     steps:
       - uses: actions/checkout@v5
         with:
@@ -26,6 +28,22 @@ jobs:
         with:
           needs: website
           extra-packages: any::pkgdown
+      - name: Compute real example cache key
+        id: real-example-key
+        env:
+          BLUERTOPO_REAL_EXAMPLE_CACHE: ${{ runner.temp }}/bluertopo-real-cache-key
+        run: |
+          Rscript -e 'source("vignettes/real-example-helpers.R"); info <- bt_real_example_cache_key_info(); out <- Sys.getenv("GITHUB_OUTPUT"); cat(sprintf("behavior_version=%s\n", info$behavior_version), file = out, append = TRUE); cat(sprintf("aoi_id=%s\n", info$aoi_id), file = out, append = TRUE); cat(sprintf("catalog_checksum=%s\n", info$catalog_checksum), file = out, append = TRUE)'
+      - name: Restore BlueTopo real example cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bluertopo-pkgdown-real-examples
+          key: bluertopo-real-examples-${{ runner.os }}-${{ steps.real-example-key.outputs.behavior_version }}-${{ steps.real-example-key.outputs.aoi_id }}-${{ steps.real-example-key.outputs.catalog_checksum }}
+          restore-keys: |
+            bluertopo-real-examples-${{ runner.os }}-${{ steps.real-example-key.outputs.behavior_version }}-${{ steps.real-example-key.outputs.aoi_id }}-
+            bluertopo-real-examples-${{ runner.os }}-${{ steps.real-example-key.outputs.behavior_version }}-
+      - name: Preflight real BlueTopo examples
+        run: Rscript -e 'source("vignettes/real-example-helpers.R"); bt_real_example_preflight()'
       - name: Build pkgdown site
         run: Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'
       - name: Deploy pkgdown site

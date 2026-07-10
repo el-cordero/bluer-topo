@@ -1,3 +1,42 @@
+example_vignette_dir <- function() {
+  vignette_dirs <- c(
+    file.path(getwd(), "vignettes"),
+    testthat::test_path("..", "..", "vignettes")
+  )
+  vignette_dirs[dir.exists(vignette_dirs)][1L]
+}
+
+public_example_vignettes <- function() {
+  vignette_dir <- example_vignette_dir()
+  if (is.na(vignette_dir)) {
+    return(character())
+  }
+  file.path(
+    vignette_dir,
+    c(
+      "examples.Rmd",
+      "example-discover-tiles.Rmd",
+      "example-download-assets.Rmd",
+      "example-extract-elevation.Rmd",
+      "example-resolution-policies.Rmd",
+      "example-mixed-grids.Rmd",
+      "example-layers-rat.Rmd"
+    )
+  )
+}
+
+real_example_helper_path <- function() {
+  file.path(example_vignette_dir(), "real-example-helpers.R")
+}
+
+project_file <- function(...) {
+  candidates <- c(
+    file.path(getwd(), ...),
+    testthat::test_path("..", "..", ...)
+  )
+  candidates[file.exists(candidates)][1L]
+}
+
 test_that("packaged example fixtures are installed and readable", {
   example_root <- system.file("extdata/examples", package = "bluertopo")
   expect_true(nzchar(example_root))
@@ -79,25 +118,9 @@ test_that("public API remains unchanged", {
 
 test_that("example vignettes render without live NOAA network access", {
   skip_if_not_installed("rmarkdown")
-  vignette_dirs <- c(
-    file.path(getwd(), "vignettes"),
-    testthat::test_path("..", "..", "vignettes")
-  )
-  vignette_dir <- vignette_dirs[dir.exists(vignette_dirs)][1L]
-  skip_if(is.na(vignette_dir), "vignette sources are not available in this test context")
-
-  example_vignettes <- file.path(
-    vignette_dir,
-    c(
-      "examples.Rmd",
-      "example-discover-tiles.Rmd",
-      "example-download-assets.Rmd",
-      "example-extract-elevation.Rmd",
-      "example-resolution-policies.Rmd",
-      "example-mixed-grids.Rmd",
-      "example-layers-rat.Rmd"
-    )
-  )
+  withr::local_envvar(c(BLUERTOPO_BUILD_REAL_EXAMPLES = "false"))
+  example_vignettes <- public_example_vignettes()
+  skip_if(!length(example_vignettes), "vignette sources are not available in this test context")
   expect_true(all(file.exists(example_vignettes)))
 
   output_dir <- file.path(tempdir(), "bluertopo-rendered-example-vignettes")
@@ -111,4 +134,91 @@ test_that("example vignettes render without live NOAA network access", {
       envir = new.env(parent = globalenv())
     ))
   }
+})
+
+test_that("real example setup is opt-in", {
+  helper <- real_example_helper_path()
+  skip_if(!file.exists(helper), "real example helper is not available in this test context")
+  withr::local_envvar(c(BLUERTOPO_BUILD_REAL_EXAMPLES = "false"))
+  env <- new.env(parent = globalenv())
+  source(helper, local = env)
+  expect_false(env$bt_real_examples_enabled())
+  expect_error(env$bt_real_example_setup(), "Real BlueTopo examples are disabled")
+})
+
+test_that("public examples are real-data gated and not fixture-rendered", {
+  example_vignettes <- public_example_vignettes()
+  skip_if(!length(example_vignettes), "vignette sources are not available in this test context")
+  text <- lapply(example_vignettes, readLines, warn = FALSE)
+  names(text) <- basename(example_vignettes)
+
+  for (content in text) {
+    collapsed <- paste(content, collapse = "\n")
+    expect_match(collapsed, "eval=bt_real_examples_enabled\\(\\)")
+    expect_false(grepl("Synthetic miniature BlueTopo", collapsed, fixed = TRUE))
+    expect_match(tolower(collapsed), "not for navigation")
+    expect_match(tolower(collapsed), "vertical-datum")
+    expect_match(collapsed, "actual NOAA BlueTopo|real NOAA BlueTopo")
+  }
+})
+
+test_that("real example AOI metadata is documented", {
+  vignette_dir <- example_vignette_dir()
+  skip_if(is.na(vignette_dir), "vignette sources are not available in this test context")
+  metadata <- file.path(vignette_dir, "real-example-aoi.md")
+  expect_true(file.exists(metadata))
+  text <- paste(readLines(metadata, warn = FALSE), collapse = "\n")
+  expect_match(text, "key-west-boca-chica-2026-07-10", fixed = TRUE)
+  expect_match(text, "xmin = -81.835", fixed = TRUE)
+  expect_match(text, "Expected total download size", fixed = TRUE)
+  expect_match(text, "Date last verified: 2026-07-10", fixed = TRUE)
+})
+
+test_that("README and pkgdown config describe real public examples", {
+  readme_path <- project_file("README.Rmd")
+  config_path <- project_file("_pkgdown.yml")
+  skip_if(
+    is.na(readme_path) || is.na(config_path),
+    "source README/pkgdown config are not available in this installed test context"
+  )
+
+  readme <- paste(readLines(readme_path, warn = FALSE), collapse = "\n")
+  expect_false(grepl("Examples tab uses synthetic", readme, fixed = TRUE))
+  expect_match(readme, "rendered from actual NOAA BlueTopo source tiles", fixed = TRUE)
+  expect_match(readme, "Normal\\s+package tests use small synthetic fixtures")
+
+  config <- paste(readLines(config_path, warn = FALSE), collapse = "\n")
+  expect_match(config, "left: \\[intro, reference, examples, articles, news\\]")
+  expect_match(config, "text: Examples", fixed = TRUE)
+  expect_match(config, "href: articles/examples.html", fixed = TRUE)
+})
+
+test_that("real example live workflow works when explicitly enabled", {
+  skip_if_not(
+    identical(Sys.getenv("BLUERTOPO_RUN_REAL_EXAMPLE_TESTS"), "true"),
+    "Set BLUERTOPO_RUN_REAL_EXAMPLE_TESTS=true to run live real-example tests."
+  )
+  helper <- real_example_helper_path()
+  skip_if(!file.exists(helper), "real example helper is not available in this test context")
+  withr::local_envvar(c(
+    BLUERTOPO_BUILD_REAL_EXAMPLES = "true",
+    BLUERTOPO_REAL_EXAMPLE_CACHE = tempfile("bluertopo-real-example-cache-")
+  ))
+  env <- new.env(parent = globalenv())
+  source(helper, local = env)
+  setup <- env$bt_real_example_setup()
+  withr::defer(setup$restore())
+
+  expect_lte(setup$planned_bytes, env$bt_real_example_size_cap())
+  expect_lte(nrow(setup$tiles), 4L)
+  expect_gte(nrow(setup$tiles), 1L)
+
+  manifest <- env$bt_real_download_assets(setup)
+  expect_s3_class(manifest, "bluertopo_downloads")
+  expect_true(all(manifest$verified))
+  expect_true(any(manifest$asset_type == "rat"))
+
+  geotiff <- manifest$local_path[manifest$asset_type == "geotiff"][1L]
+  expect_true(file.exists(geotiff))
+  expect_gte(terra::nlyr(terra::rast(geotiff)), 3L)
 })

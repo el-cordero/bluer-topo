@@ -9,46 +9,53 @@ vignette: >
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
-helper <- if (file.exists("vignettes/example-helpers.R")) {
-  "vignettes/example-helpers.R"
+helper <- if (file.exists("vignettes/real-example-helpers.R")) {
+  "vignettes/real-example-helpers.R"
 } else {
-  "example-helpers.R"
+  "real-example-helpers.R"
 }
 source(helper)
+real_mode <- bt_real_examples_enabled()
 ```
 
-```{r setup}
-library(terra)
+This page uses real NOAA BlueTopo source tiles when rendered for the public
+pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
-example <- bt_example_setup()
-example_aoi <- example$aoi
-```
-
-Every rendered output on this page uses: **`r bt_fixture_label`**
-
+BlueTopo is not for navigation. No vertical-datum conversion is performed.
 `bluertopo()` returns terra objects and, with `details = TRUE`, exposes selected
 tiles, downloads, query metadata, provenance, and coverage diagnostics. Normal
 native extraction does not intentionally resample.
 
+## Real Example Setup
+
+```{r setup, eval=bt_real_examples_enabled()}
+library(terra)
+
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+```
+
 ## Extract Elevation
 
-```{r extract}
+```{r extract, eval=bt_real_examples_enabled()}
 result <- bluertopo(
-  example_aoi,
+  real_aoi,
   layers = "elevation",
   resolution = "native",
   coverage = "fill",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 )
 ```
 
 ## Object Summary
 
-```{r object-summary}
+```{r object-summary, eval=bt_real_examples_enabled()}
 rasters <- bt_rasters(result$data)
 object_summary <- data.frame(
   element = c(
+    "object type",
     "result$data class",
     "number of layers",
     "layer names",
@@ -56,19 +63,14 @@ object_summary <- data.frame(
     "resolution",
     "source count"
   ),
-  class = c(
-    paste(class(result$data), collapse = ", "),
-    "integer",
-    "character",
-    "character",
-    "character",
-    "integer"
-  ),
   value = c(
+    if (inherits(result$data, "SpatRasterCollection")) "SpatRasterCollection" else "SpatRaster",
     paste(class(result$data), collapse = ", "),
     sum(vapply(rasters, terra::nlyr, numeric(1L))),
     paste(unique(unlist(lapply(rasters, names), use.names = FALSE)), collapse = ", "),
-    paste(unique(vapply(rasters, function(r) as.character(terra::crs(r, describe = TRUE)$code), "")), collapse = ", "),
+    paste(unique(vapply(rasters, function(r) {
+      paste0("EPSG:", terra::crs(r, describe = TRUE)$code)
+    }, "")), collapse = ", "),
     paste(unique(vapply(rasters, function(r) paste(round(terra::res(r), 3), collapse = " x "), "")), collapse = "; "),
     length(unique(unlist(lapply(rasters, terra::sources), use.names = FALSE)))
   ),
@@ -80,22 +82,27 @@ bt_display_table(object_summary)
 
 ## File-Backed Sources
 
-```{r source-table}
+```{r source-table, eval=bt_real_examples_enabled()}
 bt_display_table(bt_sources_table(result$data))
 ```
 
 ## Coverage
 
-```{r coverage-table}
+```{r coverage-table, eval=bt_real_examples_enabled()}
 bt_display_table(bt_coverage_table(result$coverage))
+```
+
+## Provenance
+
+```{r provenance-table, eval=bt_real_examples_enabled()}
+bt_display_table(bt_catalog_table(real))
 ```
 
 ## Elevation Preview
 
-```{r elevation-figure, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation raster from the first native grid.", fig.alt="Synthetic fixture elevation raster with AOI outline."}
-preview_raster <- bt_plot_first_raster(result$data, main = "Synthetic fixture elevation")
-aoi_projected <- terra::project(example_aoi, terra::crs(preview_raster))
-terra::plot(aoi_projected, add = TRUE, border = "#d00000", lwd = 2)
+```{r elevation-figure, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: elevation raster from verified GeoTIFFs with AOI overlay.", fig.alt="Real BlueTopo elevation raster with the example AOI outline."}
+preview_raster <- bt_plot_first_raster(result$data, main = "NOAA BlueTopo elevation")
+terra::plot(terra::project(real_aoi, terra::crs(preview_raster)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 When native source grids differ, the result can be a `SpatRasterCollection`.

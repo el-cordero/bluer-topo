@@ -142,8 +142,9 @@ Evidence:
 - Vignettes in `vignettes/` were expanded into practical guides for getting
   BlueTopo, resolution policies, downloads/cache/reproducibility, mixed UTM
   collections, and layers/RAT metadata.
-- The top-level pkgdown Examples section now renders deterministic synthetic
-  fixture tables and figures without live NOAA downloads.
+- The top-level pkgdown Examples section now renders actual NOAA BlueTopo tables
+  and figures when `BLUERTOPO_BUILD_REAL_EXAMPLES=true`; normal tests keep using
+  deterministic synthetic fixtures without live NOAA downloads.
 
 ## Intentionally deferred items
 
@@ -277,13 +278,16 @@ Validation commands and outcomes from this remediation run:
 - `Rscript -e 'rmarkdown::render("README.Rmd", quiet = TRUE)'`: succeeded.
   Pandoc warned that sandboxed rendering could not fetch remote badge SVGs, but
   the Markdown links were generated.
-- `Rscript -e 'testthat::test_local()'`: succeeded with 108 passed and 1
-  intentionally skipped live-network test.
+- `Rscript -e 'testthat::test_local()'`: succeeded with 156 passed and 2
+  intentionally skipped live-network tests.
+- `BLUERTOPO_RUN_REAL_EXAMPLE_TESTS=true Rscript -e 'testthat::test_local(filter = "examples")'`:
+  succeeded with 85 passed.
 - `Rscript -e 'lintr::lint_package()'`: succeeded with no lints.
-- `Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
+- `BLUERTOPO_BUILD_REAL_EXAMPLES=true Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
   succeeded after rerunning with elevated permissions because pkgdown article
-  rendering uses processx/callr in this desktop sandbox. This builds local site
-  files but does not itself enable or publish GitHub Pages.
+  rendering uses processx/callr in this desktop sandbox. This built local site
+  files with actual NOAA BlueTopo example outputs but did not itself enable or
+  publish GitHub Pages.
 - `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE)'`:
   succeeded and pushed the generated site to `gh-pages` with the Examples
   section.

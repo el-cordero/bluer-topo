@@ -9,42 +9,52 @@ vignette: >
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
-helper <- if (file.exists("vignettes/example-helpers.R")) {
-  "vignettes/example-helpers.R"
+helper <- if (file.exists("vignettes/real-example-helpers.R")) {
+  "vignettes/real-example-helpers.R"
 } else {
-  "example-helpers.R"
+  "real-example-helpers.R"
 }
 source(helper)
+real_mode <- bt_real_examples_enabled()
 ```
 
-```{r setup}
-library(terra)
+This page uses real NOAA BlueTopo source tiles when rendered for the public
+pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
-example <- bt_example_setup()
-example_aoi <- example$aoi
-```
-
-Every rendered output on this page uses: **`r bt_fixture_label`**
-
+BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Mixed native grids are preserved unless the user asks for a single output grid.
 `combine = "single"` needs an explicit output grid when native grids are
 incompatible. Resampled uncertainty values are not original source cells, and
 contributor resampling must be nearest-neighbor.
 
+## Real Example Setup
+
+```{r setup, eval=bt_real_examples_enabled()}
+library(terra)
+
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+```
+
 ## Native Mixed-Grid Extraction
 
-```{r native}
+```{r native, eval=bt_real_examples_enabled()}
 native <- bluertopo(
-  example_aoi,
+  real_aoi,
   resolution = "native",
   coverage = "fill",
   combine = "auto",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 )
+
+if (!inherits(native$data, "SpatRasterCollection")) {
+  stop("The documented real AOI no longer produces mixed native grids.", call. = FALSE)
+}
 ```
 
-```{r native-table}
+```{r native-table, eval=bt_real_examples_enabled()}
 native_table <- bt_raster_summary(native$data)
 native_table$output_object_class <- paste(class(native$data), collapse = ", ")
 native_table <- native_table[c(
@@ -61,27 +71,28 @@ bt_display_table(native_table)
 
 ## Native Grid Footprints
 
-```{r native-footprints, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: native grid footprints selected for the mixed-grid extraction.", fig.alt="Synthetic fixture tile footprints selected for mixed native grids."}
-native_tiles <- native$tiles
-bt_plot_tiles(native_tiles, example_aoi, main = "Selected mixed native grids")
+```{r native-footprints, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: native grid footprints selected for mixed-grid extraction.", fig.alt="Real BlueTopo tile footprints selected for mixed native grids."}
+bt_plot_tiles(native$tiles, real_aoi, main = "Selected mixed native grids")
 ```
 
 ## Explicit Single Output Grid
 
-```{r single}
+```{r single, eval=bt_real_examples_enabled()}
 single <- suppressWarnings(bluertopo(
-  example_aoi,
+  real_aoi,
+  layers = "elevation",
   resolution = "native",
   coverage = "fill",
-  output_crs = "EPSG:3857",
-  output_resolution = 50000,
+  output_crs = "EPSG:26917",
+  output_resolution = 100,
   combine = "single",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 ))
 ```
 
-```{r single-table}
+```{r single-table, eval=bt_real_examples_enabled()}
 single_raster <- single$data
 single_table <- data.frame(
   output_object_class = paste(class(single_raster), collapse = ", "),
@@ -95,7 +106,7 @@ single_table <- data.frame(
 bt_display_table(single_table)
 ```
 
-```{r output-raster, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation resampled onto an explicit output grid.", fig.alt="Synthetic fixture elevation raster on one explicit output grid."}
+```{r output-raster, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: elevation resampled onto an explicit output grid.", fig.alt="Real BlueTopo elevation raster on one explicit output grid."}
 terra::plot(single$data, main = "Explicit output grid elevation")
 ```
 

@@ -4,11 +4,14 @@ This package is pre-release and not yet submitted to CRAN.
 
 Validation on 2026-07-10:
 
-- `Rscript -e 'testthat::test_local()'`: 108 passed, 1 skipped
-  live-network test.
+- `Rscript -e 'testthat::test_local()'`: 156 passed, 2 skipped opt-in
+  live-network tests.
+- `BLUERTOPO_RUN_REAL_EXAMPLE_TESTS=true Rscript -e 'testthat::test_local(filter = "examples")'`:
+  85 passed.
 - `Rscript -e 'lintr::lint_package()'`: no lints found.
-- `Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
-  succeeded locally and rendered the Examples section.
+- `BLUERTOPO_BUILD_REAL_EXAMPLES=true Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
+  succeeded locally and rendered the Examples section from real NOAA BlueTopo
+  assets.
 - `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE)'`:
   succeeded and pushed the site to `gh-pages`.
 - GitHub Pages is configured from `gh-pages` at `/`, and
@@ -25,5 +28,6 @@ The remaining NOTE is expected for a first CRAN submission:
 New submission
 ```
 
-Network access is disabled during normal examples and tests. Live NOAA
-integration tests are opt-in through environment variables.
+Network access is disabled during normal examples and tests. Public pkgdown
+examples are real-data renders only when `BLUERTOPO_BUILD_REAL_EXAMPLES=true`.
+Live NOAA integration tests are opt-in through environment variables.

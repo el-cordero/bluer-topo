@@ -9,42 +9,49 @@ vignette: >
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
-helper <- if (file.exists("vignettes/example-helpers.R")) {
-  "vignettes/example-helpers.R"
+helper <- if (file.exists("vignettes/real-example-helpers.R")) {
+  "vignettes/real-example-helpers.R"
 } else {
-  "example-helpers.R"
+  "real-example-helpers.R"
 }
 source(helper)
+real_mode <- bt_real_examples_enabled()
 ```
 
-```{r setup}
-library(terra)
+This page uses real NOAA BlueTopo source tiles when rendered for the public
+pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
-example <- bt_example_setup()
-example_aoi <- example$aoi
-```
-
-Every rendered output on this page uses: **`r bt_fixture_label`**
-
+BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Smaller meter values mean finer native source resolution. `resolution` selects
 source tiles; it does not resample. `coverage = "fill"` can add fallback source
 tiles. `output_resolution` is the argument that changes the output grid.
 
+## Real Example Setup
+
+```{r setup, eval=bt_real_examples_enabled()}
+library(terra)
+
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+available_resolution <- sort(unique(as.data.frame(real$tiles)$resolution_m))
+exact_available <- max(available_resolution)
+```
+
 ## Policies
 
-```{r policies}
+```{r policies, eval=bt_real_examples_enabled()}
 policies <- list(
   native = list(resolution = "native", coverage = "warn"),
   finest = list(resolution = "finest", coverage = "ignore"),
   `finest + coverage fill` = list(resolution = "finest", coverage = "fill"),
   coarsest = list(resolution = "coarsest", coverage = "ignore"),
-  `exact 8 m` = list(resolution = 8, coverage = "ignore"),
+  `exact available native resolution` = list(resolution = exact_available, coverage = "ignore"),
   `nearest 6 m` = list(resolution = bluertopo_resolution("nearest", value = 6), coverage = "ignore")
 )
 
 policy_tiles <- lapply(policies, function(policy) {
   bluertopo_tiles(
-    example_aoi,
+    real_aoi,
     resolution = policy$resolution,
     coverage = policy$coverage,
     quiet = TRUE
@@ -71,17 +78,17 @@ bt_display_table(policy_summary)
 
 ## Tile Selection Maps
 
-```{r policy-maps, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: selected tiles under different native source-resolution policies.", fig.alt="Six maps showing tile selections for native, finest, coverage fill, coarsest, exact, and nearest policies."}
+```{r policy-maps, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: selected footprints under different native source-resolution policies.", fig.alt="Six maps showing real BlueTopo tile selections for native, finest, coverage fill, coarsest, exact, and nearest policies."}
 old_par <- par(mfrow = c(2, 3), mar = c(2, 2, 3, 1))
 for (name in names(policy_tiles)) {
-  bt_plot_tiles(policy_tiles[[name]], example_aoi, main = name)
+  bt_plot_tiles(policy_tiles[[name]], real_aoi, main = name)
 }
 par(old_par)
 ```
 
 ## Coverage By Policy
 
-```{r policy-coverage-bars, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: selected coverage fraction by resolution policy.", fig.alt="Bar plot comparing selected coverage fractions by native source-resolution policy."}
+```{r policy-coverage-bars, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: selected coverage fraction by resolution policy.", fig.alt="Bar plot comparing selected coverage fractions by native source-resolution policy."}
 barplot(
   stats::setNames(policy_summary$selected_coverage_fraction, policy_summary$policy),
   ylim = c(0, 1),

@@ -9,28 +9,22 @@ vignette: >
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
-helper <- if (file.exists("vignettes/example-helpers.R")) {
-  "vignettes/example-helpers.R"
+helper <- if (file.exists("vignettes/real-example-helpers.R")) {
+  "vignettes/real-example-helpers.R"
 } else {
-  "example-helpers.R"
+  "real-example-helpers.R"
 }
 source(helper)
+real_mode <- bt_real_examples_enabled()
 ```
 
-```{r setup}
-library(terra)
-
-example <- bt_example_setup()
-example_root <- example$root
-example_catalog <- example$catalog
-example_aoi <- example$aoi
-```
-
-Every rendered output on this page uses: **`r bt_fixture_label`**
+This page uses real NOAA BlueTopo source tiles when rendered for the public
+pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
 
 BlueTopo is not for navigation. `bluertopo` performs no vertical-datum
-conversion. `resolution` selects native source tiles; `output_resolution`
-resamples onto an explicit output grid.
+conversion. The example downloads are intentionally small. Normal package tests
+use synthetic fixtures; the public site uses real data. `bluertopo` is not
+affiliated with, endorsed by, or supported by NOAA.
 
 ## What The Examples Show
 
@@ -54,7 +48,7 @@ gallery <- data.frame(
   ),
   Shows = c(
     "AOI intersection, selected footprints, coverage diagnostics",
-    "Verified original GeoTIFF and RAT sidecar assets",
+    "Verified NOAA GeoTIFF and RAT sidecar assets",
     "File-backed terra object and provenance",
     "Native source-resolution selection effects",
     "SpatRasterCollection versus explicit output grid",
@@ -74,34 +68,42 @@ gallery <- data.frame(
 bt_display_table(gallery)
 ```
 
-## Fixture Tile Footprints
+## Real Example Setup
 
-```{r tile-footprints, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: AOI outline and tile footprints by native source resolution.", fig.alt="Synthetic fixture AOI outline over three BlueTopo-style tile footprints colored by native source resolution."}
-tiles <- bluertopo_tiles(example_aoi, coverage = "fill", quiet = TRUE)
-bt_plot_tiles(tiles, example_aoi, main = "Synthetic fixture tile footprints")
+```{r real-setup, eval=bt_real_examples_enabled()}
+library(terra)
+
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
+real_tiles <- real$tiles
 ```
 
-```{r selected-tiles}
-tiles_df <- as.data.frame(tiles)
-bt_display_table(
-  tiles_df[c("tile_id", "resolution_m", "utm_zone", "selection_reason", "fallback")]
-)
+## NOAA Tile Footprints
+
+```{r tile-footprints, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: AOI outline and selected tile footprints by native source resolution.", fig.alt="Real BlueTopo tile footprints colored by native source resolution with the example AOI outline."}
+bt_plot_tiles(real_tiles, real_aoi, main = "Actual NOAA BlueTopo tile footprints")
+```
+
+```{r selected-tiles, eval=bt_real_examples_enabled()}
+bt_display_table(bt_tile_table(real_tiles, include_urls = TRUE))
 ```
 
 ## Terra Preview
 
-```{r terra-preview, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation raster preview from one source tile.", fig.alt="Small synthetic elevation raster preview from the packaged fixture."}
+```{r terra-preview, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: elevation raster preview from verified source GeoTIFFs.", fig.alt="Real NOAA BlueTopo elevation raster preview for the example AOI."}
 preview <- bluertopo(
-  example_aoi,
+  real_aoi,
   layers = "elevation",
-  resolution = 4,
-  coverage = "ignore",
+  resolution = "native",
+  coverage = "fill",
   details = TRUE,
-  progress = FALSE
+  progress = FALSE,
+  quiet = TRUE
 )
 
-terra::plot(preview$data, main = "Synthetic fixture elevation")
+preview_raster <- bt_plot_first_raster(preview$data, main = "NOAA BlueTopo elevation")
+terra::plot(terra::project(real_aoi, terra::crs(preview_raster)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
-The preview is intentionally small and local. It proves the package workflow
-without downloading NOAA data during documentation builds.
+`resolution` selects native source tiles. `output_resolution` is used only when
+the user explicitly requests an output grid.

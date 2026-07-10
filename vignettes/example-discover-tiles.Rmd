@@ -9,59 +9,62 @@ vignette: >
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
-helper <- if (file.exists("vignettes/example-helpers.R")) {
-  "vignettes/example-helpers.R"
+helper <- if (file.exists("vignettes/real-example-helpers.R")) {
+  "vignettes/real-example-helpers.R"
 } else {
-  "example-helpers.R"
+  "real-example-helpers.R"
 }
 source(helper)
+real_mode <- bt_real_examples_enabled()
 ```
 
-```{r setup}
+This page uses real NOAA BlueTopo source tiles when rendered for the public
+pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
+
+BlueTopo is not for navigation. No vertical-datum conversion is performed.
+Coverage is geometric tile-index coverage, not a statement about navigational
+fitness, data quality, or NOAA endorsement.
+
+## Real Example Setup
+
+```{r setup, eval=bt_real_examples_enabled()}
 library(terra)
 
-example <- bt_example_setup()
-example_aoi <- example$aoi
+real <- bt_real_example_setup()
+real_aoi <- real$aoi
 ```
-
-Every rendered output on this page uses: **`r bt_fixture_label`**
-
-This example shows how an AOI intersects BlueTopo-style tile footprints and how
-coverage diagnostics are reported. The fixture-only
-`bluertopo.allow_test_hosts = TRUE` option enables local `file://` assets; it is
-not part of normal live NOAA workflows.
 
 ## Selected Tiles
 
-```{r discover}
+```{r discover, eval=bt_real_examples_enabled()}
 tiles <- bluertopo_tiles(
-  example_aoi,
+  real_aoi,
   resolution = "native",
   coverage = "warn",
   quiet = TRUE
 )
 ```
 
-```{r selected-table}
-bt_display_table(bt_tile_table(tiles))
+```{r selected-table, eval=bt_real_examples_enabled()}
+bt_display_table(bt_tile_table(tiles, include_urls = TRUE))
 ```
 
 ## Coverage Diagnostics
 
-```{r coverage-table}
+```{r coverage-table, eval=bt_real_examples_enabled()}
 coverage <- attr(tiles, "coverage")
 bt_display_table(bt_coverage_table(coverage))
 ```
 
 ## AOI And Selected Footprints
 
-```{r footprint-figure, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: AOI and selected tile footprints.", fig.alt="AOI outline over selected synthetic BlueTopo tile footprints."}
-bt_plot_tiles(tiles, example_aoi, main = "AOI intersection with selected tiles")
+```{r footprint-figure, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: AOI outline over selected tile footprints colored by native resolution.", fig.alt="Real BlueTopo tile footprints selected for the example AOI."}
+bt_plot_tiles(tiles, real_aoi, main = "AOI intersection with NOAA BlueTopo tiles")
 ```
 
 ## Coverage Fractions
 
-```{r coverage-bars, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: coverage fractions.", fig.alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage."}
+```{r coverage-bars, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: coverage fractions for the selected AOI.", fig.alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage."}
 coverage_values <- unlist(coverage[c(
   "published_coverage_fraction",
   "selected_coverage_fraction",
@@ -79,5 +82,5 @@ barplot(
 abline(h = coverage$target_coverage, col = "#d00000", lwd = 2, lty = 2)
 ```
 
-Coverage is geometric tile-index coverage. It is not a statement about data
-quality, navigational fitness, or vertical-datum compatibility.
+The selected tile table includes shortened NOAA GeoTIFF and RAT URLs so users
+can see that discovery is using the live BlueTopo catalog records.

@@ -130,10 +130,12 @@ bluertopo_cache_clear(confirm = TRUE)
 ## Examples
 
 The [Examples
-tab](https://el-cordero.github.io/bluer-topo/articles/examples.html)
-uses synthetic miniature BlueTopo fixtures so the rendered tables and
-figures are reproducible without downloading NOAA data during
-documentation builds.
+tab](https://el-cordero.github.io/bluer-topo/articles/examples.html) on
+the pkgdown site is rendered from actual NOAA BlueTopo source tiles.
+Normal package tests use small synthetic fixtures so checks remain
+network-free. Example downloads are intentionally small and cached
+during website builds, but they still access NOAA public data. Users
+should expect real BlueTopo tiles to vary in size by location.
 
 - [Example
   gallery](https://el-cordero.github.io/bluer-topo/articles/examples.html)
