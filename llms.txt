@@ -2,8 +2,6 @@
 
 ![bluertopo logo](reference/figures/logo.png)
 
-bluertopo logo
-
 [![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
 [![License:
@@ -35,9 +33,6 @@ build.
 contour lines and the AOI
 outline.](reference/figures/home-proof-map-1.png)
 
-Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with
-contour lines and the AOI outline.
-
 Actual NOAA BlueTopo source data: New York Harbor elevation with
 hillshade, contours, and AOI outline.
 
@@ -46,17 +41,16 @@ hillshade, contours, and AOI outline.
 | BH4XC5FK |            4 | 18       |                 0.142 | native           |
 | BH4XD5FK |            4 | 18       |                 0.213 | native           |
 
-| tile_id  | asset_type | status     | verified | downloaded_mb | actual_sha256 |
-|:---------|:-----------|:-----------|:---------|--------------:|:--------------|
-| BH4XC5FK | geotiff    | downloaded | TRUE     |         5.393 | 878be33a85f5  |
-| BH4XC5FK | rat        | downloaded | TRUE     |         0.104 | 21405b45e162  |
-| BH4XD5FK | geotiff    | downloaded | TRUE     |         4.093 | 35174b851869  |
-| BH4XD5FK | rat        | downloaded | TRUE     |         0.067 | 59814a3e330c  |
+| tile_id  | asset_type | status          | verified | downloaded_mb | actual_sha256 |
+|:---------|:-----------|:----------------|:---------|--------------:|:--------------|
+| BH4XC5FK | geotiff    | reused_verified | TRUE     |         5.393 | 878be33a85f5  |
+| BH4XC5FK | rat        | reused_verified | TRUE     |         0.104 | 21405b45e162  |
+| BH4XD5FK | geotiff    | reused_verified | TRUE     |         4.093 | 35174b851869  |
+| BH4XD5FK | rat        | reused_verified | TRUE     |         0.067 | 59814a3e330c  |
 
 ## Basic Workflow
 
 ``` r
-
 
 library(bluertopo)
 library(terra)
@@ -69,7 +63,6 @@ plot(bathy)
 ## Provenance Workflow
 
 ``` r
-
 
 result <- bluertopo(aoi, details = TRUE)
 

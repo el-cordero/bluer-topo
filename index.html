@@ -85,10 +85,8 @@ div.sourceCode pre code span:empty {
 <img src="logo.png" class="logo" alt=""><h1 id="bluertopo">bluertopo<a class="anchor" aria-label="anchor" href="#bluertopo"></a>
 </h1>
 </div>
-<div class="float">
-<img src="reference/figures/logo.png" alt="bluertopo logo"><div class="figcaption">bluertopo logo</div>
-</div>
-<p><a href="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://el-cordero.github.io/bluer-topo/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></p>
+<p><img src="reference/figures/logo.png" align="right" height="139" alt="bluertopo logo"></p>
+<p><a href="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></p>
 <p><code>bluertopo</code> discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry for an area of interest using <code>terra</code>. The package keeps source GeoTIFF and RAT sidecar files intact by default, records query and catalog provenance, and makes native source-resolution choices explicit.</p>
 <p>BlueTopo is not for navigation. This package performs no vertical-datum conversion and is not affiliated with, endorsed by, or supported by NOAA.</p>
 <p>Reference: NOAA, <a href="https://nauticalcharts.noaa.gov/data/bluetopo.html" class="external-link">BlueTopo</a> and <a href="https://nauticalcharts.noaa.gov/data/bluetopo_specs.html" class="external-link">BlueTopo specifications</a>.</p>
@@ -96,10 +94,11 @@ div.sourceCode pre code span:empty {
 <h2 id="real-noaa-proof">Real NOAA Proof<a class="anchor" aria-label="anchor" href="#real-noaa-proof"></a>
 </h2>
 <p>Example AOI: New York Harbor, centered on Lower Manhattan, the Upper Bay, Governors Island, and the East River mouth. This homepage proof uses actual NOAA BlueTopo source tiles downloaded during the pkgdown build.</p>
-<div class="float">
-<img src="reference/figures/home-proof-map-1.png" alt="Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline."><div class="figcaption">Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline.</div>
+<div class="figure">
+<img src="reference/figures/home-proof-map-1.png" alt="Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline."><p class="caption">
+Actual NOAA BlueTopo source data: New York Harbor elevation with hillshade, contours, and AOI outline.
+</p>
 </div>
-<p>Actual NOAA BlueTopo source data: New York Harbor elevation with hillshade, contours, and AOI outline.</p>
 <table class="table">
 <colgroup>
 <col width="13%">
@@ -134,12 +133,12 @@ div.sourceCode pre code span:empty {
 </table>
 <table class="table">
 <colgroup>
-<col width="13%">
-<col width="16%">
-<col width="16%">
-<col width="13%">
-<col width="20%">
-<col width="20%">
+<col width="12%">
+<col width="15%">
+<col width="21%">
+<col width="12%">
+<col width="18%">
+<col width="18%">
 </colgroup>
 <thead><tr>
 <th align="left">tile_id</th>
@@ -153,7 +152,7 @@ div.sourceCode pre code span:empty {
 <tr>
 <td align="left">BH4XC5FK</td>
 <td align="left">geotiff</td>
-<td align="left">downloaded</td>
+<td align="left">reused_verified</td>
 <td align="left">TRUE</td>
 <td align="right">5.393</td>
 <td align="left">878be33a85f5</td>
@@ -161,7 +160,7 @@ div.sourceCode pre code span:empty {
 <tr>
 <td align="left">BH4XC5FK</td>
 <td align="left">rat</td>
-<td align="left">downloaded</td>
+<td align="left">reused_verified</td>
 <td align="left">TRUE</td>
 <td align="right">0.104</td>
 <td align="left">21405b45e162</td>
@@ -169,7 +168,7 @@ div.sourceCode pre code span:empty {
 <tr>
 <td align="left">BH4XD5FK</td>
 <td align="left">geotiff</td>
-<td align="left">downloaded</td>
+<td align="left">reused_verified</td>
 <td align="left">TRUE</td>
 <td align="right">4.093</td>
 <td align="left">35174b851869</td>
@@ -177,7 +176,7 @@ div.sourceCode pre code span:empty {
 <tr>
 <td align="left">BH4XD5FK</td>
 <td align="left">rat</td>
-<td align="left">downloaded</td>
+<td align="left">reused_verified</td>
 <td align="left">TRUE</td>
 <td align="right">0.067</td>
 <td align="left">59814a3e330c</td>
@@ -189,8 +188,7 @@ div.sourceCode pre code span:empty {
 <h2 id="basic-workflow">Basic Workflow<a class="anchor" aria-label="anchor" href="#basic-workflow"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://el-cordero.github.io/bluer-topo/">bluertopo</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://el-cordero.github.io/bluer-topo/">bluertopo</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="st">"my_area.gpkg"</span><span class="op">)</span></span>
@@ -201,8 +199,7 @@ div.sourceCode pre code span:empty {
 <h2 id="provenance-workflow">Provenance Workflow<a class="anchor" aria-label="anchor" href="#provenance-workflow"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result</span><span class="op">$</span><span class="va">tiles</span></span>
 <span><span class="va">result</span><span class="op">$</span><span class="va">downloads</span></span>
@@ -212,15 +209,15 @@ div.sourceCode pre code span:empty {
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<p>The <a href="https://el-cordero.github.io/bluer-topo/articles/examples.md">Examples tab</a> is rendered from actual NOAA BlueTopo source tiles for New York Harbor. Normal package tests use small synthetic fixtures so checks remain network-free. The mixed-grid example uses a documented secondary real AOI near Key West and Boca Chica Channel because the current New York Harbor plan is one compatible 4 m native grid.</p>
+<p>The <a href="articles/examples.html">Examples tab</a> is rendered from actual NOAA BlueTopo source tiles for New York Harbor. Normal package tests use small synthetic fixtures so checks remain network-free. The mixed-grid example uses a documented secondary real AOI near Key West and Boca Chica Channel because the current New York Harbor plan is one compatible 4 m native grid.</p>
 <ul>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/examples.md">Example gallery</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-discover-tiles.md">Discover tiles and coverage</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-download-assets.md">Download original assets</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-extract-elevation.md">Extract elevation with terra</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-resolution-policies.md">Compare resolution policies</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-mixed-grids.md">Mixed grids and output grid</a></li>
-<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-layers-rat.md">Layers and RAT metadata</a></li>
+<li><a href="articles/examples.html">Example gallery</a></li>
+<li><a href="articles/example-discover-tiles.html">Discover tiles and coverage</a></li>
+<li><a href="articles/example-download-assets.html">Download original assets</a></li>
+<li><a href="articles/example-extract-elevation.html">Extract elevation with terra</a></li>
+<li><a href="articles/example-resolution-policies.html">Compare resolution policies</a></li>
+<li><a href="articles/example-mixed-grids.html">Mixed grids and output grid</a></li>
+<li><a href="articles/example-layers-rat.html">Layers and RAT metadata</a></li>
 </ul>
 </div>
 </div>
