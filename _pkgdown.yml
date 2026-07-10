@@ -1,0 +1,23 @@
+url: https://ecustodio.github.io/bluertopo/
+template:
+  bootstrap: 5
+reference:
+  - title: Core workflows
+    contents:
+      - bluertopo
+      - bluertopo_download
+      - bluertopo_tiles
+  - title: Resolution and cache
+    contents:
+      - bluertopo_resolution
+      - bluertopo_cache_dir
+      - bluertopo_cache_clear
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - get-bluetopo
+      - resolution-policies
+      - downloads-cache-reproducibility
+      - mixed-utm-collections
+      - layers-rat-metadata

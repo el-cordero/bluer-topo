@@ -1,0 +1,15 @@
+---
+title: "Original Downloads, Caching, and Reproducibility"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Original Downloads, Caching, and Reproducibility}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, eval=FALSE}
+manifest <- bluertopo_download(aoi, path = "data/raw/bluetopo")
+```
+
+The downloader preserves NOAA basenames, downloads RAT sidecars by default,
+verifies SHA-256 checksums, and writes CSV and JSON manifests.

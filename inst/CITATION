@@ -1,0 +1,9 @@
+citHeader("To cite bluertopo in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "bluertopo: Download and extract NOAA BlueTopo bathymetry with terra",
+  author = c(person("Eliseo", "Custodio")),
+  year = "2026",
+  note = "R package version 0.0.1"
+)

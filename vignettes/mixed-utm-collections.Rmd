@@ -1,0 +1,12 @@
+---
+title: "Mixed UTM Zones and terra Collections"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mixed UTM Zones and terra Collections}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+BlueTopo source tiles can differ in CRS, resolution, origin, or alignment.
+When native grids are incompatible, `bluertopo()` returns a
+`terra::SpatRasterCollection` rather than silently resampling.

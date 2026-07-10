@@ -1,0 +1,16 @@
+---
+title: "Understanding Resolution Policies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Understanding Resolution Policies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Smaller meter values are finer native source resolution. `resolution` filters
+NOAA source tiles; it does not resample output cells.
+
+```{r, eval=FALSE}
+bluertopo(aoi, resolution = "finest")
+bluertopo(aoi, resolution = bluertopo_resolution("between", min_m = 4, max_m = 16))
+```

@@ -1,0 +1,16 @@
+^\.github($|/)
+^docs($|/)
+^cran-comments\.md$
+^README\.Rmd$
+^pkgdown$
+^\.lintr$
+^_pkgdown\.yml$
+^CITATION\.cff$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
+^LICENSE\.md$
+^\.Rproj\.user$
+^.*\.Rproj$
+^.*\.Rcheck$
+^\.\.Rcheck$
+^.*\.tar\.gz$

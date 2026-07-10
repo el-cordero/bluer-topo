@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use bluertopo, please cite the package and NOAA BlueTopo."
+title: "bluertopo: Download and extract NOAA BlueTopo bathymetry with terra"
+version: 0.0.1
+date-released: 2026-07-10
+authors:
+  - family-names: Custodio
+    given-names: Eliseo
+license: MIT
+repository-code: "https://github.com/ecustodio/bluertopo"
+references:
+  - type: dataset
+    title: "NOAA National Bathymetric Source Data"
+    publisher: "NOAA"
+    url: "https://registry.opendata.aws/noaa-bathymetry/"

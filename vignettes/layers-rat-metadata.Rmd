@@ -1,0 +1,12 @@
+---
+title: "Layers, Contributor Values, and RAT Metadata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Layers, Contributor Values, and RAT Metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+BlueTopo source GeoTIFFs currently contain elevation, uncertainty, and
+contributor bands. Contributor values are identifiers; use the RAT sidecar for
+metadata context.

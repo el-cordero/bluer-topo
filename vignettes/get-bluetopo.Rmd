@@ -1,0 +1,20 @@
+---
+title: "Get BlueTopo in 60 Seconds"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get BlueTopo in 60 Seconds}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, eval=FALSE}
+library(bluertopo)
+library(terra)
+
+aoi <- vect("my_area.gpkg")
+bathy <- bluertopo(aoi)
+```
+
+`bluertopo()` discovers the current NOAA BlueTopo tile scheme, selects
+intersecting source tiles, downloads verified original assets into the package
+cache, and returns file-backed `terra` objects.
