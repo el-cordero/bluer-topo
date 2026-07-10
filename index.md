@@ -5,7 +5,7 @@
 [![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
 [![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/el-cordero/bluer-topo/blob/main/LICENSE.md)
 
 `bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo
 bathymetry for an area of interest using `terra`. The package keeps
