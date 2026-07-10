@@ -5,6 +5,10 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+This page discovers the two real NOAA BlueTopo tiles selected for New
+York Harbor, reports coverage diagnostics, and renders a locator map
+with the AOI, tile footprints, and native-resolution labels.
+
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Coverage is geometric tile-index coverage, not a statement
 about navigational fitness, data quality, or NOAA endorsement.
@@ -14,7 +18,7 @@ about navigational fitness, data quality, or NOAA endorsement.
 ``` r
 
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
@@ -39,9 +43,8 @@ bt_display_table(bt_tile_table(tiles, include_urls = TRUE))
 
 | tile_id | resolution_m | utm_zone | delivered_date | intersection_area_m2 | intersection_fraction | selection_rank | selection_reason | fallback | geotiff_url | rat_url |
 |:---|---:|:---|:---|---:|---:|---:|:---|:---|:---|:---|
-| BH4SH55P | 4 | 17 | 2024-12-16 16:38:56 | 1119850 | 0.018 | 1 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| BH4SJ55P | 4 | 17 | 2024-10-07 15:42:50 | 2239700 | 0.036 | 2 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
-| BF2H62K7 | 8 | 17 | 2024-12-16 16:37:25 | 6718416 | 0.053 | 3 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml |
+| BH4XC5FK | 4 | 18 | 2026-06-25 10:51:01 | 7508785 | 0.142 | 1 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| BH4XD5FK | 4 | 18 | 2026-06-25 10:50:52 | 11263177 | 0.213 | 2 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml |
 
 ## Coverage Diagnostics
 
@@ -59,7 +62,12 @@ bt_display_table(bt_coverage_table(coverage))
 
 ``` r
 
-bt_plot_tiles(tiles, real_aoi, main = "AOI intersection with NOAA BlueTopo tiles")
+bt_plot_locator_map(
+  tiles,
+  real_aoi,
+  place_label = real$place,
+  main = "New York Harbor AOI and NOAA BlueTopo tiles"
+)
 ```
 
 ![Real BlueTopo tile footprints selected for the example

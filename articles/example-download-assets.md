@@ -5,6 +5,10 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+This page downloads the real New York Harbor NOAA BlueTopo GeoTIFFs and
+RAT sidecars, verifies SHA-256 checksums, shows the manifest, and
+demonstrates reuse of already verified local files.
+
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Example downloads are intentionally small and are cached
 during website builds, but they still access NOAA public data.
@@ -30,12 +34,10 @@ bt_display_table(bt_manifest_table(manifest))
 
 | tile_id | asset_type | source_basename | status | verification_mode | verified | downloaded_mb | actual_sha256 | attempts |
 |:---|:---|:---|:---|:---|:---|---:|:---|---:|
-| BH4SH55P | geotiff | BlueTopo_BH4SH55P_20241212.tiff | reused_verified | sha256 | TRUE | 2.914 | a49d92de8419 | 0 |
-| BH4SH55P | rat | BlueTopo_BH4SH55P_20241212.tiff.aux.xml | reused_verified | sha256 | TRUE | 0.007 | f2a5a151b745 | 0 |
-| BH4SJ55P | geotiff | BlueTopo_BH4SJ55P_20241004.tiff | reused_verified | sha256 | TRUE | 1.289 | ef8f39829788 | 0 |
-| BH4SJ55P | rat | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml | reused_verified | sha256 | TRUE | 0.004 | f3af3107d74d | 0 |
-| BF2H62K7 | geotiff | BlueTopo_BF2H62K7_20241212.tiff | reused_verified | sha256 | TRUE | 0.986 | 8dcbdc1325c5 | 0 |
-| BF2H62K7 | rat | BlueTopo_BF2H62K7_20241212.tiff.aux.xml | reused_verified | sha256 | TRUE | 0.005 | ea4bba3b305f | 0 |
+| BH4XC5FK | geotiff | BlueTopo_BH4XC5FK_20260624.tiff | reused_verified | sha256 | TRUE | 5.393 | 878be33a85f5 | 0 |
+| BH4XC5FK | rat | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml | reused_verified | sha256 | TRUE | 0.104 | 21405b45e162 | 0 |
+| BH4XD5FK | geotiff | BlueTopo_BH4XD5FK_20260624.tiff | reused_verified | sha256 | TRUE | 4.093 | 35174b851869 | 0 |
+| BH4XD5FK | rat | BlueTopo_BH4XD5FK_20260624.tiff.aux.xml | reused_verified | sha256 | TRUE | 0.067 | 59814a3e330c | 0 |
 
 ## Reuse Existing Verified Files
 
@@ -58,7 +60,7 @@ bt_display_table(reuse_summary)
 
 | status          | count | verified_count |
 |:----------------|------:|---------------:|
-| reused_verified |     6 |              6 |
+| reused_verified |     4 |              4 |
 
 ## Manifest Files
 
@@ -69,10 +71,10 @@ bt_display_table(bt_manifest_files_table(real$download_dir))
 
 | file | exists | bytes |
 |:---|:---|---:|
-| bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.csv | TRUE | 3475 |
-| bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.json | TRUE | 8422 |
-| downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.csv | TRUE | 3475 |
-| downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.json | TRUE | 8422 |
+| bluertopo-pkgdown-real-examples/downloads/new-york-harbor-upper-bay-2026-07-10/bluertopo-download-manifest.csv | TRUE | 2441 |
+| bluertopo-pkgdown-real-examples/downloads/new-york-harbor-upper-bay-2026-07-10/bluertopo-download-manifest.json | TRUE | 6655 |
+| downloads/new-york-harbor-upper-bay-2026-07-10/manifests/bluertopo-download-manifest-9d8d15e960090e3c.csv | TRUE | 2441 |
+| downloads/new-york-harbor-upper-bay-2026-07-10/manifests/bluertopo-download-manifest-9d8d15e960090e3c.json | TRUE | 6655 |
 
 ## Source Domain Summary
 

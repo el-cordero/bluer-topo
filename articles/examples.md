@@ -5,6 +5,10 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+This gallery downloads two real NOAA BlueTopo tiles for New York Harbor,
+verifies the GeoTIFF and RAT checksums, opens the elevation band with
+`terra`, and renders a hillshaded bathymetry map with contour lines.
+
 BlueTopo is not for navigation. `bluertopo` performs no vertical-datum
 conversion. The example downloads are intentionally small. Normal
 package tests use synthetic fixtures; the public site uses real data.
@@ -67,18 +71,23 @@ bt_display_table(gallery)
 ``` r
 
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 real_tiles <- real$tiles
 ```
 
-## NOAA Tile Footprints
+## Locator Map
 
 ``` r
 
-bt_plot_tiles(real_tiles, real_aoi, main = "Actual NOAA BlueTopo tile footprints")
+bt_plot_locator_map(
+  real_tiles,
+  real_aoi,
+  place_label = real$place,
+  main = "New York Harbor real BlueTopo tile footprints"
+)
 ```
 
 ![Real BlueTopo tile footprints colored by native source resolution with
@@ -95,9 +104,24 @@ bt_display_table(bt_tile_table(real_tiles, include_urls = TRUE))
 
 | tile_id | resolution_m | utm_zone | delivered_date | intersection_area_m2 | intersection_fraction | selection_rank | selection_reason | fallback | geotiff_url | rat_url |
 |:---|---:|:---|:---|---:|---:|---:|:---|:---|:---|:---|
-| BH4SH55P | 4 | 17 | 2024-12-16 16:38:56 | 1119850 | 0.018 | 1 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| BH4SJ55P | 4 | 17 | 2024-10-07 15:42:50 | 2239700 | 0.036 | 2 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
-| BF2H62K7 | 8 | 17 | 2024-12-16 16:37:25 | 6718416 | 0.053 | 3 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml |
+| BH4XC5FK | 4 | 18 | 2026-06-25 10:51:01 | 7508785 | 0.142 | 1 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| BH4XD5FK | 4 | 18 | 2026-06-25 10:50:52 | 11263177 | 0.213 | 2 | native | FALSE | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff | noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml |
+
+## Download Plan
+
+``` r
+
+planned <- real$planned_assets
+planned$planned_mb <- bt_bytes_mb(planned$planned_bytes)
+bt_display_table(planned[c("tile_id", "asset_type", "source_basename", "planned_mb")])
+```
+
+| tile_id  | asset_type | source_basename                         | planned_mb |
+|:---------|:-----------|:----------------------------------------|-----------:|
+| BH4XC5FK | geotiff    | BlueTopo_BH4XC5FK_20260624.tiff         |      5.393 |
+| BH4XD5FK | geotiff    | BlueTopo_BH4XD5FK_20260624.tiff         |      4.093 |
+| BH4XC5FK | rat        | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |      0.104 |
+| BH4XD5FK | rat        | BlueTopo_BH4XD5FK_20260624.tiff.aux.xml |      0.067 |
 
 ## Terra Preview
 
@@ -113,15 +137,14 @@ preview <- bluertopo(
   quiet = TRUE
 )
 
-preview_raster <- bt_plot_first_raster(preview$data, main = "NOAA BlueTopo elevation")
-terra::plot(terra::project(real_aoi, terra::crs(preview_raster)), add = TRUE, border = "#d00000", lwd = 2)
+bt_plot_bathy_map(preview$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
 ```
 
-![Real NOAA BlueTopo elevation raster preview for the example
-AOI.](examples_files/figure-html/terra-preview-1.png)
+![Hillshaded real NOAA BlueTopo elevation raster with contours for New
+York Harbor.](examples_files/figure-html/terra-preview-1.png)
 
-Actual NOAA BlueTopo source data: elevation raster preview from verified
-source GeoTIFFs.
+Actual NOAA BlueTopo source data: New York Harbor elevation with
+hillshade, contours, and AOI outline.
 
 `resolution` selects native source tiles. `output_resolution` is used
 only when the user explicitly requests an output grid.

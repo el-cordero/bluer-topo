@@ -5,6 +5,13 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+New York Harbor is the primary public AOI for the examples, but its
+current small plan is a compatible 4 m grid. This page uses a documented
+secondary real AOI near Key West and Boca Chica Channel because it
+currently intersects real 4 m and 8 m NOAA BlueTopo source grids and
+therefore demonstrates mixed native grid behavior without synthetic
+rasters.
+
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Mixed native grids are preserved unless the user asks for a
 single output grid. `combine = "single"` needs an explicit output grid
@@ -17,9 +24,9 @@ nearest-neighbor.
 ``` r
 
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
-real <- bt_real_example_setup()
+real <- bt_mixed_example_setup()
 real_aoi <- real$aoi
 ```
 
@@ -67,7 +74,12 @@ bt_display_table(native_table)
 
 ``` r
 
-bt_plot_tiles(native$tiles, real_aoi, main = "Selected mixed native grids")
+bt_plot_locator_map(
+  native$tiles,
+  real_aoi,
+  place_label = real$place,
+  main = "Key West and Boca Chica mixed native grids"
+)
 ```
 
 ![Real BlueTopo tile footprints selected for mixed native
@@ -115,14 +127,15 @@ bt_display_table(single_table)
 
 ``` r
 
-terra::plot(single$data, main = "Explicit output grid elevation")
+bt_plot_bathy_map(single$data, real_aoi, main = "Explicit output grid bathymetry")
 ```
 
-![Real BlueTopo elevation raster on one explicit output
-grid.](example-mixed-grids_files/figure-html/output-raster-1.png)
+![Hillshaded real BlueTopo elevation raster on one explicit output grid
+with
+contours.](example-mixed-grids_files/figure-html/output-raster-1.png)
 
-Actual NOAA BlueTopo source data: elevation resampled onto an explicit
-output grid.
+Actual NOAA BlueTopo source data: hillshaded elevation resampled onto an
+explicit output grid.
 
 The explicit grid is useful for workflows that require one raster, but
 it is a resampling operation. Native source-resolution selection remains

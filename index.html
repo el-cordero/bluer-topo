@@ -6,19 +6,24 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>bluertopo • bluertopo</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" sizes="any" href="favicon.ico">
-<link rel="manifest" href="site.webmanifest">
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="bluertopo">
 <meta name="description" content="Verified NOAA BlueTopo downloads and terra extraction for submerged terrain.">
 <meta property="og:description" content="Verified NOAA BlueTopo downloads and terra extraction for submerged terrain.">
 <meta property="og:image" content="https://el-cordero.github.io/bluer-topo/logo.png">
+<style>
+div.sourceCode pre {
+  min-height: 0 !important;
+  padding-top: 0.9rem !important;
+  padding-bottom: 0.9rem !important;
+}
+div.sourceCode pre code span:empty {
+  display: none;
+}
+</style>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -80,133 +85,143 @@
 <img src="logo.png" class="logo" alt=""><h1 id="bluertopo">bluertopo<a class="anchor" aria-label="anchor" href="#bluertopo"></a>
 </h1>
 </div>
+<div class="float">
+<img src="reference/figures/logo.png" alt="bluertopo logo"><div class="figcaption">bluertopo logo</div>
+</div>
 <p><a href="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://el-cordero.github.io/bluer-topo/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></p>
 <p><code>bluertopo</code> discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry for an area of interest using <code>terra</code>. The package keeps source GeoTIFF and RAT sidecar files intact by default, records query and catalog provenance, and makes native source-resolution choices explicit.</p>
 <p>BlueTopo is not for navigation. This package performs no vertical-datum conversion and is not affiliated with, endorsed by, or supported by NOAA.</p>
+<p>Reference: NOAA, <a href="https://nauticalcharts.noaa.gov/data/bluetopo.html" class="external-link">BlueTopo</a> and <a href="https://nauticalcharts.noaa.gov/data/bluetopo_specs.html" class="external-link">BlueTopo specifications</a>.</p>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="real-noaa-proof">Real NOAA Proof<a class="anchor" aria-label="anchor" href="#real-noaa-proof"></a>
+</h2>
+<p>Example AOI: New York Harbor, centered on Lower Manhattan, the Upper Bay, Governors Island, and the East River mouth. This homepage proof uses actual NOAA BlueTopo source tiles downloaded during the pkgdown build.</p>
+<div class="float">
+<img src="reference/figures/home-proof-map-1.png" alt="Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline."><div class="figcaption">Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline.</div>
+</div>
+<p>Actual NOAA BlueTopo source data: New York Harbor elevation with hillshade, contours, and AOI outline.</p>
+<table class="table">
+<colgroup>
+<col width="13%">
+<col width="18%">
+<col width="13%">
+<col width="30%">
+<col width="24%">
+</colgroup>
+<thead><tr>
+<th align="left">tile_id</th>
+<th align="right">resolution_m</th>
+<th align="left">utm_zone</th>
+<th align="right">intersection_fraction</th>
+<th align="left">selection_reason</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left">BH4XC5FK</td>
+<td align="right">4</td>
+<td align="left">18</td>
+<td align="right">0.142</td>
+<td align="left">native</td>
+</tr>
+<tr>
+<td align="left">BH4XD5FK</td>
+<td align="right">4</td>
+<td align="left">18</td>
+<td align="right">0.213</td>
+<td align="left">native</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col width="13%">
+<col width="16%">
+<col width="16%">
+<col width="13%">
+<col width="20%">
+<col width="20%">
+</colgroup>
+<thead><tr>
+<th align="left">tile_id</th>
+<th align="left">asset_type</th>
+<th align="left">status</th>
+<th align="left">verified</th>
+<th align="right">downloaded_mb</th>
+<th align="left">actual_sha256</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left">BH4XC5FK</td>
+<td align="left">geotiff</td>
+<td align="left">downloaded</td>
+<td align="left">TRUE</td>
+<td align="right">5.393</td>
+<td align="left">878be33a85f5</td>
+</tr>
+<tr>
+<td align="left">BH4XC5FK</td>
+<td align="left">rat</td>
+<td align="left">downloaded</td>
+<td align="left">TRUE</td>
+<td align="right">0.104</td>
+<td align="left">21405b45e162</td>
+</tr>
+<tr>
+<td align="left">BH4XD5FK</td>
+<td align="left">geotiff</td>
+<td align="left">downloaded</td>
+<td align="left">TRUE</td>
+<td align="right">4.093</td>
+<td align="left">35174b851869</td>
+</tr>
+<tr>
+<td align="left">BH4XD5FK</td>
+<td align="left">rat</td>
+<td align="left">downloaded</td>
+<td align="left">TRUE</td>
+<td align="right">0.067</td>
+<td align="left">59814a3e330c</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="basic-workflow">Basic Workflow<a class="anchor" aria-label="anchor" href="#basic-workflow"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"el-cordero/bluer-topo"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="basic-workflow">Basic workflow<a class="anchor" aria-label="anchor" href="#basic-workflow"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://el-cordero.github.io/bluer-topo/">bluertopo</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="st">"my_area.gpkg"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">bathy</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  layers <span class="op">=</span> <span class="st">"elevation"</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"warn"</span>,</span>
-<span>  details <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">tiles</span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">provenance</span></span></code></pre></div>
+<span><span class="va">bathy</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bathy</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="download-original-noaa-assets">Download original NOAA assets<a class="anchor" aria-label="anchor" href="#download-original-noaa-assets"></a>
+<h2 id="provenance-workflow">Provenance Workflow<a class="anchor" aria-label="anchor" href="#provenance-workflow"></a>
 </h2>
-<p>Use <a href="https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md"><code>bluertopo_download()</code></a> when the durable deliverable is the original NOAA GeoTIFF plus optional RAT sidecars rather than an extracted raster object.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/bluetopo"</span>,</span>
-<span>  rat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verify <span class="op">=</span> <span class="st">"sha256"</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"fill"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><code>verify = "sha256"</code> is the default and requires NOAA-provided checksums. <code>verify = "none"</code> is available only for explicitly unverified workflows. <code>verify = "size"</code> is rejected unless trustworthy expected byte counts are available before any transfer starts.</p>
+<span><span class="va">result</span><span class="op">$</span><span class="va">tiles</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">downloads</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">coverage</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">provenance</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="native-resolution-policies">Native resolution policies<a class="anchor" aria-label="anchor" href="#native-resolution-policies"></a>
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<p><code>resolution</code> filters NOAA BlueTopo source tiles by their native cell size. Smaller meter values mean finer native source detail. <code>output_resolution</code> requests an explicit output grid and therefore resamples the output.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="co"># Exact native resolution</span></span>
-<span><span class="va">bathy_8m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, resolution <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Highest native detail, with lower-resolution fallback for coverage</span></span>
-<span><span class="va">bathy_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, resolution <span class="op">=</span> <span class="st">"finest"</span>, coverage <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Lowest native detail</span></span>
-<span><span class="va">bathy_low</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, resolution <span class="op">=</span> <span class="st">"coarsest"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Closest available native resolution to 10 m</span></span>
-<span><span class="va">bathy_near</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="fu"><a href="reference/bluertopo_resolution.html">bluertopo_resolution</a></span><span class="op">(</span><span class="st">"nearest"</span>, value <span class="op">=</span> <span class="fl">10</span>, tie <span class="op">=</span> <span class="st">"finer"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Keep source tiles from 4 through 16 m</span></span>
-<span><span class="va">bathy_range</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="fu"><a href="reference/bluertopo_resolution.html">bluertopo_resolution</a></span><span class="op">(</span><span class="st">"between"</span>, min_m <span class="op">=</span> <span class="fl">4</span>, max_m <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="mixed-source-grids">Mixed source grids<a class="anchor" aria-label="anchor" href="#mixed-source-grids"></a>
-</h2>
-<p>Native BlueTopo tiles can span multiple UTM zones, resolutions, or grid alignments. When the selected source files are not compatible, <a href="https://el-cordero.github.io/bluer-topo/reference/bluertopo.md"><code>bluertopo()</code></a> returns a <a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link"><code>terra::SpatRasterCollection</code></a> unless the user explicitly requests an output grid.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="va">bathy_10m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
-<span>  output_crs <span class="op">=</span> <span class="st">"EPSG:26918"</span>,</span>
-<span>  output_resolution <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  combine <span class="op">=</span> <span class="st">"single"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="cache-operations">Cache operations<a class="anchor" aria-label="anchor" href="#cache-operations"></a>
-</h2>
-<p>Package cache operations are intentionally conservative. <a href="https://el-cordero.github.io/bluer-topo/reference/bluertopo_cache_clear.md"><code>bluertopo_cache_clear()</code></a> clears only the configured <code>bluertopo</code> cache, requires confirmation in noninteractive sessions, and refuses to remove content unless a package-owned cache marker is present.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="fu"><a href="reference/bluertopo_cache_dir.html">bluertopo_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/bluertopo_cache_clear.html">bluertopo_cache_clear</a></span><span class="op">(</span>confirm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The <a href="https://el-cordero.github.io/bluer-topo/articles/examples.md">Examples tab</a> is rendered from actual NOAA BlueTopo source tiles for New York Harbor. Normal package tests use small synthetic fixtures so checks remain network-free. The mixed-grid example uses a documented secondary real AOI near Key West and Boca Chica Channel because the current New York Harbor plan is one compatible 4 m native grid.</p>
+<ul>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/examples.md">Example gallery</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-discover-tiles.md">Discover tiles and coverage</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-download-assets.md">Download original assets</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-extract-elevation.md">Extract elevation with terra</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-resolution-policies.md">Compare resolution policies</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-mixed-grids.md">Mixed grids and output grid</a></li>
+<li><a href="https://el-cordero.github.io/bluer-topo/articles/example-layers-rat.md">Layers and RAT metadata</a></li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"></aside>
@@ -218,7 +233,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer>

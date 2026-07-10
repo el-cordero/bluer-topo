@@ -6,16 +6,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Extract Elevation with terra • bluertopo</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
-<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Extract Elevation with terra">
+<style>
+div.sourceCode pre {
+  min-height: 0 !important;
+  padding-top: 0.9rem !important;
+  padding-bottom: 0.9rem !important;
+}
+div.sourceCode pre code span:empty {
+  display: none;
+}
+</style>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,7 +41,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/get-bluetopo.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples.html">Example gallery</a></li>
@@ -80,7 +85,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Extract Elevation with terra</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/HEAD/vignettes/example-extract-elevation.Rmd" class="external-link"><code>vignettes/example-extract-elevation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/main/vignettes/example-extract-elevation.Rmd" class="external-link"><code>vignettes/example-extract-elevation.Rmd</code></a></small>
       <div class="d-none name"><code>example-extract-elevation.Rmd</code></div>
     </div>
 
@@ -90,6 +95,10 @@
 public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.</p>
+<p>This page downloads two real NOAA BlueTopo tiles for New York Harbor,
+verifies the GeoTIFF and RAT checksums, opens the elevation band with
+<code>terra</code>, and renders a hillshaded bathymetry map with contour
+lines.</p>
 <p>BlueTopo is not for navigation. No vertical-datum conversion is
 performed. <code><a href="../reference/bluertopo.html">bluertopo()</a></code> returns terra objects and, with
 <code>details = TRUE</code>, exposes selected tiles, downloads, query
@@ -100,7 +109,7 @@ does not intentionally resample.</p>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.9.27</span></span>
+<span><span class="co">#&gt; terra 1.9.34</span></span>
 <span></span>
 <span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
@@ -157,15 +166,15 @@ does not intentionally resample.</p>
 <tbody>
 <tr class="odd">
 <td align="left">object type</td>
-<td align="left">SpatRasterCollection</td>
+<td align="left">SpatRaster</td>
 </tr>
 <tr class="even">
 <td align="left">result$data class</td>
-<td align="left">SpatRasterCollection</td>
+<td align="left">SpatRaster</td>
 </tr>
 <tr class="odd">
 <td align="left">number of layers</td>
-<td align="left">2</td>
+<td align="left">1</td>
 </tr>
 <tr class="even">
 <td align="left">layer names</td>
@@ -173,11 +182,11 @@ does not intentionally resample.</p>
 </tr>
 <tr class="odd">
 <td align="left">CRS summary</td>
-<td align="left">EPSG:26917</td>
+<td align="left">EPSG:26918</td>
 </tr>
 <tr class="even">
 <td align="left">resolution</td>
-<td align="left">4 x 4; 8 x 8</td>
+<td align="left">4 x 4</td>
 </tr>
 <tr class="odd">
 <td align="left">source count</td>
@@ -265,7 +274,7 @@ does not intentionally resample.</p>
 </tr>
 <tr class="even">
 <td align="left">planned_download_mb</td>
-<td align="left">5.205</td>
+<td align="left">9.657</td>
 </tr>
 </tbody>
 </table>
@@ -274,12 +283,11 @@ does not intentionally resample.</p>
 <h2 id="elevation-preview">Elevation Preview<a class="anchor" aria-label="anchor" href="#elevation-preview"></a>
 </h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">preview_raster</span> <span class="op">&lt;-</span> <span class="fu">bt_plot_first_raster</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span>, main <span class="op">=</span> <span class="st">"NOAA BlueTopo elevation"</span><span class="op">)</span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">real_aoi</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">preview_raster</span><span class="op">)</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">bt_plot_bathy_map</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="st">"New York Harbor NOAA BlueTopo bathymetry"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-extract-elevation_files/figure-html/elevation-figure-1.png" class="r-plt" alt="Real BlueTopo elevation raster with the example AOI outline." width="576"><p class="caption">
-Actual NOAA BlueTopo source data: elevation raster from verified
-GeoTIFFs with AOI overlay.
+<img src="example-extract-elevation_files/figure-html/elevation-figure-1.png" class="r-plt" alt="Hillshaded real BlueTopo elevation raster with contours and AOI outline for New York Harbor." width="576"><p class="caption">
+Actual NOAA BlueTopo source data: New York Harbor elevation with
+hillshade, contours, and AOI outline.
 </p>
 </div>
 <p>When native source grids differ, the result can be a
@@ -297,7 +305,7 @@ by verified original assets.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer>

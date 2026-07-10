@@ -16,5 +16,5 @@ A single character string.
 
 ``` r
 bluertopo_cache_dir()
-#> [1] "/Users/ec/Library/Caches/org.R-project.R/R/bluertopo"
+#> [1] "/home/runner/.cache/R/bluertopo"
 ```

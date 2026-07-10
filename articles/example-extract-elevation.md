@@ -5,6 +5,10 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+This page downloads two real NOAA BlueTopo tiles for New York Harbor,
+verifies the GeoTIFF and RAT checksums, opens the elevation band with
+`terra`, and renders a hillshaded bathymetry map with contour lines.
+
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed.
 [`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
@@ -17,7 +21,7 @@ Normal native extraction does not intentionally resample.
 ``` r
 
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
@@ -70,15 +74,15 @@ object_summary <- data.frame(
 bt_display_table(object_summary)
 ```
 
-| element            | value                |
-|:-------------------|:---------------------|
-| object type        | SpatRasterCollection |
-| result\$data class | SpatRasterCollection |
-| number of layers   | 2                    |
-| layer names        | elevation            |
-| CRS summary        | EPSG:26917           |
-| resolution         | 4 x 4; 8 x 8         |
-| source count       | 1                    |
+| element            | value      |
+|:-------------------|:-----------|
+| object type        | SpatRaster |
+| result\$data class | SpatRaster |
+| number of layers   | 1          |
+| layer names        | elevation  |
+| CRS summary        | EPSG:26918 |
+| resolution         | 4 x 4      |
+| source count       | 1          |
 
 ## File-Backed Sources
 
@@ -116,21 +120,21 @@ bt_display_table(bt_catalog_table(real))
 | package_version           | 0.0.1                                     |
 | not_for_navigation        | BlueTopo is not for navigation            |
 | vertical_datum_conversion | none performed by bluertopo               |
-| planned_download_mb       | 5.205                                     |
+| planned_download_mb       | 9.657                                     |
 
 ## Elevation Preview
 
 ``` r
 
-preview_raster <- bt_plot_first_raster(result$data, main = "NOAA BlueTopo elevation")
-terra::plot(terra::project(real_aoi, terra::crs(preview_raster)), add = TRUE, border = "#d00000", lwd = 2)
+bt_plot_bathy_map(result$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
 ```
 
-![Real BlueTopo elevation raster with the example AOI
-outline.](example-extract-elevation_files/figure-html/elevation-figure-1.png)
+![Hillshaded real BlueTopo elevation raster with contours and AOI
+outline for New York
+Harbor.](example-extract-elevation_files/figure-html/elevation-figure-1.png)
 
-Actual NOAA BlueTopo source data: elevation raster from verified
-GeoTIFFs with AOI overlay.
+Actual NOAA BlueTopo source data: New York Harbor elevation with
+hillshade, contours, and AOI outline.
 
 When native source grids differ, the result can be a
 `SpatRasterCollection`. Each member can still be file-backed by verified

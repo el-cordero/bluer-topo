@@ -6,16 +6,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Download Original Assets • bluertopo</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
-<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Download Original Assets">
+<style>
+div.sourceCode pre {
+  min-height: 0 !important;
+  padding-top: 0.9rem !important;
+  padding-bottom: 0.9rem !important;
+}
+div.sourceCode pre code span:empty {
+  display: none;
+}
+</style>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,7 +41,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/get-bluetopo.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples.html">Example gallery</a></li>
@@ -80,7 +85,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Download Original Assets</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/HEAD/vignettes/example-download-assets.Rmd" class="external-link"><code>vignettes/example-download-assets.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/main/vignettes/example-download-assets.Rmd" class="external-link"><code>vignettes/example-download-assets.Rmd</code></a></small>
       <div class="d-none name"><code>example-download-assets.Rmd</code></div>
     </div>
 
@@ -90,6 +95,9 @@
 public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.</p>
+<p>This page downloads the real New York Harbor NOAA BlueTopo GeoTIFFs
+and RAT sidecars, verifies SHA-256 checksums, shows the manifest, and
+demonstrates reuse of already verified local files.</p>
 <p>BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Example downloads are intentionally small and are cached
 during website builds, but they still access NOAA public data.</p>
@@ -131,69 +139,47 @@ during website builds, but they still access NOAA public data.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">BH4SH55P</td>
+<td align="left">BH4XC5FK</td>
 <td align="left">geotiff</td>
-<td align="left">BlueTopo_BH4SH55P_20241212.tiff</td>
+<td align="left">BlueTopo_BH4XC5FK_20260624.tiff</td>
 <td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">2.914</td>
-<td align="left">a49d92de8419</td>
+<td align="right">5.393</td>
+<td align="left">878be33a85f5</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">BH4SH55P</td>
+<td align="left">BH4XC5FK</td>
 <td align="left">rat</td>
-<td align="left">BlueTopo_BH4SH55P_20241212.tiff.aux.xml</td>
+<td align="left">BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
 <td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">0.007</td>
-<td align="left">f2a5a151b745</td>
+<td align="right">0.104</td>
+<td align="left">21405b45e162</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">BH4SJ55P</td>
+<td align="left">BH4XD5FK</td>
 <td align="left">geotiff</td>
-<td align="left">BlueTopo_BH4SJ55P_20241004.tiff</td>
+<td align="left">BlueTopo_BH4XD5FK_20260624.tiff</td>
 <td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">1.289</td>
-<td align="left">ef8f39829788</td>
+<td align="right">4.093</td>
+<td align="left">35174b851869</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">BH4SJ55P</td>
+<td align="left">BH4XD5FK</td>
 <td align="left">rat</td>
-<td align="left">BlueTopo_BH4SJ55P_20241004.tiff.aux.xml</td>
+<td align="left">BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
 <td align="left">reused_verified</td>
 <td align="left">sha256</td>
 <td align="left">TRUE</td>
-<td align="right">0.004</td>
-<td align="left">f3af3107d74d</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">BF2H62K7</td>
-<td align="left">geotiff</td>
-<td align="left">BlueTopo_BF2H62K7_20241212.tiff</td>
-<td align="left">reused_verified</td>
-<td align="left">sha256</td>
-<td align="left">TRUE</td>
-<td align="right">0.986</td>
-<td align="left">8dcbdc1325c5</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">BF2H62K7</td>
-<td align="left">rat</td>
-<td align="left">BlueTopo_BF2H62K7_20241212.tiff.aux.xml</td>
-<td align="left">reused_verified</td>
-<td align="left">sha256</td>
-<td align="left">TRUE</td>
-<td align="right">0.005</td>
-<td align="left">ea4bba3b305f</td>
+<td align="right">0.067</td>
+<td align="left">59814a3e330c</td>
 <td align="right">0</td>
 </tr>
 </tbody>
@@ -224,8 +210,8 @@ during website builds, but they still access NOAA public data.</p>
 </tr></thead>
 <tbody><tr class="odd">
 <td align="left">reused_verified</td>
-<td align="right">6</td>
-<td align="right">6</td>
+<td align="right">4</td>
+<td align="right">4</td>
 </tr></tbody>
 </table>
 </div>
@@ -238,7 +224,7 @@ during website builds, but they still access NOAA public data.</p>
 <colgroup>
 <col width="89%">
 <col width="5%">
-<col width="5%">
+<col width="4%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">file</th>
@@ -247,24 +233,24 @@ during website builds, but they still access NOAA public data.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.csv</td>
+<td align="left">bluertopo-pkgdown-real-examples/downloads/new-york-harbor-upper-bay-2026-07-10/bluertopo-download-manifest.csv</td>
 <td align="left">TRUE</td>
-<td align="right">3475</td>
+<td align="right">2441</td>
 </tr>
 <tr class="even">
-<td align="left">bluertopo-pkgdown-real-examples/downloads/key-west-boca-chica-2026-07-10/bluertopo-download-manifest.json</td>
+<td align="left">bluertopo-pkgdown-real-examples/downloads/new-york-harbor-upper-bay-2026-07-10/bluertopo-download-manifest.json</td>
 <td align="left">TRUE</td>
-<td align="right">8422</td>
+<td align="right">6655</td>
 </tr>
 <tr class="odd">
-<td align="left">downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.csv</td>
+<td align="left">downloads/new-york-harbor-upper-bay-2026-07-10/manifests/bluertopo-download-manifest-9d8d15e960090e3c.csv</td>
 <td align="left">TRUE</td>
-<td align="right">3475</td>
+<td align="right">2441</td>
 </tr>
 <tr class="even">
-<td align="left">downloads/key-west-boca-chica-2026-07-10/manifests/bluertopo-download-manifest-ac0668e7d63ec754.json</td>
+<td align="left">downloads/new-york-harbor-upper-bay-2026-07-10/manifests/bluertopo-download-manifest-9d8d15e960090e3c.json</td>
 <td align="left">TRUE</td>
-<td align="right">8422</td>
+<td align="right">6655</td>
 </tr>
 </tbody>
 </table>
@@ -315,7 +301,7 @@ downloaded and verified with the GeoTIFF assets.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer>

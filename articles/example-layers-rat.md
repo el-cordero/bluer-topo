@@ -5,6 +5,12 @@ public pkgdown site. This example uses actual NOAA BlueTopo source tiles
 downloaded from the public NOAA National Bathymetric Source bucket
 during the pkgdown build.
 
+This page opens real New York Harbor NOAA BlueTopo elevation,
+uncertainty, and contributor layers from verified source GeoTIFFs, then
+reads real RAT sidecars for contributor metadata. Elevation is shown
+with hillshade and contours; uncertainty and contributor IDs are plotted
+as their own source layers.
+
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed. The contributor band contains IDs, not continuous values.
 Contributor IDs must not be averaged. RAT sidecars carry contributor
@@ -15,7 +21,7 @@ metadata, and `bluertopo` preserves original RAT files.
 ``` r
 
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
@@ -82,9 +88,8 @@ bt_display_table(rat_table)
 
 | tile_id | source_basename | local_path | verified | actual_sha256 |
 |:---|:---|:---|:---|:---|
-| BH4SH55P | BlueTopo_BH4SH55P_20241212.tiff.aux.xml | package-cache/tiles/BH4SH55P/BlueTopo_BH4SH55P_20241212.tiff.aux.xml | TRUE | f2a5a151b745 |
-| BH4SJ55P | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml | package-cache/tiles/BH4SJ55P/BlueTopo_BH4SJ55P_20241004.tiff.aux.xml | TRUE | f3af3107d74d |
-| BF2H62K7 | BlueTopo_BF2H62K7_20241212.tiff.aux.xml | package-cache/tiles/BF2H62K7/BlueTopo_BF2H62K7_20241212.tiff.aux.xml | TRUE | ea4bba3b305f |
+| BH4XC5FK | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml | package-cache/tiles/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml | TRUE | 21405b45e162 |
+| BH4XD5FK | BlueTopo_BH4XD5FK_20260624.tiff.aux.xml | package-cache/tiles/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml | TRUE | 59814a3e330c |
 
 ## Contributor Lookup
 
@@ -96,37 +101,39 @@ bt_display_table(contributor_lookup)
 
 | contributor_value | source_survey_id | source_institution | license_name | survey_date_start | survey_date_end | coverage | bathy_coverage | rat_source |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---|
-| 49550 | H08626 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 51975 | H08626.interpolated | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 0 | 0 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 29777 | H12193_4m_MLLW_Xof9.combined | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 0 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 201512 | H12193_VB_4m_MLLW_1of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 201594 | W00406_MB_2m_MLLW_1of4 | DOC/NOAA/NOS/ONMS – Office of National Marine Sanctuaries | cc0-1.0 | 2015-06-07 | 2015-06-12 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 201508 | H12193_MB_50cm_MLLW_6of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 29819 | H12193_MB_50cm_MLLW_7of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 29782 | H12193_MB_2m_MLLW_2of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 201507 | H12193_MB_50cm_MLLW_5of9 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2010-07-09 | 2010-08-24 | 1 | 1 | BlueTopo_BH4SH55P_20241212.tiff.aux.xml |
-| 201594 | W00406_MB_2m_MLLW_1of4 | DOC/NOAA/NOS/ONMS – Office of National Marine Sanctuaries | cc0-1.0 | 2015-06-07 | 2015-06-12 | 1 | 1 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
-| 49550 | H08626 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 1 | 1 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
-| 51975 | H08626.interpolated | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1961-01-01 | 1961-01-01 | 0 | 0 | BlueTopo_BH4SJ55P_20241004.tiff.aux.xml |
+| 0 | NBS Generalization | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1807-02-10 | 1807-02-10 | 0 | 0 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 104981 | H11395_Xof2.combined | DOC/NOAA/NOS/OCS – Office of Coast Survey | CC0-1.0 | 2005-03-17 | 2006-03-20 | 0 | 0 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 43868 | H05609 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 1934-01-01 | 1934-01-01 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 38388 | F00463 | DOC/NOAA/NOS/OCS – Office of Coast Survey | cc0-1.0 | 2000-01-01 | 2000-01-01 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 104992 | F00630_MB_50cm_MLLW_1of1.interpolated | DOC/NOAA/NOS/OCS – Office of Coast Survey | CC0-1.0 | 2013-04-17 | 2013-04-29 | 1 | 0 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 104997 | H11395_VB_2m_MLLW_1of2 | DOC/NOAA/NOS/OCS – Office of Coast Survey | CC0-1.0 | 2005-03-17 | 2006-03-20 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 8987 | NY_02_ANC_20220104_CS_5127_45 | DOD/USACE – US Army Corps of Engineers New York District | cc0-1.0 | 2022-01-04 | 2022-01-04 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 56695 | NY_02_ANC_20140806_CS_4158_45X.interpolated | DOD/USACE – US Army Corps of Engineers New York District | cc0-1.0 | 2014-08-06 | 2014-08-06 | 0 | 0 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 105004 | F00623_VB_4m_MLLW_3of3 | DOC/NOAA/NOS/OCS – Office of Coast Survey | CC0-1.0 | 2012-11-01 | 2012-11-06 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 1540179 | HD_01_HUD_20211025_CS_5106_45 | DOD/USACE – US Army Corps of Engineers New York District | cc0-1.0 | 2021-10-25 | 2021-10-25 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 1542117 | NJ_06_KVK_20211108_CS_5110_30 | DOD/USACE – US Army Corps of Engineers New York District | cc0-1.0 | 2021-11-08 | 2021-11-08 | 1 | 1 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
+| 56712 | NJ_06_KVK_20211108_CS_5110_30.interpolated | DOD/USACE – US Army Corps of Engineers New York District | cc0-1.0 | 2021-11-08 | 2021-11-08 | 0 | 0 | BlueTopo_BH4XC5FK_20260624.tiff.aux.xml |
 
 ## Elevation
 
 ``` r
 
 first_grid <- bt_rasters(all_layers$data)[[1L]]
-terra::plot(first_grid[["elevation"]], main = "Elevation")
+bt_plot_bathy_map(first_grid[["elevation"]], real_aoi, main = "New York Harbor elevation")
 ```
 
-![Real BlueTopo elevation
-raster.](example-layers-rat_files/figure-html/elevation-plot-1.png)
+![Hillshaded real BlueTopo elevation layer with
+contours.](example-layers-rat_files/figure-html/elevation-plot-1.png)
 
-Actual NOAA BlueTopo source data: elevation layer.
+Actual NOAA BlueTopo source data: New York Harbor elevation layer with
+hillshade and contours.
 
 ## Uncertainty
 
 ``` r
 
-terra::plot(first_grid[["uncertainty"]], main = "Uncertainty")
+terra::plot(first_grid[["uncertainty"]], main = "Uncertainty", col = grDevices::hcl.colors(80, "BluYl"))
+terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 ![Real BlueTopo uncertainty
@@ -139,6 +146,7 @@ Actual NOAA BlueTopo source data: uncertainty layer.
 ``` r
 
 terra::plot(first_grid[["contributor"]], main = "Contributor IDs", col = hcl.colors(12, "Dark 3"))
+terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 ![Real BlueTopo contributor ID raster using categorical

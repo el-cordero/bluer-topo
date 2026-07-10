@@ -1,5 +1,9 @@
 # bluertopo
 
+![bluertopo logo](reference/figures/logo.png)
+
+bluertopo logo
+
 [![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
 [![License:
@@ -15,156 +19,87 @@ BlueTopo is not for navigation. This package performs no vertical-datum
 conversion and is not affiliated with, endorsed by, or supported by
 NOAA.
 
-## Installation
+Reference: NOAA,
+[BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html) and
+[BlueTopo
+specifications](https://nauticalcharts.noaa.gov/data/bluetopo_specs.html).
+
+## Real NOAA Proof
+
+Example AOI: New York Harbor, centered on Lower Manhattan, the Upper
+Bay, Governors Island, and the East River mouth. This homepage proof
+uses actual NOAA BlueTopo source tiles downloaded during the pkgdown
+build.
+
+![Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with
+contour lines and the AOI
+outline.](reference/figures/home-proof-map-1.png)
+
+Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with
+contour lines and the AOI outline.
+
+Actual NOAA BlueTopo source data: New York Harbor elevation with
+hillshade, contours, and AOI outline.
+
+| tile_id  | resolution_m | utm_zone | intersection_fraction | selection_reason |
+|:---------|-------------:|:---------|----------------------:|:-----------------|
+| BH4XC5FK |            4 | 18       |                 0.142 | native           |
+| BH4XD5FK |            4 | 18       |                 0.213 | native           |
+
+| tile_id  | asset_type | status     | verified | downloaded_mb | actual_sha256 |
+|:---------|:-----------|:-----------|:---------|--------------:|:--------------|
+| BH4XC5FK | geotiff    | downloaded | TRUE     |         5.393 | 878be33a85f5  |
+| BH4XC5FK | rat        | downloaded | TRUE     |         0.104 | 21405b45e162  |
+| BH4XD5FK | geotiff    | downloaded | TRUE     |         4.093 | 35174b851869  |
+| BH4XD5FK | rat        | downloaded | TRUE     |         0.067 | 59814a3e330c  |
+
+## Basic Workflow
 
 ``` r
-
-
-
-
-
-
-
-# install.packages("pak")
-pak::pak("el-cordero/bluer-topo")
-```
-
-## Basic workflow
-
-``` r
-
-
-
-
-
 
 
 library(bluertopo)
 library(terra)
 
 aoi <- vect("my_area.gpkg")
-
-bathy <- bluertopo(
-  aoi,
-  layers = "elevation",
-  resolution = "native",
-  coverage = "warn",
-  details = TRUE
-)
-
-bathy$data
-bathy$tiles
-bathy$provenance
+bathy <- bluertopo(aoi)
+plot(bathy)
 ```
 
-## Download original NOAA assets
-
-Use
-[`bluertopo_download()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md)
-when the durable deliverable is the original NOAA GeoTIFF plus optional
-RAT sidecars rather than an extracted raster object.
+## Provenance Workflow
 
 ``` r
 
 
+result <- bluertopo(aoi, details = TRUE)
 
-
-
-
-
-files <- bluertopo_download(
-  aoi,
-  path = "data/bluetopo",
-  rat = TRUE,
-  verify = "sha256",
-  coverage = "fill"
-)
+result$tiles
+result$downloads
+result$coverage
+result$provenance
 ```
 
-`verify = "sha256"` is the default and requires NOAA-provided checksums.
-`verify = "none"` is available only for explicitly unverified workflows.
-`verify = "size"` is rejected unless trustworthy expected byte counts
-are available before any transfer starts.
+## Examples
 
-## Native resolution policies
+The [Examples
+tab](https://el-cordero.github.io/bluer-topo/articles/examples.md) is
+rendered from actual NOAA BlueTopo source tiles for New York Harbor.
+Normal package tests use small synthetic fixtures so checks remain
+network-free. The mixed-grid example uses a documented secondary real
+AOI near Key West and Boca Chica Channel because the current New York
+Harbor plan is one compatible 4 m native grid.
 
-`resolution` filters NOAA BlueTopo source tiles by their native cell
-size. Smaller meter values mean finer native source detail.
-`output_resolution` requests an explicit output grid and therefore
-resamples the output.
-
-``` r
-
-
-
-
-
-
-
-# Exact native resolution
-bathy_8m <- bluertopo(aoi, resolution = 8)
-
-# Highest native detail, with lower-resolution fallback for coverage
-bathy_best <- bluertopo(aoi, resolution = "finest", coverage = "fill")
-
-# Lowest native detail
-bathy_low <- bluertopo(aoi, resolution = "coarsest")
-
-# Closest available native resolution to 10 m
-bathy_near <- bluertopo(
-  aoi,
-  resolution = bluertopo_resolution("nearest", value = 10, tie = "finer")
-)
-
-# Keep source tiles from 4 through 16 m
-bathy_range <- bluertopo(
-  aoi,
-  resolution = bluertopo_resolution("between", min_m = 4, max_m = 16)
-)
-```
-
-## Mixed source grids
-
-Native BlueTopo tiles can span multiple UTM zones, resolutions, or grid
-alignments. When the selected source files are not compatible,
-[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
-returns a
-[`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html)
-unless the user explicitly requests an output grid.
-
-``` r
-
-
-
-
-
-
-
-bathy_10m <- bluertopo(
-  aoi,
-  resolution = "native",
-  output_crs = "EPSG:26918",
-  output_resolution = 10,
-  combine = "single"
-)
-```
-
-## Cache operations
-
-Package cache operations are intentionally conservative.
-[`bluertopo_cache_clear()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_cache_clear.md)
-clears only the configured `bluertopo` cache, requires confirmation in
-noninteractive sessions, and refuses to remove content unless a
-package-owned cache marker is present.
-
-``` r
-
-
-
-
-
-
-
-bluertopo_cache_dir()
-bluertopo_cache_clear(confirm = TRUE)
-```
+- [Example
+  gallery](https://el-cordero.github.io/bluer-topo/articles/examples.md)
+- [Discover tiles and
+  coverage](https://el-cordero.github.io/bluer-topo/articles/example-discover-tiles.md)
+- [Download original
+  assets](https://el-cordero.github.io/bluer-topo/articles/example-download-assets.md)
+- [Extract elevation with
+  terra](https://el-cordero.github.io/bluer-topo/articles/example-extract-elevation.md)
+- [Compare resolution
+  policies](https://el-cordero.github.io/bluer-topo/articles/example-resolution-policies.md)
+- [Mixed grids and output
+  grid](https://el-cordero.github.io/bluer-topo/articles/example-mixed-grids.md)
+- [Layers and RAT
+  metadata](https://el-cordero.github.io/bluer-topo/articles/example-layers-rat.md)

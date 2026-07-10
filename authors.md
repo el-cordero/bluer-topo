@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/el-cordero/bluer-topo/blob/HEAD/inst/CITATION)
+[`inst/CITATION`](https://github.com/el-cordero/bluer-topo/blob/main/inst/CITATION)
 
 Cordero E (2026). *bluertopo: Download and extract NOAA BlueTopo
 bathymetry with terra*. R package version 0.0.1,
