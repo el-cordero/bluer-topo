@@ -1,0 +1,110 @@
+---
+title: "Layers and RAT Metadata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Layers and RAT Metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+library(terra)
+
+example <- bt_example_setup()
+example_aoi <- example$aoi
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+The contributor band contains IDs, not continuous values. Contributor IDs must
+not be averaged. RAT sidecars carry contributor metadata, and `bluertopo`
+preserves original RAT files.
+
+## All Layers
+
+```{r all-layers}
+all_layers <- bluertopo(
+  example_aoi,
+  layers = "all",
+  coverage = "fill",
+  details = TRUE,
+  progress = FALSE
+)
+```
+
+```{r layer-table}
+layer_table <- data.frame(
+  layer = c("elevation", "uncertainty", "contributor"),
+  `source band` = c(1L, 2L, 3L),
+  meaning = c(
+    "source elevation values",
+    "source vertical uncertainty values",
+    "categorical contributor/source IDs"
+  ),
+  `resampling rule` = c(
+    "bilinear only when an explicit output grid is requested",
+    "bilinear only when an explicit output grid is requested; values are then resampled",
+    "nearest-neighbor only; never average contributor IDs"
+  ),
+  check.names = FALSE
+)
+
+bt_display_table(layer_table)
+```
+
+## RAT Sidecar Manifest
+
+```{r rat-manifest}
+rat_manifest <- as.data.frame(all_layers$downloads)
+rat_manifest <- rat_manifest[rat_manifest$asset_type == "rat", , drop = FALSE]
+rat_table <- data.frame(
+  tile_id = rat_manifest$tile_id,
+  source_basename = rat_manifest$source_basename,
+  local_path = bt_short_path(rat_manifest$local_path, keep = 4L),
+  verified = rat_manifest$verified,
+  actual_sha256 = bt_short_sha(rat_manifest$actual_sha256),
+  stringsAsFactors = FALSE
+)
+
+bt_display_table(rat_table)
+```
+
+## Contributor Lookup
+
+```{r rat-lookup}
+contributor_lookup <- bt_parse_rat(rat_manifest$local_path)
+bt_display_table(contributor_lookup)
+```
+
+## Elevation
+
+```{r elevation-plot, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation layer.", fig.alt="Synthetic fixture elevation raster."}
+first_grid <- bt_rasters(all_layers$data)[[1L]]
+terra::plot(first_grid[["elevation"]], main = "Elevation")
+```
+
+## Uncertainty
+
+```{r uncertainty-plot, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: uncertainty layer.", fig.alt="Synthetic fixture uncertainty raster."}
+terra::plot(first_grid[["uncertainty"]], main = "Uncertainty")
+```
+
+## Contributor IDs
+
+```{r contributor-plot, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: contributor ID layer.", fig.alt="Synthetic fixture contributor ID raster."}
+terra::plot(first_grid[["contributor"]], main = "Contributor IDs")
+```
+
+These sidecars are synthetic and compact, but they demonstrate the package
+boundary: original RAT files are verified and preserved, while interpretation of
+contributor IDs remains a metadata step.

@@ -1,0 +1,83 @@
+---
+title: "Discover Tiles and Coverage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Discover Tiles and Coverage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+library(terra)
+
+example <- bt_example_setup()
+example_aoi <- example$aoi
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+This example shows how an AOI intersects BlueTopo-style tile footprints and how
+coverage diagnostics are reported. The fixture-only
+`bluertopo.allow_test_hosts = TRUE` option enables local `file://` assets; it is
+not part of normal live NOAA workflows.
+
+## Selected Tiles
+
+```{r discover}
+tiles <- bluertopo_tiles(
+  example_aoi,
+  resolution = "native",
+  coverage = "warn",
+  quiet = TRUE
+)
+```
+
+```{r selected-table}
+bt_display_table(bt_tile_table(tiles))
+```
+
+## Coverage Diagnostics
+
+```{r coverage-table}
+coverage <- attr(tiles, "coverage")
+bt_display_table(bt_coverage_table(coverage))
+```
+
+## AOI And Selected Footprints
+
+```{r footprint-figure, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: AOI and selected tile footprints.", fig.alt="AOI outline over selected synthetic BlueTopo tile footprints."}
+bt_plot_tiles(tiles, example_aoi, main = "AOI intersection with selected tiles")
+```
+
+## Coverage Fractions
+
+```{r coverage-bars, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: coverage fractions.", fig.alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage."}
+coverage_values <- unlist(coverage[c(
+  "published_coverage_fraction",
+  "selected_coverage_fraction",
+  "selected_aoi_fraction",
+  "target_coverage"
+)])
+barplot(
+  coverage_values,
+  ylim = c(0, 1),
+  col = c("#8ecae6", "#90be6d", "#f9c74f", "#d00000"),
+  las = 2,
+  ylab = "fraction",
+  main = "Coverage diagnostics"
+)
+abline(h = coverage$target_coverage, col = "#d00000", lwd = 2, lty = 2)
+```
+
+Coverage is geometric tile-index coverage. It is not a statement about data
+quality, navigational fitness, or vertical-datum compatibility.

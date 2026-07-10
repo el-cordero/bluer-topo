@@ -7,25 +7,40 @@ template:
   light-switch: true
   bslib:
     primary: "#005f73"
-    base_font:
-      google: "Source Sans 3"
-    heading_font:
-      google: "Source Sans 3"
-    code_font:
-      google: "Source Code Pro"
+    base_font: system-ui
+    heading_font: system-ui
+    code_font: ui-monospace
 
 home:
   title: "bluertopo"
   description: "Verified NOAA BlueTopo downloads and terra extraction for submerged terrain."
+  sidebar: false
 
 navbar:
   structure:
-    left: [intro, reference, articles, news]
+    left: [intro, reference, examples, articles, news]
     right: [search, github]
   components:
     intro:
       text: Get started
       href: articles/get-bluetopo.html
+    examples:
+      text: Examples
+      menu:
+        - text: Example gallery
+          href: articles/examples.html
+        - text: Discover tiles and coverage
+          href: articles/example-discover-tiles.html
+        - text: Download original assets
+          href: articles/example-download-assets.html
+        - text: Extract elevation with terra
+          href: articles/example-extract-elevation.html
+        - text: Compare resolution policies
+          href: articles/example-resolution-policies.html
+        - text: Mixed grids and output grid
+          href: articles/example-mixed-grids.html
+        - text: Layers and RAT metadata
+          href: articles/example-layers-rat.html
     articles:
       text: Articles
       menu:
@@ -55,8 +70,18 @@ reference:
       - bluertopo_cache_clear
 
 articles:
+  - title: Examples
+    navbar: Examples
+    contents:
+      - examples
+      - example-discover-tiles
+      - example-download-assets
+      - example-extract-elevation
+      - example-resolution-policies
+      - example-mixed-grids
+      - example-layers-rat
   - title: Guides
-    navbar: ~
+    navbar: Articles
     contents:
       - get-bluetopo
       - resolution-policies

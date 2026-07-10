@@ -28,6 +28,7 @@ Suggests:
     knitr,
     lintr,
     pkgdown,
+    pkgload,
     rmarkdown,
     roxygen2,
     sf,

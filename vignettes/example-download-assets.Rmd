@@ -1,0 +1,108 @@
+---
+title: "Download Original Assets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Download Original Assets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+
+example <- bt_example_setup()
+example_aoi <- example$aoi
+example_download_dir <- file.path(tempdir(), "bluertopo-example-download-assets")
+unlink(example_download_dir, recursive = TRUE, force = TRUE)
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+`bluertopo_download()` preserves original GeoTIFF and RAT sidecar files and
+verifies them with SHA-256 checksums. This page uses local fixture files, not
+live NOAA downloads.
+
+## First Download
+
+```{r download}
+manifest <- bluertopo_download(
+  example_aoi,
+  path = example_download_dir,
+  coverage = "fill",
+  rat = TRUE,
+  verify = "sha256",
+  progress = FALSE
+)
+```
+
+```{r manifest-table}
+bt_display_table(bt_manifest_table(manifest))
+```
+
+## Reuse Existing Verified Files
+
+```{r reuse}
+reused <- bluertopo_download(
+  example_aoi,
+  path = example_download_dir,
+  coverage = "fill",
+  rat = TRUE,
+  verify = "sha256",
+  progress = FALSE
+)
+
+reuse_df <- as.data.frame(reused)
+reuse_summary <- aggregate(
+  verified ~ status,
+  data = reuse_df,
+  FUN = function(x) sum(x %in% TRUE)
+)
+names(reuse_summary) <- c("status", "verified_count")
+reuse_summary$count <- as.integer(table(reuse_df$status)[reuse_summary$status])
+reuse_summary <- reuse_summary[c("status", "count", "verified_count")]
+
+bt_display_table(reuse_summary)
+```
+
+## Manifest Files
+
+```{r manifest-files}
+manifest_files <- list.files(
+  example_download_dir,
+  pattern = "manifest\\.(csv|json)$|manifest-[A-Za-z0-9]+\\.(csv|json)$",
+  recursive = TRUE,
+  full.names = TRUE
+)
+manifest_file_table <- data.frame(
+  file = bt_short_path(manifest_files, keep = 3L),
+  exists = file.exists(manifest_files),
+  bytes = as.integer(file.info(manifest_files)$size),
+  stringsAsFactors = FALSE
+)
+
+bt_display_table(manifest_file_table)
+```
+
+## Download Status Counts
+
+```{r status-bars, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: verified download status counts.", fig.alt="Bar plot of downloaded asset status counts from the synthetic fixture."}
+status_counts <- bt_status_counts(manifest)
+barplot(
+  stats::setNames(status_counts$count, status_counts$status),
+  col = "#005f73",
+  ylab = "asset count",
+  main = "First-call download statuses"
+)
+```
+
+The second call reports `reused_verified` for files that already exist and still
+match the expected SHA-256 checksums.

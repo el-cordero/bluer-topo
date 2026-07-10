@@ -1,0 +1,104 @@
+---
+title: "Mixed Grids and Output Grid"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mixed Grids and Output Grid}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+library(terra)
+
+example <- bt_example_setup()
+example_aoi <- example$aoi
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+Mixed native grids are preserved unless the user asks for a single output grid.
+`combine = "single"` needs an explicit output grid when native grids are
+incompatible. Resampled uncertainty values are not original source cells, and
+contributor resampling must be nearest-neighbor.
+
+## Native Mixed-Grid Extraction
+
+```{r native}
+native <- bluertopo(
+  example_aoi,
+  resolution = "native",
+  coverage = "fill",
+  combine = "auto",
+  details = TRUE,
+  progress = FALSE
+)
+```
+
+```{r native-table}
+native_table <- bt_raster_summary(native$data)
+native_table$output_object_class <- paste(class(native$data), collapse = ", ")
+native_table <- native_table[c(
+  "output_object_class",
+  "group_name",
+  "crs",
+  "resolution",
+  "source_count",
+  "layer_names"
+)]
+
+bt_display_table(native_table)
+```
+
+## Native Grid Footprints
+
+```{r native-footprints, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: native grid footprints selected for the mixed-grid extraction.", fig.alt="Synthetic fixture tile footprints selected for mixed native grids."}
+native_tiles <- native$tiles
+bt_plot_tiles(native_tiles, example_aoi, main = "Selected mixed native grids")
+```
+
+## Explicit Single Output Grid
+
+```{r single}
+single <- suppressWarnings(bluertopo(
+  example_aoi,
+  resolution = "native",
+  coverage = "fill",
+  output_crs = "EPSG:3857",
+  output_resolution = 50000,
+  combine = "single",
+  details = TRUE,
+  progress = FALSE
+))
+```
+
+```{r single-table}
+single_raster <- single$data
+single_table <- data.frame(
+  output_object_class = paste(class(single_raster), collapse = ", "),
+  crs = paste0("EPSG:", terra::crs(single_raster, describe = TRUE)$code),
+  resolution = paste(round(terra::res(single_raster), 3), collapse = " x "),
+  extent = paste(round(as.vector(terra::ext(single_raster)), 1), collapse = ", "),
+  resampled_flag = attr(single_raster, "bluertopo_resampled") %in% TRUE,
+  stringsAsFactors = FALSE
+)
+
+bt_display_table(single_table)
+```
+
+```{r output-raster, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation resampled onto an explicit output grid.", fig.alt="Synthetic fixture elevation raster on one explicit output grid."}
+terra::plot(single$data, main = "Explicit output grid elevation")
+```
+
+The explicit grid is useful for workflows that require one raster, but it is a
+resampling operation. Native source-resolution selection remains separate from
+output-grid creation.

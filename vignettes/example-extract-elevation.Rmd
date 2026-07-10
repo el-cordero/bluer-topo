@@ -1,0 +1,102 @@
+---
+title: "Extract Elevation with terra"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extract Elevation with terra}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+library(terra)
+
+example <- bt_example_setup()
+example_aoi <- example$aoi
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+`bluertopo()` returns terra objects and, with `details = TRUE`, exposes selected
+tiles, downloads, query metadata, provenance, and coverage diagnostics. Normal
+native extraction does not intentionally resample.
+
+## Extract Elevation
+
+```{r extract}
+result <- bluertopo(
+  example_aoi,
+  layers = "elevation",
+  resolution = "native",
+  coverage = "fill",
+  details = TRUE,
+  progress = FALSE
+)
+```
+
+## Object Summary
+
+```{r object-summary}
+rasters <- bt_rasters(result$data)
+object_summary <- data.frame(
+  element = c(
+    "result$data class",
+    "number of layers",
+    "layer names",
+    "CRS summary",
+    "resolution",
+    "source count"
+  ),
+  class = c(
+    paste(class(result$data), collapse = ", "),
+    "integer",
+    "character",
+    "character",
+    "character",
+    "integer"
+  ),
+  value = c(
+    paste(class(result$data), collapse = ", "),
+    sum(vapply(rasters, terra::nlyr, numeric(1L))),
+    paste(unique(unlist(lapply(rasters, names), use.names = FALSE)), collapse = ", "),
+    paste(unique(vapply(rasters, function(r) as.character(terra::crs(r, describe = TRUE)$code), "")), collapse = ", "),
+    paste(unique(vapply(rasters, function(r) paste(round(terra::res(r), 3), collapse = " x "), "")), collapse = "; "),
+    length(unique(unlist(lapply(rasters, terra::sources), use.names = FALSE)))
+  ),
+  stringsAsFactors = FALSE
+)
+
+bt_display_table(object_summary)
+```
+
+## File-Backed Sources
+
+```{r source-table}
+bt_display_table(bt_sources_table(result$data))
+```
+
+## Coverage
+
+```{r coverage-table}
+bt_display_table(bt_coverage_table(result$coverage))
+```
+
+## Elevation Preview
+
+```{r elevation-figure, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation raster from the first native grid.", fig.alt="Synthetic fixture elevation raster with AOI outline."}
+preview_raster <- bt_plot_first_raster(result$data, main = "Synthetic fixture elevation")
+aoi_projected <- terra::project(example_aoi, terra::crs(preview_raster))
+terra::plot(aoi_projected, add = TRUE, border = "#d00000", lwd = 2)
+```
+
+When native source grids differ, the result can be a `SpatRasterCollection`.
+Each member can still be file-backed by verified original assets.

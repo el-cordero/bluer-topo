@@ -1,0 +1,107 @@
+---
+title: "Example Gallery"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example Gallery}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+helper <- if (file.exists("vignettes/example-helpers.R")) {
+  "vignettes/example-helpers.R"
+} else {
+  "example-helpers.R"
+}
+source(helper)
+```
+
+```{r setup}
+library(terra)
+
+example <- bt_example_setup()
+example_root <- example$root
+example_catalog <- example$catalog
+example_aoi <- example$aoi
+```
+
+Every rendered output on this page uses: **`r bt_fixture_label`**
+
+BlueTopo is not for navigation. `bluertopo` performs no vertical-datum
+conversion. `resolution` selects native source tiles; `output_resolution`
+resamples onto an explicit output grid.
+
+## What The Examples Show
+
+```{r gallery-table}
+gallery <- data.frame(
+  Example = c(
+    "Discover tiles and coverage",
+    "Download original assets",
+    "Extract elevation with terra",
+    "Compare resolution policies",
+    "Mixed grids and output grid",
+    "Layers and RAT metadata"
+  ),
+  `Main function` = c(
+    "bluertopo_tiles()",
+    "bluertopo_download()",
+    "bluertopo()",
+    "bluertopo_tiles()",
+    "bluertopo()",
+    "bluertopo()"
+  ),
+  Shows = c(
+    "AOI intersection, selected footprints, coverage diagnostics",
+    "Verified original GeoTIFF and RAT sidecar assets",
+    "File-backed terra object and provenance",
+    "Native source-resolution selection effects",
+    "SpatRasterCollection versus explicit output grid",
+    "Elevation, uncertainty, contributor IDs, and RAT metadata"
+  ),
+  `Output type` = c(
+    "Tables and footprint figure",
+    "Manifest tables and status figure",
+    "terra summary tables and raster figure",
+    "Policy comparison tables and maps",
+    "Grid summary tables and raster figure",
+    "Layer/RAT tables and raster figures"
+  ),
+  check.names = FALSE
+)
+
+bt_display_table(gallery)
+```
+
+## Fixture Tile Footprints
+
+```{r tile-footprints, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: AOI outline and tile footprints by native source resolution.", fig.alt="Synthetic fixture AOI outline over three BlueTopo-style tile footprints colored by native source resolution."}
+tiles <- bluertopo_tiles(example_aoi, coverage = "fill", quiet = TRUE)
+bt_plot_tiles(tiles, example_aoi, main = "Synthetic fixture tile footprints")
+```
+
+```{r selected-tiles}
+tiles_df <- as.data.frame(tiles)
+bt_display_table(
+  tiles_df[c("tile_id", "resolution_m", "utm_zone", "selection_reason", "fallback")]
+)
+```
+
+## Terra Preview
+
+```{r terra-preview, fig.cap="Synthetic miniature BlueTopo fixture for package demonstration: elevation raster preview from one source tile.", fig.alt="Small synthetic elevation raster preview from the packaged fixture."}
+preview <- bluertopo(
+  example_aoi,
+  layers = "elevation",
+  resolution = 4,
+  coverage = "ignore",
+  details = TRUE,
+  progress = FALSE
+)
+
+terra::plot(preview$data, main = "Synthetic fixture elevation")
+```
+
+The preview is intentionally small and local. It proves the package workflow
+without downloading NOAA data during documentation builds.

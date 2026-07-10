@@ -1,0 +1,20 @@
+<PAMDataset>
+  <Metadata domain="BLUE_TOPO_SYNTHETIC_FIXTURE">
+    <MDI key="tile">TILE_COARSE_B</MDI>
+    <MDI key="label">Synthetic miniature BlueTopo fixture for package demonstration.</MDI>
+    <MDI key="not_for_navigation">true</MDI>
+    <MDI key="vertical_datum_conversion">none</MDI>
+  </Metadata>
+  <Contributors>
+    <Contributor id="201" source_survey_id="SYN_COARSE_B_2023_A" source_institution="Synthetic NOAA Partner" source_type="synthetic chart compilation" />
+    <Contributor id="202" source_survey_id="SYN_COARSE_B_2023_B" source_institution="Synthetic Coastal Survey Office" source_type="synthetic multibeam" />
+  </Contributors>
+  <GDALRasterAttributeTable>
+    <FieldDefn index="0"><Name>contributor_id</Name><Type>0</Type><Usage>0</Usage></FieldDefn>
+    <FieldDefn index="1"><Name>source_survey_id</Name><Type>2</Type><Usage>0</Usage></FieldDefn>
+    <FieldDefn index="2"><Name>source_institution</Name><Type>2</Type><Usage>0</Usage></FieldDefn>
+    <FieldDefn index="3"><Name>source_type</Name><Type>2</Type><Usage>0</Usage></FieldDefn>
+    <Row index="0"><F>201</F><F>SYN_COARSE_B_2023_A</F><F>Synthetic NOAA Partner</F><F>synthetic chart compilation</F></Row>
+    <Row index="1"><F>202</F><F>SYN_COARSE_B_2023_B</F><F>Synthetic Coastal Survey Office</F><F>synthetic multibeam</F></Row>
+  </GDALRasterAttributeTable>
+</PAMDataset>

@@ -132,6 +132,20 @@ bluertopo_cache_dir()
 bluertopo_cache_clear(confirm = TRUE)
 ```
 
+## Examples
+
+The [Examples tab](https://el-cordero.github.io/bluer-topo/articles/examples.html)
+uses synthetic miniature BlueTopo fixtures so the rendered tables and figures are
+reproducible without downloading NOAA data during documentation builds.
+
+- [Example gallery](https://el-cordero.github.io/bluer-topo/articles/examples.html)
+- [Discover tiles and coverage](https://el-cordero.github.io/bluer-topo/articles/example-discover-tiles.html)
+- [Download original assets](https://el-cordero.github.io/bluer-topo/articles/example-download-assets.html)
+- [Extract elevation with terra](https://el-cordero.github.io/bluer-topo/articles/example-extract-elevation.html)
+- [Compare resolution policies](https://el-cordero.github.io/bluer-topo/articles/example-resolution-policies.html)
+- [Mixed grids and output grid](https://el-cordero.github.io/bluer-topo/articles/example-mixed-grids.html)
+- [Layers and RAT metadata](https://el-cordero.github.io/bluer-topo/articles/example-layers-rat.html)
+
 ## Reference
 
 NOAA. BlueTopo. <https://nauticalcharts.noaa.gov/data/bluetopo.html>

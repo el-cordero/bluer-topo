@@ -373,6 +373,9 @@
     } else {
       value <- as.character(value)
     }
+    if (standard %in% c("geotiff_url", "rat_url")) {
+      value <- .bt_resolve_local_catalog_asset_links(value, metadata)
+    }
     v[[standard]] <- value
   }
   v$selected <- FALSE
@@ -386,6 +389,28 @@
   v$catalog_last_modified <- metadata$last_modified %||% NA_character_
   attr(v, "bluertopo_catalog") <- metadata
   v
+}
+
+.bt_resolve_local_catalog_asset_links <- function(value, metadata = list()) {
+  if (!length(value)) {
+    return(value)
+  }
+  catalog_path <- metadata$catalog_path %||% NA_character_
+  if (!.bt_is_scalar_character(catalog_path) || !file.exists(catalog_path)) {
+    return(value)
+  }
+  relative <- !is.na(value) & nzchar(value) &
+    !vapply(value, .bt_is_url, logical(1L))
+  if (!any(relative)) {
+    return(value)
+  }
+  catalog_dir <- dirname(.bt_normalize_path(catalog_path, must_work = TRUE))
+  value[relative] <- vapply(
+    file.path(catalog_dir, value[relative]),
+    .bt_file_url,
+    character(1L)
+  )
+  value
 }
 
 .bt_parse_datetime <- function(x) {
