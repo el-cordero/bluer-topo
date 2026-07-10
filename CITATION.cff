@@ -6,13 +6,11 @@ date-released: 2026-07-10
 authors:
   - family-names: Cordero
     given-names: Elvin
-    affiliation: SeaMount Geospatial Labs
-  - name: SeaMount Geospatial Labs
 license: MIT
 repository-code: "https://github.com/el-cordero/bluer-topo"
 url: "https://el-cordero.github.io/bluer-topo/"
 references:
-  - type: dataset
-    title: "NOAA National Bathymetric Source Data"
+  - type: webpage
+    title: "BlueTopo"
     publisher: "NOAA"
-    url: "https://registry.opendata.aws/noaa-bathymetry/"
+    url: "https://nauticalcharts.noaa.gov/data/bluetopo.html"

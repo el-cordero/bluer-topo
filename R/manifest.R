@@ -46,6 +46,7 @@
   list(
     noaa_attribution = "NOAA National Bathymetric Source Data / BlueTopo",
     source_product_name = "NOAA BlueTopo",
+    noaa_bluetopo_reference_url = "https://nauticalcharts.noaa.gov/data/bluetopo.html",
     not_for_navigation = .bt_not_for_navigation,
     noaa_affiliation = "This R package is not affiliated with, endorsed by, or supported by NOAA.",
     catalog_name = meta$catalog_name %||% NA_character_,

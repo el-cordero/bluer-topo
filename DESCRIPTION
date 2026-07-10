@@ -2,8 +2,7 @@ Package: bluertopo
 Title: Download and Extract NOAA BlueTopo Bathymetry with Terra
 Version: 0.0.1
 Authors@R: c(
-    person("Elvin", "Cordero", email = "elvin.cordero@seamountgeo.com", role = c("aut", "cre")),
-    person("SeaMount Geospatial Labs", role = "cph")
+    person("Elvin", "Cordero", email = "elvin.cordero@seamountgeo.com", role = c("aut", "cre", "cph"))
   )
 Description: Discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
     GeoTIFF assets for user supplied areas of interest. The package keeps source

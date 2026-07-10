@@ -19,12 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Elvin Cordero \email{elvin.cordero@seamountgeo.com}
-
-Other contributors:
-\itemize{
-  \item SeaMount Geospatial Labs [copyright holder]
-}
+\strong{Maintainer}: Elvin Cordero \email{elvin.cordero@seamountgeo.com} [copyright holder]
 
 }
 \keyword{internal}

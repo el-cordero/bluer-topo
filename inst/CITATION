@@ -1,10 +1,19 @@
 citHeader("To cite bluertopo in publications use:")
 
-bibentry(
-  bibtype = "Manual",
-  title = "bluertopo: Download and extract NOAA BlueTopo bathymetry with terra",
-  author = c(person("Elvin", "Cordero")),
-  year = "2026",
-  note = "R package version 0.0.1",
-  url = "https://el-cordero.github.io/bluer-topo/"
+c(
+  bibentry(
+    bibtype = "Manual",
+    title = "bluertopo: Download and extract NOAA BlueTopo bathymetry with terra",
+    author = c(person("Elvin", "Cordero")),
+    year = "2026",
+    note = "R package version 0.0.1",
+    url = "https://el-cordero.github.io/bluer-topo/"
+  ),
+  bibentry(
+    bibtype = "Misc",
+    title = "BlueTopo",
+    author = "NOAA",
+    year = "2026",
+    url = "https://nauticalcharts.noaa.gov/data/bluetopo.html"
+  )
 )

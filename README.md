@@ -16,6 +16,9 @@ BlueTopo is not for navigation. This package performs no vertical-datum
 conversion and is not affiliated with, endorsed by, or supported by
 NOAA.
 
+Reference: NOAA,
+[BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html).
+
 ## Installation
 
 ``` r
@@ -123,3 +126,7 @@ content unless a package-owned cache marker is present.
 bluertopo_cache_dir()
 bluertopo_cache_clear(confirm = TRUE)
 ```
+
+## Reference
+
+NOAA. BlueTopo. <https://nauticalcharts.noaa.gov/data/bluetopo.html>

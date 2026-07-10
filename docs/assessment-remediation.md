@@ -16,10 +16,11 @@ Status: REMEDIATED
 
 Evidence:
 
-- `DESCRIPTION` now identifies Elvin Cordero and SeaMount Geospatial Labs,
-  advertises `https://el-cordero.github.io/bluer-topo/`, and points issues to
-  `https://github.com/el-cordero/bluer-topo/issues`.
-- `CITATION.cff` and `inst/CITATION` use the same maintainer identity.
+- `DESCRIPTION` now identifies Elvin Cordero as author, maintainer, and
+  copyright holder, advertises `https://el-cordero.github.io/bluer-topo/`, and
+  points issues to `https://github.com/el-cordero/bluer-topo/issues`.
+- `CITATION.cff` and `inst/CITATION` use the same maintainer identity and cite
+  NOAA BlueTopo at `https://nauticalcharts.noaa.gov/data/bluetopo.html`.
 - `R/utils.R` uses the canonical repository URL in the HTTP user agent.
 - `_pkgdown.yml` follows the `blueterra` Bootstrap 5/Flatly/Source Sans 3 visual
   system and targets the GitHub Pages URL.
@@ -279,7 +280,8 @@ Validation commands and outcomes from this remediation run:
 - `Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
   succeeded after rerunning with elevated permissions. The sandboxed first run
   could not resolve `cloud.r-project.org` for pkgdown CRAN metadata and could
-  not write the normal R sass cache.
+  not write the normal R sass cache. This builds local site files but does not
+  itself enable or publish GitHub Pages.
 - `R CMD build .`: succeeded and built `bluertopo_0.0.1.tar.gz`.
 - `R CMD check --as-cran --no-manual bluertopo_0.0.1.tar.gz`: 0 errors,
   0 warnings, 1 note.
@@ -301,4 +303,4 @@ Found the following (possibly) invalid URLs:
 Disposition:
 
 - This is expected until the GitHub Pages site is deployed from the new pkgdown
-  workflow.
+  workflow and Pages is configured for the repository.

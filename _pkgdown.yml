@@ -67,8 +67,6 @@ articles:
 authors:
   "Elvin Cordero":
     href: https://github.com/el-cordero
-  "SeaMount Geospatial Labs":
-    href: https://github.com/el-cordero
 
 development:
   mode: release
