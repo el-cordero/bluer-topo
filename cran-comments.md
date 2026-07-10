@@ -8,22 +8,18 @@ Validation on 2026-07-10:
 - `Rscript -e 'lintr::lint_package()'`: no lints found.
 - `Rscript -e 'pkgdown::build_site(new_process = FALSE, install = TRUE)'`:
   succeeded locally.
+- `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE,
+  clean = FALSE)'`: succeeded and pushed the site to `gh-pages`.
+- GitHub Pages is configured from `gh-pages` at `/`, and
+  `https://el-cordero.github.io/bluer-topo/` returns HTTP 200.
 - `R CMD build .`: succeeded.
 - `R CMD check --as-cran --no-manual bluertopo_0.0.1.tar.gz`: 0 errors,
   0 warnings, 1 note.
 
-The remaining NOTE is expected before the pkgdown site is deployed:
+The remaining NOTE is expected for a first CRAN submission:
 
 ```text
 New submission
-
-Found the following (possibly) invalid URLs:
-  URL: https://el-cordero.github.io/bluer-topo/
-    From: DESCRIPTION
-          man/bluertopo-package.Rd
-          inst/CITATION
-    Status: 404
-    Message: Not Found
 ```
 
 Network access is disabled during normal examples and tests. Live NOAA

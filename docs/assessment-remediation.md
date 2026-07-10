@@ -282,6 +282,10 @@ Validation commands and outcomes from this remediation run:
   could not resolve `cloud.r-project.org` for pkgdown CRAN metadata and could
   not write the normal R sass cache. This builds local site files but does not
   itself enable or publish GitHub Pages.
+- `Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, install = TRUE, clean = FALSE)'`:
+  succeeded and pushed the generated site to `gh-pages`.
+- GitHub Pages is configured from `gh-pages` at `/`, and
+  `https://el-cordero.github.io/bluer-topo/` returns HTTP 200.
 - `R CMD build .`: succeeded and built `bluertopo_0.0.1.tar.gz`.
 - `R CMD check --as-cran --no-manual bluertopo_0.0.1.tar.gz`: 0 errors,
   0 warnings, 1 note.
@@ -290,17 +294,8 @@ Remaining check note:
 
 ```text
 New submission
-
-Found the following (possibly) invalid URLs:
-  URL: https://el-cordero.github.io/bluer-topo/
-    From: DESCRIPTION
-          man/bluertopo-package.Rd
-          inst/CITATION
-    Status: 404
-    Message: Not Found
 ```
 
 Disposition:
 
-- This is expected until the GitHub Pages site is deployed from the new pkgdown
-  workflow and Pages is configured for the repository.
+- This is the expected first-submission NOTE.
