@@ -1,8 +1,8 @@
 ---
-title: "Downloads, Cache, and Reproducibility"
+title: "Downloads, cache, and reproducibility"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Downloads, Cache, and Reproducibility}
+  %\VignetteIndexEntry{Downloads, cache, and reproducibility}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Resolution Policies"
+title: "Resolution policies"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Resolution Policies}
+  %\VignetteIndexEntry{Resolution policies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

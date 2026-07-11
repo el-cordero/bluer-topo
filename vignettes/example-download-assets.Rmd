@@ -1,8 +1,8 @@
 ---
-title: "Download Original Assets"
+title: "Download original assets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Download Original Assets}
+  %\VignetteIndexEntry{Download original assets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,37 +18,57 @@ source(helper)
 real_mode <- bt_real_examples_enabled()
 ```
 
-This page uses real NOAA BlueTopo source tiles when rendered for the public
-pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
+`r if (real_mode) bt_real_example_label else bt_offline_note`
 
-This page downloads the real New York Harbor NOAA BlueTopo GeoTIFFs and RAT
-sidecars, verifies SHA-256 checksums, shows the manifest, and demonstrates
-reuse of already verified local files.
+This example uses BlueTopo tiles covering New York Harbor. The workflow
+demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
+raster access with `terra`. Raster Attribute Table (RAT) sidecars are retained
+with the source GeoTIFF assets.
 
 BlueTopo is not for navigation. No vertical-datum conversion is performed.
-Example downloads are intentionally small and are cached during website builds,
-but they still access NOAA public data.
+Example downloads are intentionally small and are cached during website builds.
 
-## Real Example Setup
+## Example area
 
-```{r setup, eval=bt_real_examples_enabled()}
+```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
 real <- bt_real_example_setup()
+real_aoi <- real$aoi
 ```
 
-## First Download
+## First download
 
 ```{r download, eval=bt_real_examples_enabled()}
-manifest <- bt_real_download_assets(real)
+manifest <- bluertopo_download(
+  real_aoi,
+  path = real$download_dir,
+  resolution = "native",
+  coverage = "fill",
+  rat = TRUE,
+  verify = "sha256",
+  on_exists = "verify",
+  progress = FALSE,
+  quiet = TRUE
+)
 ```
 
-```{r manifest-table, eval=bt_real_examples_enabled()}
+```{r manifest-table, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_manifest_table(manifest))
 ```
 
-## Reuse Existing Verified Files
+## Reuse existing verified files
 
-```{r reuse, eval=bt_real_examples_enabled()}
-reused <- bt_real_download_assets(real)
+```{r reuse, echo=FALSE, eval=bt_real_examples_enabled()}
+reused <- bluertopo_download(
+  real_aoi,
+  path = real$download_dir,
+  resolution = "native",
+  coverage = "fill",
+  rat = TRUE,
+  verify = "sha256",
+  on_exists = "verify",
+  progress = FALSE,
+  quiet = TRUE
+)
 
 reuse_df <- as.data.frame(reused)
 reuse_summary <- aggregate(
@@ -63,21 +83,21 @@ reuse_summary <- reuse_summary[c("status", "count", "verified_count")]
 bt_display_table(reuse_summary)
 ```
 
-## Manifest Files
+## Manifest files
 
-```{r manifest-files, eval=bt_real_examples_enabled()}
+```{r manifest-files, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_manifest_files_table(real$download_dir))
 ```
 
-## Source Domain Summary
+## Source domain summary
 
-```{r source-domain-summary, eval=bt_real_examples_enabled()}
+```{r source-domain-summary, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_source_domain_summary(manifest))
 ```
 
-## Download Status Counts
+## Download status counts
 
-```{r status-bars, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source assets: SHA-256 verified download status counts.", fig.alt="Bar plot of downloaded and reused real BlueTopo asset statuses."}
+```{r status-bars, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="SHA-256 verified download status counts for the selected BlueTopo assets.", fig.alt="Bar plot of downloaded and reused BlueTopo asset statuses."}
 status_counts <- bt_status_counts(manifest)
 barplot(
   stats::setNames(status_counts$count, status_counts$status),

@@ -140,12 +140,11 @@ bluertopo_cache_clear(confirm = TRUE)
 ## Examples
 
 The [Examples tab](https://el-cordero.github.io/bluer-topo/articles/examples.html)
-on the pkgdown site is rendered from actual NOAA BlueTopo source tiles for New
-York Harbor, with a documented secondary real AOI only for the mixed-grid page.
-Normal package tests use small synthetic fixtures so checks remain network-free.
-Example downloads are intentionally small and cached during website builds, but
-they still access NOAA public data. Users should expect real BlueTopo tiles to
-vary in size by location.
+on the pkgdown site uses NOAA BlueTopo source tiles for New York Harbor, with a
+documented secondary AOI only for the mixed-grid page. Normal package tests use
+small synthetic fixtures so checks remain network-free. Example downloads are
+intentionally small and cached during website builds; asset sizes vary by
+location.
 
 - [Example gallery](https://el-cordero.github.io/bluer-topo/articles/examples.html)
 - [Discover tiles and coverage](https://el-cordero.github.io/bluer-topo/articles/example-discover-tiles.html)

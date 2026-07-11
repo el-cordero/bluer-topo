@@ -1,8 +1,8 @@
 ---
-title: "Extract Elevation with terra"
+title: "Extract elevation with terra"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Extract Elevation with terra}
+  %\VignetteIndexEntry{Extract elevation with terra}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,28 +18,28 @@ source(helper)
 real_mode <- bt_real_examples_enabled()
 ```
 
-This page uses real NOAA BlueTopo source tiles when rendered for the public
-pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
+`r if (real_mode) bt_real_example_label else bt_offline_note`
 
-This page downloads two real NOAA BlueTopo tiles for New York Harbor, verifies
-the GeoTIFF and RAT checksums, opens the elevation band with `terra`, and
-renders a hillshaded bathymetry map with contour lines.
+This example uses BlueTopo tiles covering New York Harbor. The workflow
+demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
+raster access with `terra`. Raster Attribute Table (RAT) sidecars are retained
+with the source GeoTIFF assets.
 
 BlueTopo is not for navigation. No vertical-datum conversion is performed.
 `bluertopo()` returns terra objects and, with `details = TRUE`, exposes selected
 tiles, downloads, query metadata, provenance, and coverage diagnostics. Normal
 native extraction does not intentionally resample.
 
-## Real Example Setup
+## Example area
 
-```{r setup, eval=bt_real_examples_enabled()}
+```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
 library(terra)
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 ```
 
-## Extract Elevation
+## Extract elevation
 
 ```{r extract, eval=bt_real_examples_enabled()}
 result <- bluertopo(
@@ -53,9 +53,9 @@ result <- bluertopo(
 )
 ```
 
-## Object Summary
+## Object summary
 
-```{r object-summary, eval=bt_real_examples_enabled()}
+```{r object-summary, echo=FALSE, eval=bt_real_examples_enabled()}
 rasters <- bt_rasters(result$data)
 object_summary <- data.frame(
   element = c(
@@ -84,27 +84,27 @@ object_summary <- data.frame(
 bt_display_table(object_summary)
 ```
 
-## File-Backed Sources
+## File-backed sources
 
-```{r source-table, eval=bt_real_examples_enabled()}
+```{r source-table, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_sources_table(result$data))
 ```
 
 ## Coverage
 
-```{r coverage-table, eval=bt_real_examples_enabled()}
+```{r coverage-table, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_coverage_table(result$coverage))
 ```
 
 ## Provenance
 
-```{r provenance-table, eval=bt_real_examples_enabled()}
+```{r provenance-table, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_catalog_table(real))
 ```
 
-## Elevation Preview
+## Elevation preview
 
-```{r elevation-figure, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: New York Harbor elevation with hillshade, contours, and AOI outline.", fig.alt="Hillshaded real BlueTopo elevation raster with contours and AOI outline for New York Harbor."}
+```{r elevation-figure, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="BlueTopo bathymetry for New York Harbor, displayed with hillshade, contours, and the example-area boundary.", fig.alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary."}
 bt_plot_bathy_map(result$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
 ```
 

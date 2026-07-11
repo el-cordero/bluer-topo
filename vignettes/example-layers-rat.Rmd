@@ -1,8 +1,8 @@
 ---
-title: "Layers and RAT Metadata"
+title: "Layers and RAT metadata"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Layers and RAT Metadata}
+  %\VignetteIndexEntry{Layers and RAT metadata}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,29 +18,30 @@ source(helper)
 real_mode <- bt_real_examples_enabled()
 ```
 
-This page uses real NOAA BlueTopo source tiles when rendered for the public
-pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
+`r if (real_mode) bt_real_example_label else bt_offline_note`
 
-This page opens real New York Harbor NOAA BlueTopo elevation, uncertainty, and
-contributor layers from verified source GeoTIFFs, then reads real RAT sidecars
-for contributor metadata. Elevation is shown with hillshade and contours;
-uncertainty and contributor IDs are plotted as their own source layers.
+This example uses BlueTopo tiles covering New York Harbor. The workflow
+demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
+raster access with `terra`. It opens elevation, uncertainty, and contributor
+layers, then reads Raster Attribute Table (RAT) sidecars for contributor
+metadata. Elevation is shown with hillshade and contours; uncertainty and
+contributor IDs are plotted as their own source layers.
 
 BlueTopo is not for navigation. No vertical-datum conversion is performed. The
 contributor band contains IDs, not continuous values. Contributor IDs must not
 be averaged. RAT sidecars carry contributor metadata, and `bluertopo` preserves
 original RAT files.
 
-## Real Example Setup
+## Example area
 
-```{r setup, eval=bt_real_examples_enabled()}
+```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
 library(terra)
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 ```
 
-## All Layers
+## All layers
 
 ```{r all-layers, eval=bt_real_examples_enabled()}
 all_layers <- bluertopo(
@@ -53,7 +54,7 @@ all_layers <- bluertopo(
 )
 ```
 
-```{r layer-table, eval=bt_real_examples_enabled()}
+```{r layer-table, echo=FALSE, eval=bt_real_examples_enabled()}
 layer_table <- data.frame(
   layer = c("elevation", "uncertainty", "contributor"),
   `source band` = c(1L, 2L, 3L),
@@ -73,9 +74,9 @@ layer_table <- data.frame(
 bt_display_table(layer_table)
 ```
 
-## RAT Sidecar Manifest
+## RAT sidecar manifest
 
-```{r rat-manifest, eval=bt_real_examples_enabled()}
+```{r rat-manifest, echo=FALSE, eval=bt_real_examples_enabled()}
 rat_manifest <- as.data.frame(all_layers$downloads)
 rat_manifest <- rat_manifest[rat_manifest$asset_type == "rat", , drop = FALSE]
 rat_table <- data.frame(
@@ -90,30 +91,30 @@ rat_table <- data.frame(
 bt_display_table(rat_table)
 ```
 
-## Contributor Lookup
+## Contributor lookup
 
-```{r rat-lookup, eval=bt_real_examples_enabled()}
+```{r rat-lookup, echo=FALSE, eval=bt_real_examples_enabled()}
 contributor_lookup <- bt_parse_rat(rat_manifest$local_path)
 bt_display_table(contributor_lookup)
 ```
 
 ## Elevation
 
-```{r elevation-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: New York Harbor elevation layer with hillshade and contours.", fig.alt="Hillshaded real BlueTopo elevation layer with contours."}
+```{r elevation-plot, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="BlueTopo bathymetry for New York Harbor, displayed with hillshade, contours, and the example-area boundary.", fig.alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary."}
 first_grid <- bt_rasters(all_layers$data)[[1L]]
 bt_plot_bathy_map(first_grid[["elevation"]], real_aoi, main = "New York Harbor elevation")
 ```
 
 ## Uncertainty
 
-```{r uncertainty-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: uncertainty layer.", fig.alt="Real BlueTopo uncertainty raster."}
+```{r uncertainty-plot, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="BlueTopo uncertainty for the selected New York Harbor tiles.", fig.alt="BlueTopo uncertainty raster for the selected New York Harbor tiles."}
 terra::plot(first_grid[["uncertainty"]], main = "Uncertainty", col = grDevices::hcl.colors(80, "BluYl"))
 terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```
 
 ## Contributor IDs
 
-```{r contributor-plot, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source data: contributor ID layer shown with categorical colors.", fig.alt="Real BlueTopo contributor ID raster using categorical colors."}
+```{r contributor-plot, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="Contributor identifiers for the selected New York Harbor tiles.", fig.alt="BlueTopo contributor identifier raster shown with categorical colors."}
 terra::plot(first_grid[["contributor"]], main = "Contributor IDs", col = hcl.colors(12, "Dark 3"))
 terra::plot(terra::project(real_aoi, terra::crs(first_grid)), add = TRUE, border = "#d00000", lwd = 2)
 ```

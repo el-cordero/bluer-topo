@@ -1,8 +1,8 @@
 ---
-title: "Discover Tiles and Coverage"
+title: "Discover tiles and coverage"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Discover Tiles and Coverage}
+  %\VignetteIndexEntry{Discover tiles and coverage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,27 +18,26 @@ source(helper)
 real_mode <- bt_real_examples_enabled()
 ```
 
-This page uses real NOAA BlueTopo source tiles when rendered for the public
-pkgdown site. `r if (real_mode) bt_real_example_label else bt_offline_note`
+`r if (real_mode) bt_real_example_label else bt_offline_note`
 
-This page discovers the two real NOAA BlueTopo tiles selected for New York
-Harbor, reports coverage diagnostics, and renders a locator map with the AOI,
-tile footprints, and native-resolution labels.
+This example uses BlueTopo tiles covering New York Harbor. The workflow
+demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
+raster access with `terra`.
 
 BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Coverage is geometric tile-index coverage, not a statement about navigational
 fitness, data quality, or NOAA endorsement.
 
-## Real Example Setup
+## Example area
 
-```{r setup, eval=bt_real_examples_enabled()}
+```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
 library(terra)
 
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 ```
 
-## Selected Tiles
+## Selected tiles
 
 ```{r discover, eval=bt_real_examples_enabled()}
 tiles <- bluertopo_tiles(
@@ -49,31 +48,31 @@ tiles <- bluertopo_tiles(
 )
 ```
 
-```{r selected-table, eval=bt_real_examples_enabled()}
+```{r selected-table, echo=FALSE, eval=bt_real_examples_enabled()}
 bt_display_table(bt_tile_table(tiles, include_urls = TRUE))
 ```
 
-## Coverage Diagnostics
+## Coverage diagnostics
 
-```{r coverage-table, eval=bt_real_examples_enabled()}
+```{r coverage-table, echo=FALSE, eval=bt_real_examples_enabled()}
 coverage <- attr(tiles, "coverage")
 bt_display_table(bt_coverage_table(coverage))
 ```
 
-## AOI And Selected Footprints
+## AOI and selected footprints
 
-```{r footprint-figure, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: AOI outline over selected tile footprints colored by native resolution.", fig.alt="Real BlueTopo tile footprints selected for the example AOI."}
+```{r footprint-figure, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="BlueTopo tile coverage for the New York Harbor example area.", fig.alt="BlueTopo tile footprints selected for the New York Harbor example area."}
 bt_plot_locator_map(
   tiles,
   real_aoi,
   place_label = real$place,
-  main = "New York Harbor AOI and NOAA BlueTopo tiles"
+  main = "New York Harbor AOI and BlueTopo tiles"
 )
 ```
 
-## Coverage Fractions
+## Coverage fractions
 
-```{r coverage-bars, eval=bt_real_examples_enabled(), fig.cap="Actual NOAA BlueTopo source tiles: coverage fractions for the selected AOI.", fig.alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage."}
+```{r coverage-bars, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="Coverage fractions for the selected New York Harbor tiles.", fig.alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage."}
 coverage_values <- unlist(coverage[c(
   "published_coverage_fraction",
   "selected_coverage_fraction",
@@ -91,5 +90,5 @@ barplot(
 abline(h = coverage$target_coverage, col = "#d00000", lwd = 2, lty = 2)
 ```
 
-The selected tile table includes shortened NOAA GeoTIFF and RAT URLs so users
-can see that discovery is using the live BlueTopo catalog records.
+The selected tile table includes shortened GeoTIFF and RAT URLs from the current
+catalog records.

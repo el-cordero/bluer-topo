@@ -2,7 +2,7 @@
 
 if (!identical(tolower(Sys.getenv("BLUERTOPO_BUILD_REAL_EXAMPLES")), "true")) {
   stop(
-    "Set BLUERTOPO_BUILD_REAL_EXAMPLES=true before building the real-data pkgdown homepage.",
+    "Set BLUERTOPO_BUILD_REAL_EXAMPLES=true before building the NOAA-backed pkgdown homepage.",
     call. = FALSE
   )
 }

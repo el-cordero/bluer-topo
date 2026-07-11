@@ -1,7 +1,5 @@
 # bluertopo
 
-<img src="man/figures/logo.png" align="right" height="139" alt="bluertopo logo" />
-
 [![R-CMD-check](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
 [![License:
@@ -22,37 +20,29 @@ Reference: NOAA,
 [BlueTopo
 specifications](https://nauticalcharts.noaa.gov/data/bluetopo_specs.html).
 
-## Real NOAA Proof
+## New York Harbor example
 
-Example AOI: New York Harbor, centered on Lower Manhattan, the Upper
-Bay, Governors Island, and the East River mouth. This homepage proof
-uses actual NOAA BlueTopo source tiles downloaded during the pkgdown
-build.
+This example demonstrates tile discovery, verified asset retrieval, and
+bathymetry extraction for New York Harbor. The area includes portions of
+Lower Manhattan, Governors Island, Upper New York Bay, and the East
+River entrance.
 
 <div class="figure">
 
-<img src="man/figures/home-proof-map-1.png" alt="Hillshaded real NOAA BlueTopo bathymetry map for New York Harbor with contour lines and the AOI outline."  />
+<img src="man/figures/home-bathy-map-1.png" alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary."  />
 <p class="caption">
 
-Actual NOAA BlueTopo source data: New York Harbor elevation with
-hillshade, contours, and AOI outline.
+BlueTopo bathymetry for New York Harbor, displayed with hillshade,
+contours, and the example-area boundary.
 </p>
 
 </div>
 
-| tile_id  | resolution_m | utm_zone | intersection_fraction | selection_reason |
-|:---------|-------------:|:---------|----------------------:|:-----------------|
-| BH4XC5FK |            4 | 18       |                 0.142 | native           |
-| BH4XD5FK |            4 | 18       |                 0.213 | native           |
+| Example area | Selected tiles | Native resolution | Retrieved assets | Verification |
+|:---|---:|:---|:---|:---|
+| New York Harbor | 2 | 4 m | 2 GeoTIFFs and 2 RAT files | SHA-256 verified |
 
-| tile_id  | asset_type | status          | verified | downloaded_mb | actual_sha256 |
-|:---------|:-----------|:----------------|:---------|--------------:|:--------------|
-| BH4XC5FK | geotiff    | reused_verified | TRUE     |         5.393 | 878be33a85f5  |
-| BH4XC5FK | rat        | reused_verified | TRUE     |         0.104 | 21405b45e162  |
-| BH4XD5FK | geotiff    | reused_verified | TRUE     |         4.093 | 35174b851869  |
-| BH4XD5FK | rat        | reused_verified | TRUE     |         0.067 | 59814a3e330c  |
-
-## Basic Workflow
+## Basic workflow
 
 ``` r
 library(bluertopo)
@@ -63,7 +53,7 @@ bathy <- bluertopo(aoi)
 plot(bathy)
 ```
 
-## Provenance Workflow
+## Provenance workflow
 
 ``` r
 result <- bluertopo(aoi, details = TRUE)
@@ -76,12 +66,11 @@ result$provenance
 
 ## Examples
 
-The [Examples tab](articles/examples.html) is rendered from actual NOAA
-BlueTopo source tiles for New York Harbor. Normal package tests use
-small synthetic fixtures so checks remain network-free. The mixed-grid
-example uses a documented secondary real AOI near Key West and Boca
-Chica Channel because the current New York Harbor plan is one compatible
-4 m native grid.
+The [Examples tab](articles/examples.html) uses NOAA BlueTopo source
+tiles for New York Harbor. Normal package tests use small synthetic
+fixtures so checks remain network-free. The mixed-grid example uses a
+documented secondary AOI near Key West and Boca Chica Channel because
+the current New York Harbor plan is one compatible 4 m native grid.
 
 - [Example gallery](articles/examples.html)
 - [Discover tiles and coverage](articles/example-discover-tiles.html)

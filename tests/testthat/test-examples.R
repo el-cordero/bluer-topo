@@ -143,10 +143,10 @@ test_that("real example setup is opt-in", {
   env <- new.env(parent = globalenv())
   source(helper, local = env)
   expect_false(env$bt_real_examples_enabled())
-  expect_error(env$bt_real_example_setup(), "Real BlueTopo examples are disabled")
+  expect_error(env$bt_real_example_setup(), "Website data examples are disabled")
 })
 
-test_that("public examples are real-data gated and not fixture-rendered", {
+test_that("public examples are network-gated and not fixture-rendered", {
   example_vignettes <- public_example_vignettes()
   skip_if(!length(example_vignettes), "vignette sources are not available in this test context")
   text <- lapply(example_vignettes, readLines, warn = FALSE)
@@ -158,7 +158,8 @@ test_that("public examples are real-data gated and not fixture-rendered", {
     expect_false(grepl("Synthetic miniature BlueTopo", collapsed, fixed = TRUE))
     expect_match(tolower(collapsed), "not for navigation")
     expect_match(tolower(collapsed), "vertical-datum")
-    expect_match(collapsed, "actual NOAA BlueTopo|real NOAA BlueTopo")
+    expect_match(collapsed, "BlueTopo (source )?tiles|BlueTopo tiles")
+    expect_false(grepl("Real NOAA Proof|homepage proof|Actual NOAA|real NOAA|real BlueTopo|real data|public site uses real|live BlueTopo|Real Example Setup|without synthetic rasters", collapsed, ignore.case = TRUE))
   }
 })
 
@@ -177,7 +178,7 @@ test_that("real example AOI metadata is documented", {
   expect_match(text, "Date last verified: 2026-07-10", fixed = TRUE)
 })
 
-test_that("README and pkgdown config describe real public examples", {
+test_that("README and pkgdown config describe public examples", {
   readme_path <- project_file("README.Rmd")
   config_path <- project_file("_pkgdown.yml")
   index_path <- project_file("index.Rmd")
@@ -188,15 +189,15 @@ test_that("README and pkgdown config describe real public examples", {
 
   readme <- paste(readLines(readme_path, warn = FALSE), collapse = "\n")
   expect_false(grepl("Examples tab uses synthetic", readme, fixed = TRUE))
-  expect_match(readme, "rendered from actual NOAA BlueTopo source tiles", fixed = TRUE)
+  expect_match(readme, "uses NOAA BlueTopo source tiles for New\\s+York Harbor")
   expect_match(readme, "New\\s+York Harbor")
-  expect_match(readme, "Normal\\s+package tests use small synthetic fixtures")
+  expect_match(readme, "Normal\\s+package tests use\\s+small synthetic fixtures")
   expect_match(readme, "bathy <- bluertopo\\(aoi\\)")
   expect_match(readme, "https://nauticalcharts.noaa.gov/data/bluetopo_specs.html", fixed = TRUE)
 
   index <- paste(readLines(index_path, warn = FALSE), collapse = "\n")
   expect_match(index, "bt_plot_bathy_map\\(real_bathy\\$data")
-  expect_match(index, "This homepage proof uses actual NOAA\\s+BlueTopo source tiles")
+  expect_match(index, "This example demonstrates tile discovery, verified asset retrieval")
 
   config <- paste(readLines(config_path, warn = FALSE), collapse = "\n")
   expect_match(config, "left: \\[intro, reference, examples, articles, news\\]")

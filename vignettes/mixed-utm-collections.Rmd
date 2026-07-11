@@ -1,8 +1,8 @@
 ---
-title: "Mixed UTM Zones and terra Collections"
+title: "Mixed UTM zones and terra collections"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mixed UTM Zones and terra Collections}
+  %\VignetteIndexEntry{Mixed UTM zones and terra collections}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Layers, Contributor Values, and RAT Metadata"
+title: "Layers, contributor values, and RAT metadata"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Layers, Contributor Values, and RAT Metadata}
+  %\VignetteIndexEntry{Layers, contributor values, and RAT metadata}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -39,13 +39,13 @@ bt_real_example_description <- function() {
 }
 
 bt_real_example_label <- paste(
-  "This example uses actual NOAA BlueTopo source tiles downloaded from the",
-  "public NOAA National Bathymetric Source bucket during the pkgdown build."
+  "This example uses BlueTopo source tiles from the NOAA National Bathymetric",
+  "Source catalog. The build verifies the downloaded assets and records their",
+  "source metadata."
 )
 
 bt_offline_note <- paste(
-  "This page is configured to render real BlueTopo outputs on the package",
-  "website. In CRAN or offline builds, live chunks are not evaluated."
+  "In CRAN or offline builds, network-dependent chunks are not evaluated."
 )
 
 bt_noaa_caveat <- paste(
@@ -104,7 +104,7 @@ bt_require_real_examples <- function() {
   if (!bt_real_examples_enabled()) {
     stop(
       paste(
-        "Real BlueTopo examples are disabled.",
+        "Website data examples are disabled.",
         "Set BLUERTOPO_BUILD_REAL_EXAMPLES=true to query NOAA and render outputs."
       ),
       call. = FALSE
@@ -274,9 +274,80 @@ bt_round <- function(x, digits = 3) {
   if (is.numeric(x)) round(x, digits) else x
 }
 
+bt_display_names <- c(
+  tile_id = "Tile ID",
+  resolution_m = "Resolution (m)",
+  utm_zone = "UTM zone",
+  delivered_date = "Delivery date",
+  intersection_area_m2 = "Intersection area (m²)",
+  intersection_fraction = "Tile intersected (%)",
+  selection_rank = "Selection rank",
+  selection_reason = "Selection",
+  fallback = "Coverage fallback",
+  asset_type = "Asset",
+  geotiff_url = "GeoTIFF URL",
+  rat_url = "RAT URL",
+  source_basename = "Source file",
+  local_path = "Local path",
+  source = "Source file",
+  file = "Manifest file",
+  verification_mode = "Verification",
+  verified = "Verified",
+  downloaded_mb = "Size (MB)",
+  actual_sha256 = "SHA-256",
+  planned_mb = "Planned size (MB)",
+  status = "Status",
+  attempts = "Attempts",
+  target_met = "Target met",
+  coverage_type = "Coverage type",
+  published_coverage_fraction = "Published coverage (%)",
+  selected_coverage_fraction = "Selected coverage (%)",
+  selected_aoi_fraction = "AOI intersected (%)",
+  target_coverage = "Target coverage (%)",
+  output_object_class = "Output object",
+  group_name = "Grid",
+  crs = "CRS",
+  resolution = "Resolution",
+  source_count = "Source count",
+  layer_names = "Layers",
+  extent = "Extent",
+  resampled_flag = "Resampled",
+  field = "Field",
+  value = "Value",
+  exists = "Exists",
+  bytes = "Bytes"
+)
+
+bt_display_values <- c(
+  geotiff = "GeoTIFF",
+  rat = "RAT",
+  reused_verified = "Reused and verified",
+  downloaded = "Downloaded",
+  coverage_fallback = "Coverage fallback",
+  coverage_fill = "Coverage fill",
+  native = "Native"
+)
+
+bt_format_display <- function(x, digits = 3) {
+  x <- as.data.frame(x, stringsAsFactors = FALSE)
+  x[] <- lapply(x, function(value) {
+    if (is.logical(value)) {
+      return(ifelse(is.na(value), NA_character_, ifelse(value, "Yes", "No")))
+    }
+    value <- bt_round(value, digits = digits)
+    if (is.character(value)) {
+      mapped <- unname(bt_display_values[value])
+      value[!is.na(mapped)] <- mapped[!is.na(mapped)]
+    }
+    value
+  })
+  matched <- unname(bt_display_names[names(x)])
+  names(x) <- ifelse(is.na(matched), names(x), matched)
+  x
+}
+
 bt_display_table <- function(x, digits = 3, ..., row_names = FALSE) {
-  x[] <- lapply(x, bt_round, digits = digits)
-  knitr::kable(x, ..., row.names = row_names)
+  knitr::kable(bt_format_display(x, digits = digits), ..., row.names = row_names)
 }
 
 bt_short_path <- function(x, keep = 2L) {
@@ -319,7 +390,18 @@ bt_coverage_table <- function(coverage) {
     "target_met",
     "coverage_type"
   )
-  as.data.frame(coverage[fields], stringsAsFactors = FALSE)
+  out <- as.data.frame(coverage[fields], stringsAsFactors = FALSE)
+  fraction_fields <- intersect(
+    c(
+      "published_coverage_fraction",
+      "selected_coverage_fraction",
+      "selected_aoi_fraction",
+      "target_coverage"
+    ),
+    names(out)
+  )
+  out[fraction_fields] <- lapply(out[fraction_fields], function(x) 100 * x)
+  out
 }
 
 bt_tile_table <- function(tiles, include_urls = FALSE) {
@@ -327,6 +409,9 @@ bt_tile_table <- function(tiles, include_urls = FALSE) {
   if (isTRUE(include_urls)) {
     df$geotiff_url <- bt_short_url(df$geotiff_url)
     df$rat_url <- bt_short_url(df$rat_url)
+  }
+  if ("intersection_fraction" %in% names(df)) {
+    df$intersection_fraction <- 100 * df$intersection_fraction
   }
   keep <- c(
     "tile_id",
@@ -346,7 +431,7 @@ bt_tile_table <- function(tiles, include_urls = FALSE) {
 bt_plot_tiles <- function(
   tiles,
   aoi,
-  main = "Real NOAA BlueTopo tile footprints",
+  main = "BlueTopo tile footprints",
   place_label = NULL,
   label_resolutions = FALSE
 ) {
@@ -395,7 +480,7 @@ bt_plot_locator_map <- function(
   tiles,
   aoi,
   place_label = bt_real_example_place(),
-  main = "Real NOAA BlueTopo locator"
+  main = "BlueTopo locator"
 ) {
   bt_plot_tiles(
     tiles,
@@ -601,12 +686,12 @@ bt_catalog_table <- function(setup) {
   catalog <- setup$source_catalog
   data.frame(
     field = c(
-      "catalog_name",
-      "catalog_last_modified",
-      "package_version",
-      "not_for_navigation",
-      "vertical_datum_conversion",
-      "planned_download_mb"
+      "Catalog",
+      "Catalog last modified",
+      "Package version",
+      "Navigation status",
+      "Vertical-datum conversion",
+      "Planned download (MB)"
     ),
     value = c(
       catalog$catalog_name %||% NA_character_,
