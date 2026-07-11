@@ -1,13 +1,13 @@
-# Extract Elevation with terra
+# Extract elevation with terra
 
-This page uses real NOAA BlueTopo source tiles when rendered for the
-public pkgdown site. This example uses actual NOAA BlueTopo source tiles
-downloaded from the public NOAA National Bathymetric Source bucket
-during the pkgdown build.
+This example uses BlueTopo source tiles from the NOAA National
+Bathymetric Source catalog. The build verifies the downloaded assets and
+records their source metadata.
 
-This page downloads two real NOAA BlueTopo tiles for New York Harbor,
-verifies the GeoTIFF and RAT checksums, opens the elevation band with
-`terra`, and renders a hillshaded bathymetry map with contour lines.
+This example uses BlueTopo tiles covering New York Harbor. The workflow
+demonstrates tile discovery, checksum-verified asset retrieval, and
+file-backed raster access with `terra`. Raster Attribute Table (RAT)
+sidecars are retained with the source GeoTIFF assets.
 
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed.
@@ -16,18 +16,9 @@ returns terra objects and, with `details = TRUE`, exposes selected
 tiles, downloads, query metadata, provenance, and coverage diagnostics.
 Normal native extraction does not intentionally resample.
 
-## Real Example Setup
+## Example area
 
-``` r
-
-library(terra)
-#> terra 1.9.34
-
-real <- bt_real_example_setup()
-real_aoi <- real$aoi
-```
-
-## Extract Elevation
+## Extract elevation
 
 ``` r
 
@@ -42,39 +33,9 @@ result <- bluertopo(
 )
 ```
 
-## Object Summary
+## Object summary
 
-``` r
-
-rasters <- bt_rasters(result$data)
-object_summary <- data.frame(
-  element = c(
-    "object type",
-    "result$data class",
-    "number of layers",
-    "layer names",
-    "CRS summary",
-    "resolution",
-    "source count"
-  ),
-  value = c(
-    if (inherits(result$data, "SpatRasterCollection")) "SpatRasterCollection" else "SpatRaster",
-    paste(class(result$data), collapse = ", "),
-    sum(vapply(rasters, terra::nlyr, numeric(1L))),
-    paste(unique(unlist(lapply(rasters, names), use.names = FALSE)), collapse = ", "),
-    paste(unique(vapply(rasters, function(r) {
-      paste0("EPSG:", terra::crs(r, describe = TRUE)$code)
-    }, "")), collapse = ", "),
-    paste(unique(vapply(rasters, function(r) paste(round(terra::res(r), 3), collapse = " x "), "")), collapse = "; "),
-    length(unique(unlist(lapply(rasters, terra::sources), use.names = FALSE)))
-  ),
-  stringsAsFactors = FALSE
-)
-
-bt_display_table(object_summary)
-```
-
-| element            | value      |
+| element            | Value      |
 |:-------------------|:-----------|
 | object type        | SpatRaster |
 | result\$data class | SpatRaster |
@@ -84,57 +45,37 @@ bt_display_table(object_summary)
 | resolution         | 4 x 4      |
 | source count       | 1          |
 
-## File-Backed Sources
+## File-backed sources
 
-``` r
-
-bt_display_table(bt_sources_table(result$data))
-```
-
-| source |
-|:-------|
-| NA     |
+| Source file |
+|:------------|
+| NA          |
 
 ## Coverage
 
-``` r
-
-bt_display_table(bt_coverage_table(result$coverage))
-```
-
-| published_coverage_fraction | selected_coverage_fraction | selected_aoi_fraction | target_coverage | target_met | coverage_type |
+| Published coverage (%) | Selected coverage (%) | AOI intersected (%) | Target coverage (%) | Target met | Coverage type |
 |---:|---:|---:|---:|:---|:---|
-| 1 | 1 | 1 | 1 | TRUE | geometric tile-index coverage |
+| 100 | 100 | 100 | 100 | Yes | geometric tile-index coverage |
 
 ## Provenance
 
-``` r
-
-bt_display_table(bt_catalog_table(real))
-```
-
-| field                     | value                                     |
+| Field                     | Value                                     |
 |:--------------------------|:------------------------------------------|
-| catalog_name              | BlueTopo_Tile_Scheme_20260626_132625.gpkg |
-| catalog_last_modified     | 2026-06-26T17:35:52.000Z                  |
-| package_version           | 0.0.1                                     |
-| not_for_navigation        | BlueTopo is not for navigation            |
-| vertical_datum_conversion | none performed by bluertopo               |
-| planned_download_mb       | 9.657                                     |
+| Catalog                   | BlueTopo_Tile_Scheme_20260626_132625.gpkg |
+| Catalog last modified     | 2026-06-26T17:35:52.000Z                  |
+| Package version           | 0.0.1                                     |
+| Navigation status         | BlueTopo is not for navigation            |
+| Vertical-datum conversion | none performed by bluertopo               |
+| Planned download (MB)     | 9.657                                     |
 
-## Elevation Preview
+## Elevation preview
 
-``` r
+![BlueTopo bathymetry for New York Harbor with hillshade, contours, and
+the example-area
+boundary.](example-extract-elevation_files/figure-html/elevation-figure-1.png)
 
-bt_plot_bathy_map(result$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
-```
-
-![Hillshaded real BlueTopo elevation raster with contours and AOI
-outline for New York
-Harbor.](example-extract-elevation_files/figure-html/elevation-figure-1.png)
-
-Actual NOAA BlueTopo source data: New York Harbor elevation with
-hillshade, contours, and AOI outline.
+BlueTopo bathymetry for New York Harbor, displayed with hillshade,
+contours, and the example-area boundary.
 
 When native source grids differ, the result can be a
 `SpatRasterCollection`. Each member can still be file-backed by verified

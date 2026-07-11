@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Discover Tiles and Coverage • bluertopo</title>
+<title>Discover tiles and coverage • bluertopo</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Discover Tiles and Coverage">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Discover tiles and coverage">
 <style>
 div.sourceCode pre {
   min-height: 0 !important;
@@ -82,7 +82,7 @@ div.sourceCode pre code span:empty {
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Discover Tiles and Coverage</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Discover tiles and coverage</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/main/vignettes/example-discover-tiles.Rmd" class="external-link"><code>vignettes/example-discover-tiles.Rmd</code></a></small>
@@ -91,64 +91,55 @@ div.sourceCode pre code span:empty {
 
     
     
-<p>This page uses real NOAA BlueTopo source tiles when rendered for the
-public pkgdown site. This example uses actual NOAA BlueTopo source tiles
-downloaded from the public NOAA National Bathymetric Source bucket
-during the pkgdown build.</p>
-<p>This page discovers the two real NOAA BlueTopo tiles selected for New
-York Harbor, reports coverage diagnostics, and renders a locator map
-with the AOI, tile footprints, and native-resolution labels.</p>
+<p>This example uses BlueTopo source tiles from the NOAA National
+Bathymetric Source catalog. The build verifies the downloaded assets and
+records their source metadata.</p>
+<p>This example uses BlueTopo tiles covering New York Harbor. The
+workflow demonstrates tile discovery, checksum-verified asset retrieval,
+and file-backed raster access with <code>terra</code>.</p>
 <p>BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Coverage is geometric tile-index coverage, not a statement
 about navigational fitness, data quality, or NOAA endorsement.</p>
 <div class="section level2">
-<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+<h2 id="example-area">Example area<a class="anchor" aria-label="anchor" href="#example-area"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.9.34</span></span>
-<span></span>
-<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="selected-tiles">Selected Tiles<a class="anchor" aria-label="anchor" href="#selected-tiles"></a>
+<h2 id="selected-tiles">Selected tiles<a class="anchor" aria-label="anchor" href="#selected-tiles"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_tiles.html">bluertopo_tiles</a></span><span class="op">(</span></span>
 <span>  <span class="va">real_aoi</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"warn"</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_tile_table</span><span class="op">(</span><span class="va">tiles</span>, include_urls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="2%">
-<col width="3%">
+<col width="4%">
 <col width="2%">
 <col width="5%">
 <col width="6%">
 <col width="6%">
 <col width="4%">
-<col width="4%">
 <col width="2%">
-<col width="29%">
-<col width="31%">
+<col width="5%">
+<col width="28%">
+<col width="30%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">tile_id</th>
-<th align="right">resolution_m</th>
-<th align="left">utm_zone</th>
-<th align="left">delivered_date</th>
-<th align="right">intersection_area_m2</th>
-<th align="right">intersection_fraction</th>
-<th align="right">selection_rank</th>
-<th align="left">selection_reason</th>
-<th align="left">fallback</th>
-<th align="left">geotiff_url</th>
-<th align="left">rat_url</th>
+<th align="left">Tile ID</th>
+<th align="right">Resolution (m)</th>
+<th align="left">UTM zone</th>
+<th align="left">Delivery date</th>
+<th align="right">Intersection area (m²)</th>
+<th align="right">Tile intersected (%)</th>
+<th align="right">Selection rank</th>
+<th align="left">Selection</th>
+<th align="left">Coverage fallback</th>
+<th align="left">GeoTIFF URL</th>
+<th align="left">RAT URL</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -157,10 +148,10 @@ about navigational fitness, data quality, or NOAA endorsement.</p>
 <td align="left">18</td>
 <td align="left">2026-06-25 10:51:01</td>
 <td align="right">7508785</td>
-<td align="right">0.142</td>
+<td align="right">14.221</td>
 <td align="right">1</td>
-<td align="left">native</td>
-<td align="left">FALSE</td>
+<td align="left">Native</td>
+<td align="left">No</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
 </tr>
@@ -170,10 +161,10 @@ about navigational fitness, data quality, or NOAA endorsement.</p>
 <td align="left">18</td>
 <td align="left">2026-06-25 10:50:52</td>
 <td align="right">11263177</td>
-<td align="right">0.213</td>
+<td align="right">21.331</td>
 <td align="right">2</td>
-<td align="left">native</td>
-<td align="left">FALSE</td>
+<td align="left">Native</td>
+<td align="left">No</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
 </tr>
@@ -181,83 +172,54 @@ about navigational fitness, data quality, or NOAA endorsement.</p>
 </table>
 </div>
 <div class="section level2">
-<h2 id="coverage-diagnostics">Coverage Diagnostics<a class="anchor" aria-label="anchor" href="#coverage-diagnostics"></a>
+<h2 id="coverage-diagnostics">Coverage diagnostics<a class="anchor" aria-label="anchor" href="#coverage-diagnostics"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">coverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">tiles</span>, <span class="st">"coverage"</span><span class="op">)</span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_coverage_table</span><span class="op">(</span><span class="va">coverage</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="20%">
-<col width="20%">
-<col width="16%">
-<col width="11%">
+<col width="18%">
+<col width="17%">
+<col width="15%">
+<col width="15%">
 <col width="8%">
-<col width="22%">
+<col width="23%">
 </colgroup>
 <thead><tr class="header">
-<th align="right">published_coverage_fraction</th>
-<th align="right">selected_coverage_fraction</th>
-<th align="right">selected_aoi_fraction</th>
-<th align="right">target_coverage</th>
-<th align="left">target_met</th>
-<th align="left">coverage_type</th>
+<th align="right">Published coverage (%)</th>
+<th align="right">Selected coverage (%)</th>
+<th align="right">AOI intersected (%)</th>
+<th align="right">Target coverage (%)</th>
+<th align="left">Target met</th>
+<th align="left">Coverage type</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">TRUE</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">Yes</td>
 <td align="left">geometric tile-index coverage</td>
 </tr></tbody>
 </table>
 </div>
 <div class="section level2">
-<h2 id="aoi-and-selected-footprints">AOI And Selected Footprints<a class="anchor" aria-label="anchor" href="#aoi-and-selected-footprints"></a>
+<h2 id="aoi-and-selected-footprints">AOI and selected footprints<a class="anchor" aria-label="anchor" href="#aoi-and-selected-footprints"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_plot_locator_map</span><span class="op">(</span></span>
-<span>  <span class="va">tiles</span>,</span>
-<span>  <span class="va">real_aoi</span>,</span>
-<span>  place_label <span class="op">=</span> <span class="va">real</span><span class="op">$</span><span class="va">place</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"New York Harbor AOI and NOAA BlueTopo tiles"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-discover-tiles_files/figure-html/footprint-figure-1.png" class="r-plt" alt="Real BlueTopo tile footprints selected for the example AOI." width="576"><p class="caption">
-Actual NOAA BlueTopo source tiles: AOI outline over selected tile
-footprints colored by native resolution.
+<img src="example-discover-tiles_files/figure-html/footprint-figure-1.png" class="r-plt" alt="BlueTopo tile footprints selected for the New York Harbor example area." width="576"><p class="caption">
+BlueTopo tile coverage for the New York Harbor example area.
 </p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="coverage-fractions">Coverage Fractions<a class="anchor" aria-label="anchor" href="#coverage-fractions"></a>
+<h2 id="coverage-fractions">Coverage fractions<a class="anchor" aria-label="anchor" href="#coverage-fractions"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">coverage_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">coverage</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"published_coverage_fraction"</span>,</span>
-<span>  <span class="st">"selected_coverage_fraction"</span>,</span>
-<span>  <span class="st">"selected_aoi_fraction"</span>,</span>
-<span>  <span class="st">"target_coverage"</span></span>
-<span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
-<span>  <span class="va">coverage_values</span>,</span>
-<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#8ecae6"</span>, <span class="st">"#90be6d"</span>, <span class="st">"#f9c74f"</span>, <span class="st">"#d00000"</span><span class="op">)</span>,</span>
-<span>  las <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"fraction"</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"Coverage diagnostics"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="va">coverage</span><span class="op">$</span><span class="va">target_coverage</span>, col <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-discover-tiles_files/figure-html/coverage-bars-1.png" class="r-plt" alt="Bar plot of published coverage, selected coverage, selected AOI fraction, and target coverage." width="576"><p class="caption">
-Actual NOAA BlueTopo source tiles: coverage fractions for the selected
-AOI.
+Coverage fractions for the selected New York Harbor tiles.
 </p>
 </div>
-<p>The selected tile table includes shortened NOAA GeoTIFF and RAT URLs
-so users can see that discovery is using the live BlueTopo catalog
-records.</p>
+<p>The selected tile table includes shortened GeoTIFF and RAT URLs from
+the current catalog records.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

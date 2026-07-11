@@ -1,4 +1,4 @@
-# Mixed UTM Zones and terra Collections
+# Mixed UTM zones and terra collections
 
 BlueTopo is published as source tiles. Adjacent tiles can differ in CRS,
 native cell size, origin, alignment, or delivery date. `bluertopo`

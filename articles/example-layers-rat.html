@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Layers and RAT Metadata • bluertopo</title>
+<title>Layers and RAT metadata • bluertopo</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Layers and RAT Metadata">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Layers and RAT metadata">
 <style>
 div.sourceCode pre {
   min-height: 0 !important;
@@ -82,7 +82,7 @@ div.sourceCode pre code span:empty {
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Layers and RAT Metadata</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Layers and RAT metadata</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/main/vignettes/example-layers-rat.Rmd" class="external-link"><code>vignettes/example-layers-rat.Rmd</code></a></small>
@@ -91,33 +91,28 @@ div.sourceCode pre code span:empty {
 
     
     
-<p>This page uses real NOAA BlueTopo source tiles when rendered for the
-public pkgdown site. This example uses actual NOAA BlueTopo source tiles
-downloaded from the public NOAA National Bathymetric Source bucket
-during the pkgdown build.</p>
-<p>This page opens real New York Harbor NOAA BlueTopo elevation,
-uncertainty, and contributor layers from verified source GeoTIFFs, then
-reads real RAT sidecars for contributor metadata. Elevation is shown
-with hillshade and contours; uncertainty and contributor IDs are plotted
-as their own source layers.</p>
+<p>This example uses BlueTopo source tiles from the NOAA National
+Bathymetric Source catalog. The build verifies the downloaded assets and
+records their source metadata.</p>
+<p>This example uses BlueTopo tiles covering New York Harbor. The
+workflow demonstrates tile discovery, checksum-verified asset retrieval,
+and file-backed raster access with <code>terra</code>. It opens
+elevation, uncertainty, and contributor layers, then reads Raster
+Attribute Table (RAT) sidecars for contributor metadata. Elevation is
+shown with hillshade and contours; uncertainty and contributor IDs are
+plotted as their own source layers.</p>
 <p>BlueTopo is not for navigation. No vertical-datum conversion is
 performed. The contributor band contains IDs, not continuous values.
 Contributor IDs must not be averaged. RAT sidecars carry contributor
 metadata, and <code>bluertopo</code> preserves original RAT files.</p>
 <div class="section level2">
-<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+<h2 id="example-area">Example area<a class="anchor" aria-label="anchor" href="#example-area"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.9.34</span></span>
-<span></span>
-<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="all-layers">All Layers<a class="anchor" aria-label="anchor" href="#all-layers"></a>
+<h2 id="all-layers">All layers<a class="anchor" aria-label="anchor" href="#all-layers"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
 <span>  <span class="va">real_aoi</span>,</span>
 <span>  layers <span class="op">=</span> <span class="st">"all"</span>,</span>
@@ -126,24 +121,6 @@ metadata, and <code>bluertopo</code> preserves original RAT files.</p>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">layer_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  layer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"uncertainty"</span>, <span class="st">"contributor"</span><span class="op">)</span>,</span>
-<span>  `source band` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span>,</span>
-<span>  meaning <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"source elevation values"</span>,</span>
-<span>    <span class="st">"source vertical uncertainty values"</span>,</span>
-<span>    <span class="st">"categorical contributor/source IDs"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  `default resampling rule` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"bilinear only when an explicit output grid is requested"</span>,</span>
-<span>    <span class="st">"bilinear only when an explicit output grid is requested; values are then resampled"</span>,</span>
-<span>    <span class="st">"nearest-neighbor only; never average contributor IDs"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  check.names <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">layer_table</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="8%">
@@ -183,60 +160,44 @@ IDs</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="rat-sidecar-manifest">RAT Sidecar Manifest<a class="anchor" aria-label="anchor" href="#rat-sidecar-manifest"></a>
+<h2 id="rat-sidecar-manifest">RAT sidecar manifest<a class="anchor" aria-label="anchor" href="#rat-sidecar-manifest"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rat_manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">all_layers</span><span class="op">$</span><span class="va">downloads</span><span class="op">)</span></span>
-<span><span class="va">rat_manifest</span> <span class="op">&lt;-</span> <span class="va">rat_manifest</span><span class="op">[</span><span class="va">rat_manifest</span><span class="op">$</span><span class="va">asset_type</span> <span class="op">==</span> <span class="st">"rat"</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
-<span><span class="va">rat_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  tile_id <span class="op">=</span> <span class="va">rat_manifest</span><span class="op">$</span><span class="va">tile_id</span>,</span>
-<span>  source_basename <span class="op">=</span> <span class="va">rat_manifest</span><span class="op">$</span><span class="va">source_basename</span>,</span>
-<span>  local_path <span class="op">=</span> <span class="fu">bt_short_path</span><span class="op">(</span><span class="va">rat_manifest</span><span class="op">$</span><span class="va">local_path</span>, keep <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span>,</span>
-<span>  verified <span class="op">=</span> <span class="va">rat_manifest</span><span class="op">$</span><span class="va">verified</span>,</span>
-<span>  actual_sha256 <span class="op">=</span> <span class="fu">bt_short_sha</span><span class="op">(</span><span class="va">rat_manifest</span><span class="op">$</span><span class="va">actual_sha256</span><span class="op">)</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">rat_table</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="6%">
 <col width="28%">
-<col width="48%">
+<col width="49%">
 <col width="6%">
 <col width="9%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">tile_id</th>
-<th align="left">source_basename</th>
-<th align="left">local_path</th>
-<th align="left">verified</th>
-<th align="left">actual_sha256</th>
+<th align="left">Tile ID</th>
+<th align="left">Source file</th>
+<th align="left">Local path</th>
+<th align="left">Verified</th>
+<th align="left">SHA-256</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">BH4XC5FK</td>
 <td align="left">BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
 <td align="left">package-cache/tiles/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
-<td align="left">TRUE</td>
+<td align="left">Yes</td>
 <td align="left">21405b45e162</td>
 </tr>
 <tr class="even">
 <td align="left">BH4XD5FK</td>
 <td align="left">BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
 <td align="left">package-cache/tiles/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
-<td align="left">TRUE</td>
+<td align="left">Yes</td>
 <td align="left">59814a3e330c</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level2">
-<h2 id="contributor-lookup">Contributor Lookup<a class="anchor" aria-label="anchor" href="#contributor-lookup"></a>
+<h2 id="contributor-lookup">Contributor lookup<a class="anchor" aria-label="anchor" href="#contributor-lookup"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contributor_lookup</span> <span class="op">&lt;-</span> <span class="fu">bt_parse_rat</span><span class="op">(</span><span class="va">rat_manifest</span><span class="op">$</span><span class="va">local_path</span><span class="op">)</span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">contributor_lookup</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="7%">
@@ -404,38 +365,28 @@ District</td>
 <div class="section level2">
 <h2 id="elevation">Elevation<a class="anchor" aria-label="anchor" href="#elevation"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">first_grid</span> <span class="op">&lt;-</span> <span class="fu">bt_rasters</span><span class="op">(</span><span class="va">all_layers</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu">bt_plot_bathy_map</span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"elevation"</span><span class="op">]</span><span class="op">]</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="st">"New York Harbor elevation"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/elevation-plot-1.png" class="r-plt" alt="Hillshaded real BlueTopo elevation layer with contours." width="576"><p class="caption">
-Actual NOAA BlueTopo source data: New York Harbor elevation layer with
-hillshade and contours.
+<img src="example-layers-rat_files/figure-html/elevation-plot-1.png" class="r-plt" alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary." width="576"><p class="caption">
+BlueTopo bathymetry for New York Harbor, displayed with hillshade,
+contours, and the example-area boundary.
 </p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="uncertainty">Uncertainty<a class="anchor" aria-label="anchor" href="#uncertainty"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"uncertainty"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Uncertainty"</span>, col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">80</span>, <span class="st">"BluYl"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">real_aoi</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">)</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/uncertainty-plot-1.png" class="r-plt" alt="Real BlueTopo uncertainty raster." width="576"><p class="caption">
-Actual NOAA BlueTopo source data: uncertainty layer.
+<img src="example-layers-rat_files/figure-html/uncertainty-plot-1.png" class="r-plt" alt="BlueTopo uncertainty raster for the selected New York Harbor tiles." width="576"><p class="caption">
+BlueTopo uncertainty for the selected New York Harbor tiles.
 </p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="contributor-ids">Contributor IDs<a class="anchor" aria-label="anchor" href="#contributor-ids"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">[[</span><span class="st">"contributor"</span><span class="op">]</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Contributor IDs"</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">12</span>, <span class="st">"Dark 3"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">real_aoi</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">first_grid</span><span class="op">)</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"#d00000"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-layers-rat_files/figure-html/contributor-plot-1.png" class="r-plt" alt="Real BlueTopo contributor ID raster using categorical colors." width="576"><p class="caption">
-Actual NOAA BlueTopo source data: contributor ID layer shown with
-categorical colors.
+<img src="example-layers-rat_files/figure-html/contributor-plot-1.png" class="r-plt" alt="BlueTopo contributor identifier raster shown with categorical colors." width="576"><p class="caption">
+Contributor identifiers for the selected New York Harbor tiles.
 </p>
 </div>
 <p>Contributor values are identifiers that point into RAT metadata. They

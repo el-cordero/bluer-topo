@@ -1,16 +1,14 @@
-# Mixed Grids and Output Grid
+# Mixed grids and output grid
 
-This page uses real NOAA BlueTopo source tiles when rendered for the
-public pkgdown site. This example uses actual NOAA BlueTopo source tiles
-downloaded from the public NOAA National Bathymetric Source bucket
-during the pkgdown build.
+This example uses BlueTopo source tiles from the NOAA National
+Bathymetric Source catalog. The build verifies the downloaded assets and
+records their source metadata.
 
 New York Harbor is the primary public AOI for the examples, but its
-current small plan is a compatible 4 m grid. This page uses a documented
-secondary real AOI near Key West and Boca Chica Channel because it
-currently intersects real 4 m and 8 m NOAA BlueTopo source grids and
-therefore demonstrates mixed native grid behavior without synthetic
-rasters.
+current small plan is a compatible 4 m grid. This example uses BlueTopo
+tiles covering Key West and Boca Chica Channel because the documented
+secondary AOI currently intersects 4 m and 8 m source grids and
+therefore demonstrates mixed native-grid behavior.
 
 BlueTopo is not for navigation. No vertical-datum conversion is
 performed. Mixed native grids are preserved unless the user asks for a
@@ -19,18 +17,9 @@ when native grids are incompatible. Resampled uncertainty values are not
 original source cells, and contributor resampling must be
 nearest-neighbor.
 
-## Real Example Setup
+## Example area
 
-``` r
-
-library(terra)
-#> terra 1.9.34
-
-real <- bt_mixed_example_setup()
-real_aoi <- real$aoi
-```
-
-## Native Mixed-Grid Extraction
+## Native mixed-grid extraction
 
 ``` r
 
@@ -49,46 +38,21 @@ if (!inherits(native$data, "SpatRasterCollection")) {
 }
 ```
 
-``` r
-
-native_table <- bt_raster_summary(native$data)
-native_table$output_object_class <- paste(class(native$data), collapse = ", ")
-native_table <- native_table[c(
-  "output_object_class",
-  "group_name",
-  "crs",
-  "resolution",
-  "source_count",
-  "layer_names"
-)]
-
-bt_display_table(native_table)
-```
-
-| output_object_class | group_name | crs | resolution | source_count | layer_names |
+| Output object | Grid | CRS | Resolution | Source count | Layers |
 |:---|:---|:---|:---|---:|:---|
 | SpatRasterCollection | grid_01_epsg26917_4x4 | EPSG:26917 | 4 x 4 | 1 | elevation |
 | SpatRasterCollection | grid_02_epsg26917_8x8 | EPSG:26917 | 8 x 8 | 1 | elevation |
 
-## Native Grid Footprints
+## Native grid footprints
 
-``` r
+![BlueTopo tile footprints selected for mixed native grids near Key West
+and Boca Chica
+Channel.](example-mixed-grids_files/figure-html/native-footprints-1.png)
 
-bt_plot_locator_map(
-  native$tiles,
-  real_aoi,
-  place_label = real$place,
-  main = "Key West and Boca Chica mixed native grids"
-)
-```
+BlueTopo tile coverage selected for the Key West mixed-grid example
+area.
 
-![Real BlueTopo tile footprints selected for mixed native
-grids.](example-mixed-grids_files/figure-html/native-footprints-1.png)
-
-Actual NOAA BlueTopo source tiles: native grid footprints selected for
-mixed-grid extraction.
-
-## Explicit Single Output Grid
+## Explicit single output grid
 
 ``` r
 
@@ -106,36 +70,14 @@ single <- suppressWarnings(bluertopo(
 ))
 ```
 
-``` r
-
-single_raster <- single$data
-single_table <- data.frame(
-  output_object_class = paste(class(single_raster), collapse = ", "),
-  crs = paste0("EPSG:", terra::crs(single_raster, describe = TRUE)$code),
-  resolution = paste(round(terra::res(single_raster), 3), collapse = " x "),
-  extent = paste(round(as.vector(terra::ext(single_raster)), 1), collapse = ", "),
-  resampled_flag = attr(single_raster, "bluertopo_resampled") %in% TRUE,
-  stringsAsFactors = FALSE
-)
-
-bt_display_table(single_table)
-```
-
-| output_object_class | crs | resolution | extent | resampled_flag |
+| Output object | CRS | Resolution | Extent | Resampled |
 |:---|:---|:---|:---|:---|
-| SpatRaster | EPSG:26917 | 100 x 100 | 415613, 418713, 2744703.3, 2748003.3 | TRUE |
+| SpatRaster | EPSG:26917 | 100 x 100 | 415613, 418713, 2744703.3, 2748003.3 | Yes |
 
-``` r
-
-bt_plot_bathy_map(single$data, real_aoi, main = "Explicit output grid bathymetry")
-```
-
-![Hillshaded real BlueTopo elevation raster on one explicit output grid
-with
+![Hillshaded BlueTopo elevation raster on one explicit output grid with
 contours.](example-mixed-grids_files/figure-html/output-raster-1.png)
 
-Actual NOAA BlueTopo source data: hillshaded elevation resampled onto an
-explicit output grid.
+BlueTopo elevation resampled to the specified output grid.
 
 The explicit grid is useful for workflows that require one raster, but
 it is a resampling operation. Native source-resolution selection remains

@@ -1,4 +1,4 @@
-# Downloads, Cache, and Reproducibility
+# Downloads, cache, and reproducibility
 
 [`bluertopo_download()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md)
 is for workflows where the durable deliverable is the original NOAA

@@ -1,4 +1,4 @@
-# Layers, Contributor Values, and RAT Metadata
+# Layers, contributor values, and RAT metadata
 
 BlueTopo source GeoTIFFs currently include elevation, vertical
 uncertainty, and contributor/source identifier bands. `bluertopo`

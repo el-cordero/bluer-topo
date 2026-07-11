@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Example Gallery • bluertopo</title>
+<title>Example gallery • bluertopo</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example Gallery">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example gallery">
 <style>
 div.sourceCode pre {
   min-height: 0 !important;
@@ -82,7 +82,7 @@ div.sourceCode pre code span:empty {
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Example Gallery</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Example gallery</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/el-cordero/bluer-topo/blob/main/vignettes/examples.Rmd" class="external-link"><code>vignettes/examples.Rmd</code></a></small>
@@ -91,60 +91,20 @@ div.sourceCode pre code span:empty {
 
     
     
-<p>This page uses real NOAA BlueTopo source tiles when rendered for the
-public pkgdown site. This example uses actual NOAA BlueTopo source tiles
-downloaded from the public NOAA National Bathymetric Source bucket
-during the pkgdown build.</p>
-<p>This gallery downloads two real NOAA BlueTopo tiles for New York
-Harbor, verifies the GeoTIFF and RAT checksums, opens the elevation band
-with <code>terra</code>, and renders a hillshaded bathymetry map with
-contour lines.</p>
+<p>This example uses BlueTopo source tiles from the NOAA National
+Bathymetric Source catalog. The build verifies the downloaded assets and
+records their source metadata.</p>
+<p>This example uses BlueTopo tiles covering New York Harbor. The
+workflow demonstrates tile discovery, checksum-verified asset retrieval,
+and file-backed raster access with <code>terra</code>. Raster Attribute
+Table (RAT) sidecars are retained with the source GeoTIFF assets.</p>
 <p>BlueTopo is not for navigation. <code>bluertopo</code> performs no
 vertical-datum conversion. The example downloads are intentionally
-small. Normal package tests use synthetic fixtures; the public site uses
-real data. <code>bluertopo</code> is not affiliated with, endorsed by,
-or supported by NOAA.</p>
+small. <code>bluertopo</code> is not affiliated with, endorsed by, or
+supported by NOAA.</p>
 <div class="section level2">
-<h2 id="what-the-examples-show">What The Examples Show<a class="anchor" aria-label="anchor" href="#what-the-examples-show"></a>
+<h2 id="what-the-examples-show">What the examples show<a class="anchor" aria-label="anchor" href="#what-the-examples-show"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gallery</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  Example <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Discover tiles and coverage"</span>,</span>
-<span>    <span class="st">"Download original assets"</span>,</span>
-<span>    <span class="st">"Extract elevation with terra"</span>,</span>
-<span>    <span class="st">"Compare resolution policies"</span>,</span>
-<span>    <span class="st">"Mixed grids and output grid"</span>,</span>
-<span>    <span class="st">"Layers and RAT metadata"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  `Main function` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"bluertopo_tiles()"</span>,</span>
-<span>    <span class="st">"bluertopo_download()"</span>,</span>
-<span>    <span class="st">"bluertopo()"</span>,</span>
-<span>    <span class="st">"bluertopo_tiles()"</span>,</span>
-<span>    <span class="st">"bluertopo()"</span>,</span>
-<span>    <span class="st">"bluertopo()"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  Shows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"AOI intersection, selected footprints, coverage diagnostics"</span>,</span>
-<span>    <span class="st">"Verified NOAA GeoTIFF and RAT sidecar assets"</span>,</span>
-<span>    <span class="st">"File-backed terra object and provenance"</span>,</span>
-<span>    <span class="st">"Native source-resolution selection effects"</span>,</span>
-<span>    <span class="st">"SpatRasterCollection versus explicit output grid"</span>,</span>
-<span>    <span class="st">"Elevation, uncertainty, contributor IDs, and RAT metadata"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  `Output type` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Tables and footprint figure"</span>,</span>
-<span>    <span class="st">"Manifest tables and status figure"</span>,</span>
-<span>    <span class="st">"terra summary tables and raster figure"</span>,</span>
-<span>    <span class="st">"Policy comparison tables and maps"</span>,</span>
-<span>    <span class="st">"Grid summary tables and raster figure"</span>,</span>
-<span>    <span class="st">"Layer/RAT tables and raster figures"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  check.names <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">gallery</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="19%">
@@ -201,60 +161,43 @@ metadata</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="real-example-setup">Real Example Setup<a class="anchor" aria-label="anchor" href="#real-example-setup"></a>
+<h2 id="example-area">Example area<a class="anchor" aria-label="anchor" href="#example-area"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.9.34</span></span>
-<span></span>
-<span><span class="va">real</span> <span class="op">&lt;-</span> <span class="fu">bt_real_example_setup</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">real_aoi</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">aoi</span></span>
-<span><span class="va">real_tiles</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">tiles</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="locator-map">Locator Map<a class="anchor" aria-label="anchor" href="#locator-map"></a>
+<h2 id="locator-map">Locator map<a class="anchor" aria-label="anchor" href="#locator-map"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_plot_locator_map</span><span class="op">(</span></span>
-<span>  <span class="va">real_tiles</span>,</span>
-<span>  <span class="va">real_aoi</span>,</span>
-<span>  place_label <span class="op">=</span> <span class="va">real</span><span class="op">$</span><span class="va">place</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"New York Harbor real BlueTopo tile footprints"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="examples_files/figure-html/tile-footprints-1.png" class="r-plt" alt="Real BlueTopo tile footprints colored by native source resolution with the example AOI outline." width="576"><p class="caption">
-Actual NOAA BlueTopo source tiles: AOI outline and selected tile
-footprints by native source resolution.
+<img src="examples_files/figure-html/tile-footprints-1.png" class="r-plt" alt="BlueTopo tile footprints colored by native source resolution with the New York Harbor example area boundary." width="576"><p class="caption">
+BlueTopo tile coverage for the New York Harbor example area.
 </p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">bt_display_table</span><span class="op">(</span><span class="fu">bt_tile_table</span><span class="op">(</span><span class="va">real_tiles</span>, include_urls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="2%">
-<col width="3%">
+<col width="4%">
 <col width="2%">
 <col width="5%">
 <col width="6%">
 <col width="6%">
 <col width="4%">
-<col width="4%">
 <col width="2%">
-<col width="29%">
-<col width="31%">
+<col width="5%">
+<col width="28%">
+<col width="30%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">tile_id</th>
-<th align="right">resolution_m</th>
-<th align="left">utm_zone</th>
-<th align="left">delivered_date</th>
-<th align="right">intersection_area_m2</th>
-<th align="right">intersection_fraction</th>
-<th align="right">selection_rank</th>
-<th align="left">selection_reason</th>
-<th align="left">fallback</th>
-<th align="left">geotiff_url</th>
-<th align="left">rat_url</th>
+<th align="left">Tile ID</th>
+<th align="right">Resolution (m)</th>
+<th align="left">UTM zone</th>
+<th align="left">Delivery date</th>
+<th align="right">Intersection area (m²)</th>
+<th align="right">Tile intersected (%)</th>
+<th align="right">Selection rank</th>
+<th align="left">Selection</th>
+<th align="left">Coverage fallback</th>
+<th align="left">GeoTIFF URL</th>
+<th align="left">RAT URL</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -263,10 +206,10 @@ footprints by native source resolution.
 <td align="left">18</td>
 <td align="left">2026-06-25 10:51:01</td>
 <td align="right">7508785</td>
-<td align="right">0.142</td>
+<td align="right">14.221</td>
 <td align="right">1</td>
-<td align="left">native</td>
-<td align="left">FALSE</td>
+<td align="left">Native</td>
+<td align="left">No</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XC5FK/BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
 </tr>
@@ -276,10 +219,10 @@ footprints by native source resolution.
 <td align="left">18</td>
 <td align="left">2026-06-25 10:50:52</td>
 <td align="right">11263177</td>
-<td align="right">0.213</td>
+<td align="right">21.331</td>
 <td align="right">2</td>
-<td align="left">native</td>
-<td align="left">FALSE</td>
+<td align="left">Native</td>
+<td align="left">No</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff</td>
 <td align="left">noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/BlueTopo/BH4XD5FK/BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
 </tr>
@@ -287,47 +230,43 @@ footprints by native source resolution.
 </table>
 </div>
 <div class="section level2">
-<h2 id="download-plan">Download Plan<a class="anchor" aria-label="anchor" href="#download-plan"></a>
+<h2 id="download-plan">Download plan<a class="anchor" aria-label="anchor" href="#download-plan"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">planned</span> <span class="op">&lt;-</span> <span class="va">real</span><span class="op">$</span><span class="va">planned_assets</span></span>
-<span><span class="va">planned</span><span class="op">$</span><span class="va">planned_mb</span> <span class="op">&lt;-</span> <span class="fu">bt_bytes_mb</span><span class="op">(</span><span class="va">planned</span><span class="op">$</span><span class="va">planned_bytes</span><span class="op">)</span></span>
-<span><span class="fu">bt_display_table</span><span class="op">(</span><span class="va">planned</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tile_id"</span>, <span class="st">"asset_type"</span>, <span class="st">"source_basename"</span>, <span class="st">"planned_mb"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="12%">
-<col width="15%">
-<col width="56%">
-<col width="15%">
+<col width="10%">
+<col width="53%">
+<col width="24%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">tile_id</th>
-<th align="left">asset_type</th>
-<th align="left">source_basename</th>
-<th align="right">planned_mb</th>
+<th align="left">Tile ID</th>
+<th align="left">Asset</th>
+<th align="left">Source file</th>
+<th align="right">Planned size (MB)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">BH4XC5FK</td>
-<td align="left">geotiff</td>
+<td align="left">GeoTIFF</td>
 <td align="left">BlueTopo_BH4XC5FK_20260624.tiff</td>
 <td align="right">5.393</td>
 </tr>
 <tr class="even">
 <td align="left">BH4XD5FK</td>
-<td align="left">geotiff</td>
+<td align="left">GeoTIFF</td>
 <td align="left">BlueTopo_BH4XD5FK_20260624.tiff</td>
 <td align="right">4.093</td>
 </tr>
 <tr class="odd">
 <td align="left">BH4XC5FK</td>
-<td align="left">rat</td>
+<td align="left">RAT</td>
 <td align="left">BlueTopo_BH4XC5FK_20260624.tiff.aux.xml</td>
 <td align="right">0.104</td>
 </tr>
 <tr class="even">
 <td align="left">BH4XD5FK</td>
-<td align="left">rat</td>
+<td align="left">RAT</td>
 <td align="left">BlueTopo_BH4XD5FK_20260624.tiff.aux.xml</td>
 <td align="right">0.067</td>
 </tr>
@@ -335,24 +274,12 @@ footprints by native source resolution.
 </table>
 </div>
 <div class="section level2">
-<h2 id="terra-preview">Terra Preview<a class="anchor" aria-label="anchor" href="#terra-preview"></a>
+<h2 id="terra-preview">Terra preview<a class="anchor" aria-label="anchor" href="#terra-preview"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">preview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">real_aoi</span>,</span>
-<span>  layers <span class="op">=</span> <span class="st">"elevation"</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
-<span>  details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">bt_plot_bathy_map</span><span class="op">(</span><span class="va">preview</span><span class="op">$</span><span class="va">data</span>, <span class="va">real_aoi</span>, main <span class="op">=</span> <span class="st">"New York Harbor NOAA BlueTopo bathymetry"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="examples_files/figure-html/terra-preview-1.png" class="r-plt" alt="Hillshaded real NOAA BlueTopo elevation raster with contours for New York Harbor." width="576"><p class="caption">
-Actual NOAA BlueTopo source data: New York Harbor elevation with
-hillshade, contours, and AOI outline.
+<img src="examples_files/figure-html/terra-preview-1.png" class="r-plt" alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary." width="576"><p class="caption">
+BlueTopo bathymetry for New York Harbor, displayed with hillshade,
+contours, and the example-area boundary.
 </p>
 </div>
 <p><code>resolution</code> selects native source tiles.

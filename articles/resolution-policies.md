@@ -1,4 +1,4 @@
-# Resolution Policies
+# Resolution policies
 
 BlueTopo tile metadata records each source tile’s native cell size.
 Smaller meter values mean finer source detail. In `bluertopo`,
