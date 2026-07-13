@@ -28,7 +28,7 @@ change over time, which makes a map alone an incomplete research record.
 `bluertopo` is an R package for discovering current BlueTopo tiles that
 intersect a user-defined area, downloading original GeoTIFF and Raster
 Attribute Table (RAT) sidecar assets, checking their SHA-256 values, and
-opening selected bands as file-backed `terra` objects. It also retains catalog,
+opening selected bands as file-backed `terra` objects [@bluertopo]. It also retains catalog,
 query, selection, coverage, and download information when users request a
 detailed result. The package is intended for researchers and analysts who need
 to move from a geographic question to inspectable BlueTopo inputs in an R
@@ -156,15 +156,12 @@ grid handling; CI is configured across R versions and operating systems. These
 are credible near-term community-readiness signals for a BlueTopo-specific R
 workflow.
 
-There is not yet evidence of realized external scholarly use, citations,
-releases, or community engagement. The public repository history is very
-recent and contains one human contributor. Accordingly, this manuscript makes
-no adoption claim: its current significance is prospective and depends on
-independent use, sustained public development, and release/archiving practices.
+# AI usage disclosure
 
+Software package is original, designed, and implemented by Author. AI tools were used to polish manuscript and package materials prior to publication. Author reviewed and confirmed AI furnished content to be true and accurate.
 
 # Acknowledgements
 
-E.C. acknowledges the Department of Marine Sciences at the University of Puerto Rico–Mayagüez for logistical and academic support during graduate research and dissertation-related activities. E.C. would like to thank SeaMount Geospatial Labs for providing access to resources and infrastructure support throughout this project..
+E.C. acknowledges the Department of Marine Sciences at the University of Puerto Rico–Mayagüez for logistical and academic support during graduate research and dissertation-related activities. E.C. would like to thank SeaMount Geospatial Labs for providing access to resources and infrastructure support throughout this project.
 
 # References
