@@ -8,6 +8,8 @@ Discover, download, and open BlueTopo assets.
   : Download and extract NOAA BlueTopo bathymetry
 - [`bluertopo_download()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md)
   : Download original NOAA BlueTopo assets for an AOI
+- [`bluertopo_tile_polygons()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tile_polygons.md)
+  : Retrieve all BlueTopo tile polygons
 - [`bluertopo_tiles()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tiles.md)
   : Discover BlueTopo tiles intersecting an AOI
 

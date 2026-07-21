@@ -87,6 +87,7 @@ and catalog provenance.
 
 | Call | Return value |
 |:---|:---|
+| [`bluertopo_tile_polygons()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tile_polygons.md) | A [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html) of every current tile footprint; no AOI required |
 | `bluertopo_tiles(aoi)` | A [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html) of selected tile footprints and metadata |
 | `bluertopo_download(aoi, path)` | A `bluertopo_downloads` data frame with one row per asset |
 | `bluertopo(aoi)` | A [`terra::SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.html), or a [`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) for incompatible native grids |

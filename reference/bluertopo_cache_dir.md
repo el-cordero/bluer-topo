@@ -22,5 +22,5 @@ not write to the user's home directory. Set
 
 ``` r
 bluertopo_cache_dir()
-#> [1] "/tmp/RtmpbbL7qB/bluertopo-cache"
+#> [1] "/tmp/RtmpsQkSnu/bluertopo-cache"
 ```

@@ -218,22 +218,27 @@ diagnostics, and catalog provenance.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left"><code><a href="../reference/bluertopo_tile_polygons.html">bluertopo_tile_polygons()</a></code></td>
+<td align="left">A <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code> of every current tile
+footprint; no AOI required</td>
+</tr>
+<tr class="even">
 <td align="left"><code>bluertopo_tiles(aoi)</code></td>
 <td align="left">A <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code> of selected tile
 footprints and metadata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>bluertopo_download(aoi, path)</code></td>
 <td align="left">A <code>bluertopo_downloads</code> data frame with one
 row per asset</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>bluertopo(aoi)</code></td>
 <td align="left">A <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, or a
 <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRasterCollection</a></code> for incompatible native
 grids</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>bluertopo(aoi, details = TRUE)</code></td>
 <td align="left">A <code>bluertopo_result</code> list containing
 <code>data</code>, <code>tiles</code>, <code>downloads</code>,

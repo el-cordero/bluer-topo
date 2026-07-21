@@ -58,6 +58,7 @@ and
 
 | Function | Returns |
 |:---|:---|
+| [`bluertopo_tile_polygons()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tile_polygons.md) | Every current BlueTopo tile polygon; no AOI required |
 | `bluertopo_tiles(aoi)` | Selected tile footprints and metadata as a [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html) |
 | `bluertopo_download(aoi, path)` | Verified source-asset records as a data frame |
 | `bluertopo(aoi)` | A [`terra::SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) or [`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) |
