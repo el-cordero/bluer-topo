@@ -29,7 +29,11 @@ A data frame summary with removed file count and bytes.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 bluertopo_cache_clear(confirm = TRUE)
-} # }
+#> <bluertopo_cache_clear>
+#>   cache_dir: /tmp/RtmpAdKN4v/bluertopo-cache 
+#>   removed_files: 2 
+#>   removed_bytes: 6247341 
+# }
 ```

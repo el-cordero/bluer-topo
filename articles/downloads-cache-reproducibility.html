@@ -102,7 +102,7 @@ for future auditing.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plan</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/raw/bluetopo"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-downloads"</span><span class="op">)</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="st">"fill"</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -115,7 +115,7 @@ directory.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/raw/bluetopo"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-downloads"</span><span class="op">)</span>,</span>
 <span>  rat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verify <span class="op">=</span> <span class="st">"sha256"</span>,</span>
 <span>  on_exists <span class="op">=</span> <span class="st">"verify"</span></span>
@@ -136,7 +136,7 @@ redownloads the asset.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reused</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/raw/bluetopo"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-downloads"</span><span class="op">)</span>,</span>
 <span>  on_exists <span class="op">=</span> <span class="st">"verify"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -146,7 +146,9 @@ redownloads the asset.</p>
 <p><code><a href="../reference/bluertopo.html">bluertopo()</a></code> uses the package cache for catalog files,
 downloaded source assets, and VRTs. Cache roots are marked with
 <code>.bluertopo-cache.json</code> before package-owned content is
-written.</p>
+written. The default cache is session-temporary; set
+<code>options(bluertopo.cache_dir = "/path/to/cache")</code> when a
+persistent cache is wanted.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bluertopo_cache_dir.html">bluertopo_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/bluertopo_cache_clear.html">bluertopo_cache_clear()</a></code> clears only the configured
@@ -166,7 +168,7 @@ transient transfer failures.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/raw/bluetopo"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-downloads"</span><span class="op">)</span>,</span>
 <span>  workers <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  retries <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>

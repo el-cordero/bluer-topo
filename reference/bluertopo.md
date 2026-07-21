@@ -120,7 +120,16 @@ or `bluertopo_result` when `details = TRUE`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-bathy <- bluertopo(c(-66.2, 18.2, -66.1, 18.3))
-} # }
+# \donttest{
+bathy <- tryCatch(
+  bluertopo(c(-66.2, 18.2, -66.1, 18.3)),
+  bluertopo_error = function(e) {
+    message("Network-backed example skipped: ", conditionMessage(e))
+    NULL
+  }
+)
+#> Downloading BlueTopo tile scheme `BlueTopo_Tile_Scheme_20260626_132625.gpkg`.
+#> Warning: [intersect] no intersection
+#> Network-backed example skipped: No current BlueTopo tile footprints intersect the AOI.
+# }
 ```

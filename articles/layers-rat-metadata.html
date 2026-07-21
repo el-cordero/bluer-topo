@@ -124,7 +124,7 @@ reference: <a href="https://nauticalcharts.noaa.gov/data/bluetopo.html" class="e
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_download.html">bluertopo_download</a></span><span class="op">(</span></span>
 <span>  <span class="va">aoi</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"data/raw/bluetopo"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bluertopo-downloads"</span><span class="op">)</span>,</span>
 <span>  rat <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>

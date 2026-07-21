@@ -12,7 +12,7 @@ default, and writes manifests for future auditing.
 
 plan <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   coverage = "fill",
   dry_run = TRUE
 )
@@ -27,7 +27,7 @@ directory.
 
 manifest <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   rat = TRUE,
   verify = "sha256",
   on_exists = "verify"
@@ -50,7 +50,7 @@ verification. `on_exists = "replace"` redownloads the asset.
 
 reused <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   on_exists = "verify"
 )
 ```
@@ -60,7 +60,9 @@ reused <- bluertopo_download(
 [`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
 uses the package cache for catalog files, downloaded source assets, and
 VRTs. Cache roots are marked with `.bluertopo-cache.json` before
-package-owned content is written.
+package-owned content is written. The default cache is
+session-temporary; set `options(bluertopo.cache_dir = "/path/to/cache")`
+when a persistent cache is wanted.
 
 ``` r
 
@@ -87,7 +89,7 @@ assets still use retry/backoff behavior for transient transfer failures.
 
 manifest <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   workers = 1,
   retries = 3
 )

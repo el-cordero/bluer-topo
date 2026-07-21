@@ -40,7 +40,7 @@ reference: <https://nauticalcharts.noaa.gov/data/bluetopo.html>.
 
 assets <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   rat = TRUE
 )
 
