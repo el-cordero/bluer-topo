@@ -30,9 +30,7 @@ bluertopo_cache_dir <- function() {
 #'   `removed_bytes` columns.
 #' @export
 #' @examples
-#' \donttest{
 #' bluertopo_cache_clear(confirm = TRUE)
-#' }
 bluertopo_cache_clear <- function(cache_dir = bluertopo_cache_dir(), confirm = interactive()) {
   confirm <- .bt_validate_bool(confirm, "confirm")
   requested <- cache_dir

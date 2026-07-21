@@ -23,7 +23,5 @@ A one-row data frame with \code{cache_dir}, \code{removed_files}, and
 Deletes only the configured \code{bluertopo} package cache after path safeguards.
 }
 \examples{
-\donttest{
 bluertopo_cache_clear(confirm = TRUE)
-}
 }

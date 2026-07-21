@@ -93,7 +93,8 @@ No AOI is needed to retrieve the complete current tile scheme:
 tile_polygons <- bluertopo_tile_polygons()
 plot(tile_polygons)
 
-writeVector(tile_polygons, "bluetopo-tile-polygons.gpkg", overwrite = TRUE)
+output_file <- file.path(tempdir(), "bluetopo-tile-polygons.gpkg")
+writeVector(tile_polygons, output_file, overwrite = TRUE)
 ```
 
 ## Download original BlueTopo assets

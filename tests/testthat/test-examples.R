@@ -120,6 +120,15 @@ test_that("public API exports and download cache control remain available", {
     )
   )
   expect_true("cache_dir" %in% names(formals(bluertopo_download)))
+  expect_identical(
+    as.list(formals(bluertopo_download))["path"],
+    alist(path = )
+  )
+  expect_error(
+    bluertopo_download(c(-74.045, 40.675, -73.995, 40.715)),
+    "`path` is required",
+    class = "bluertopo_error_argument"
+  )
   expect_false("aoi" %in% names(formals(bluertopo_tile_polygons)))
 })
 
@@ -136,6 +145,7 @@ test_that("example vignettes render without live NOAA network access", {
     expect_no_error(rmarkdown::render(
       vignette,
       output_dir = output_dir,
+      intermediates_dir = output_dir,
       quiet = TRUE,
       clean = TRUE,
       envir = new.env(parent = globalenv())
