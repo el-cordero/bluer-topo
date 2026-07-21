@@ -30,11 +30,9 @@ A one-row data frame with `cache_dir`, `removed_files`, and
 ## Examples
 
 ``` r
-# \donttest{
 bluertopo_cache_clear(confirm = TRUE)
 #> <bluertopo_cache_clear>
-#>   cache_dir: /tmp/RtmpsQkSnu/bluertopo-cache 
+#>   cache_dir: /tmp/RtmpUAcVpZ/bluertopo-cache 
 #>   removed_files: 11 
 #>   removed_bytes: 16394846 
-# }
 ```
