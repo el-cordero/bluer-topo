@@ -1,15 +1,11 @@
 # Get BlueTopo
 
 [`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
-is the main workflow for opening NOAA BlueTopo source bathymetry with
+is the main workflow for opening BlueTopo source bathymetry with
 `terra`. It discovers the current BlueTopo tile-scheme catalog,
 intersects that catalog with an area of interest, downloads verified
 original source files when needed, and returns file-backed `terra`
 rasters.
-
-BlueTopo is not for navigation. `bluertopo` performs no vertical-datum
-conversion and is not affiliated with, endorsed by, or supported by
-NOAA.
 
 Reference: NOAA,
 [BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html).
@@ -42,7 +38,7 @@ library(terra)
 aoi <- vect("project_area.gpkg")
 
 # Or a bbox: c(xmin, ymin, xmax, ymax) in EPSG:4326.
-aoi <- c(-66.2, 18.2, -66.1, 18.3)
+aoi <- c(xmin = -74.045, ymin = 40.675, xmax = -73.995, ymax = 40.715)
 ```
 
 Pass `sf` objects directly; no conversion is required:
@@ -61,11 +57,7 @@ Inspect tile choices before downloading large GeoTIFFs.
 
 ``` r
 
-tiles <- bluertopo_tiles(
-  aoi,
-  resolution = "native",
-  coverage = "warn"
-)
+tiles <- bluertopo_tiles(aoi)
 
 as.data.frame(tiles)[
   c("tile_id", "resolution_m", "delivered_date", "selection_reason")
@@ -81,17 +73,11 @@ checksums, and opens the elevation band.
 
 ``` r
 
-bathy <- bluertopo(
-  aoi,
-  layers = "elevation",
-  resolution = "native",
-  coverage = "warn",
-  details = TRUE
-)
+result <- bluertopo(aoi, details = TRUE)
 
-bathy$data
-bathy$downloads
-bathy$coverage
+result$data
+result$downloads
+result$coverage
 ```
 
 Set `details = TRUE` when provenance matters. The result includes

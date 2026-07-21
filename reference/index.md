@@ -2,7 +2,7 @@
 
 ## Core workflows
 
-Discover, download, and open NOAA BlueTopo assets.
+Discover, download, and open BlueTopo assets.
 
 - [`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
   : Download and extract NOAA BlueTopo bathymetry

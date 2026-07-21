@@ -1,16 +1,14 @@
 # Extract elevation with terra
 
-This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.
+This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.
 
 This example uses BlueTopo tiles covering New York Harbor. The workflow
 demonstrates tile discovery, checksum-verified asset retrieval, and
 file-backed raster access with `terra`. Raster Attribute Table (RAT)
 sidecars are retained with the source GeoTIFF assets.
 
-BlueTopo is not for navigation. No vertical-datum conversion is
-performed.
 [`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md)
 returns terra objects and, with `details = TRUE`, exposes selected
 tiles, downloads, query metadata, provenance, and coverage diagnostics.
@@ -59,14 +57,12 @@ result <- bluertopo(
 
 ## Provenance
 
-| Field                     | Value                                     |
-|:--------------------------|:------------------------------------------|
-| Catalog                   | BlueTopo_Tile_Scheme_20260626_132625.gpkg |
-| Catalog last modified     | 2026-06-26T17:35:52.000Z                  |
-| Package version           | 0.0.1                                     |
-| Navigation status         | BlueTopo is not for navigation            |
-| Vertical-datum conversion | none performed by bluertopo               |
-| Planned download (MB)     | 9.657                                     |
+| Field                 | Value                                     |
+|:----------------------|:------------------------------------------|
+| Catalog               | BlueTopo_Tile_Scheme_20260626_132625.gpkg |
+| Catalog last modified | 2026-06-26T17:35:52.000Z                  |
+| Package version       | 0.0.1                                     |
+| Planned download (MB) | 9.657                                     |
 
 ## Elevation preview
 

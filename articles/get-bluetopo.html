@@ -91,14 +91,11 @@ div.sourceCode pre code span:empty {
 
     
     
-<p><code><a href="../reference/bluertopo.html">bluertopo()</a></code> is the main workflow for opening NOAA
-BlueTopo source bathymetry with <code>terra</code>. It discovers the
-current BlueTopo tile-scheme catalog, intersects that catalog with an
-area of interest, downloads verified original source files when needed,
-and returns file-backed <code>terra</code> rasters.</p>
-<p>BlueTopo is not for navigation. <code>bluertopo</code> performs no
-vertical-datum conversion and is not affiliated with, endorsed by, or
-supported by NOAA.</p>
+<p><code><a href="../reference/bluertopo.html">bluertopo()</a></code> is the main workflow for opening BlueTopo
+source bathymetry with <code>terra</code>. It discovers the current
+BlueTopo tile-scheme catalog, intersects that catalog with an area of
+interest, downloads verified original source files when needed, and
+returns file-backed <code>terra</code> rasters.</p>
 <p>Reference: NOAA, <a href="https://nauticalcharts.noaa.gov/data/bluetopo.html" class="external-link">BlueTopo</a>.</p>
 <div class="section level2">
 <h2 id="define-an-aoi">Define an AOI<a class="anchor" aria-label="anchor" href="#define-an-aoi"></a>
@@ -173,7 +170,7 @@ condition.</p>
 <span><span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="st">"project_area.gpkg"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or a bbox: c(xmin, ymin, xmax, ymax) in EPSG:4326.</span></span>
-<span><span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">66.2</span>, <span class="fl">18.2</span>, <span class="op">-</span><span class="fl">66.1</span>, <span class="fl">18.3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">74.045</span>, ymin <span class="op">=</span> <span class="fl">40.675</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">73.995</span>, ymax <span class="op">=</span> <span class="fl">40.715</span><span class="op">)</span></span></code></pre></div>
 <p>Pass <code>sf</code> objects directly; no conversion is required:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
@@ -186,11 +183,7 @@ condition.</p>
 </h2>
 <p>Inspect tile choices before downloading large GeoTIFFs.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_tiles.html">bluertopo_tiles</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"warn"</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo_tiles.html">bluertopo_tiles</a></span><span class="op">(</span><span class="va">aoi</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">)</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tile_id"</span>, <span class="st">"resolution_m"</span>, <span class="st">"delivered_date"</span>, <span class="st">"selection_reason"</span><span class="op">)</span></span>
@@ -203,17 +196,11 @@ condition.</p>
 into the package cache, verifies SHA-256 checksums, and opens the
 elevation band.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bathy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span></span>
-<span>  <span class="va">aoi</span>,</span>
-<span>  layers <span class="op">=</span> <span class="st">"elevation"</span>,</span>
-<span>  resolution <span class="op">=</span> <span class="st">"native"</span>,</span>
-<span>  coverage <span class="op">=</span> <span class="st">"warn"</span>,</span>
-<span>  details <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">downloads</span></span>
-<span><span class="va">bathy</span><span class="op">$</span><span class="va">coverage</span></span></code></pre></div>
+<span><span class="va">result</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">downloads</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">coverage</span></span></code></pre></div>
 <p>Set <code>details = TRUE</code> when provenance matters. The result
 includes selected tiles, download statuses, query metadata, coverage
 diagnostics, and catalog provenance.</p>

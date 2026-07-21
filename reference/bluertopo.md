@@ -211,31 +211,13 @@ returns a `bluertopo_result` list containing:
 ## Examples
 
 ``` r
-bbox <- c(-66.2, 18.2, -66.1, 18.3)
+aoi <- c(xmin = -74.045, ymin = 40.675, xmax = -73.995, ymax = 40.715)
 
-# sf and sfc polygon objects with a known CRS can be passed directly.
-if (requireNamespace("sf", quietly = TRUE)) {
-  aoi <- sf::st_sf(
-    name = "example",
-    geometry = sf::st_as_sfc(
-      "POLYGON ((-66.2 18.2, -66.1 18.2, -66.1 18.3, -66.2 18.3, -66.2 18.2))",
-      crs = 4326
-    )
-  )
-} else {
-  aoi <- bbox
-}
+# sf and sfc polygons with a known CRS can be passed directly:
+# aoi <- sf::st_read("my_area.gpkg")
 
 # \donttest{
-bathy <- tryCatch(
-  bluertopo(aoi),
-  bluertopo_error = function(e) {
-    message("Network-backed example skipped: ", conditionMessage(e))
-    NULL
-  }
-)
+bathy <- bluertopo(aoi)
 #> Downloading BlueTopo tile scheme `BlueTopo_Tile_Scheme_20260626_132625.gpkg`.
-#> Warning: [intersect] no intersection
-#> Network-backed example skipped: No current BlueTopo tile footprints intersect the AOI.
 # }
 ```

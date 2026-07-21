@@ -135,13 +135,10 @@ reference: <a href="https://nauticalcharts.noaa.gov/data/bluetopo.html" class="e
 </h2>
 <p><code>bluertopo(details = TRUE)</code> includes vertical-reference
 text discovered by <code>terra</code>/GDAL metadata inspection when
-available. This is provenance text, not a datum conversion.</p>
+available.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bluertopo.html">bluertopo</a></span><span class="op">(</span><span class="va">aoi</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">provenance</span><span class="op">$</span><span class="va">vertical_reference_text</span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">provenance</span><span class="op">$</span><span class="va">no_vertical_datum_conversion_performed</span></span></code></pre></div>
-<p>Use a domain-appropriate vertical-datum transformation outside
-<code>bluertopo</code> when an analysis requires one.</p>
+<span><span class="va">result</span><span class="op">$</span><span class="va">provenance</span><span class="op">$</span><span class="va">vertical_reference_text</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -91,15 +91,14 @@ div.sourceCode pre code span:empty {
 
     
     
-<p>This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.</p>
+<p>This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.</p>
 <p>This example uses BlueTopo tiles covering New York Harbor. The
 workflow demonstrates tile discovery, checksum-verified asset retrieval,
 and file-backed raster access with <code>terra</code>. Raster Attribute
 Table (RAT) sidecars are retained with the source GeoTIFF assets.</p>
-<p>BlueTopo is not for navigation. No vertical-datum conversion is
-performed. <code><a href="../reference/bluertopo.html">bluertopo()</a></code> returns terra objects and, with
+<p><code><a href="../reference/bluertopo.html">bluertopo()</a></code> returns terra objects and, with
 <code>details = TRUE</code>, exposes selected tiles, downloads, query
 metadata, provenance, and coverage diagnostics. Normal native extraction
 does not intentionally resample.</p>
@@ -223,14 +222,6 @@ does not intentionally resample.</p>
 <tr class="odd">
 <td align="left">Package version</td>
 <td align="left">0.0.1</td>
-</tr>
-<tr class="even">
-<td align="left">Navigation status</td>
-<td align="left">BlueTopo is not for navigation</td>
-</tr>
-<tr class="odd">
-<td align="left">Vertical-datum conversion</td>
-<td align="left">none performed by bluertopo</td>
 </tr>
 <tr class="even">
 <td align="left">Planned download (MB)</td>

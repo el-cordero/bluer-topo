@@ -1,8 +1,8 @@
 # Mixed grids and output grid
 
-This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.
+This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.
 
 New York Harbor is the primary public AOI for the examples, but its
 current small plan is a compatible 4 m grid. This example uses BlueTopo
@@ -10,10 +10,9 @@ tiles covering Key West and Boca Chica Channel because the documented
 secondary AOI currently intersects 4 m and 8 m source grids and
 therefore demonstrates mixed native-grid behavior.
 
-BlueTopo is not for navigation. No vertical-datum conversion is
-performed. Mixed native grids are preserved unless the user asks for a
-single output grid. `combine = "single"` needs an explicit output grid
-when native grids are incompatible. Resampled uncertainty values are not
+Mixed native grids are preserved unless the user asks for a single
+output grid. `combine = "single"` needs an explicit output grid when
+native grids are incompatible. Resampled uncertainty values are not
 original source cells, and contributor resampling must be
 nearest-neighbor.
 

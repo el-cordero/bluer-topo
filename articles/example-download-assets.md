@@ -1,17 +1,13 @@
 # Download original assets
 
-This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.
+This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.
 
 This example uses BlueTopo tiles covering New York Harbor. The workflow
 demonstrates tile discovery, checksum-verified asset retrieval, and
 file-backed raster access with `terra`. Raster Attribute Table (RAT)
 sidecars are retained with the source GeoTIFF assets.
-
-BlueTopo is not for navigation. No vertical-datum conversion is
-performed. Example downloads are intentionally small and are cached
-during website builds.
 
 ## Example area
 

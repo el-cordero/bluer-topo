@@ -1,8 +1,8 @@
 # Compare resolution policies
 
-This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.
+This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.
 
 This example uses BlueTopo tiles covering New York Harbor. The workflow
 demonstrates tile discovery, checksum-verified asset retrieval, and
@@ -12,11 +12,10 @@ and renders policy footprints. The current New York Harbor example is a
 compact 4 m native-resolution plan, so policy differences mainly
 demonstrate selection rules rather than a dramatic visual change.
 
-BlueTopo is not for navigation. No vertical-datum conversion is
-performed. Smaller meter values mean finer native source resolution.
-`resolution` selects source tiles; it does not resample.
-`coverage = "fill"` can add fallback source tiles. `output_resolution`
-is the argument that changes the output grid.
+Smaller meter values mean finer native source resolution. `resolution`
+selects source tiles; it does not resample. `coverage = "fill"` can add
+fallback source tiles. `output_resolution` is the argument that changes
+the output grid.
 
 ## Example area
 

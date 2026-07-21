@@ -1,8 +1,8 @@
 # Layers and RAT metadata
 
-This example uses BlueTopo source tiles from the NOAA National
-Bathymetric Source catalog. The build verifies the downloaded assets and
-records their source metadata.
+This example uses BlueTopo source tiles from the National Bathymetric
+Source catalog. The build verifies the downloaded assets and records
+their source metadata.
 
 This example uses BlueTopo tiles covering New York Harbor. The workflow
 demonstrates tile discovery, checksum-verified asset retrieval, and
@@ -12,10 +12,9 @@ for contributor metadata. Elevation is shown with hillshade and
 contours; uncertainty and contributor IDs are plotted as their own
 source layers.
 
-BlueTopo is not for navigation. No vertical-datum conversion is
-performed. The contributor band contains IDs, not continuous values.
-Contributor IDs must not be averaged. RAT sidecars carry contributor
-metadata, and `bluertopo` preserves original RAT files.
+The contributor band contains IDs, not continuous values. Contributor
+IDs must not be averaged. RAT sidecars carry contributor metadata, and
+`bluertopo` preserves original RAT files.
 
 ## Example area
 
