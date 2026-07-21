@@ -68,6 +68,10 @@ test_that("packaged example fixtures are installed and readable", {
   expect_gte(length(rats), 3L)
   expect_true(all(vapply(geotiffs, function(path) terra::nlyr(terra::rast(path)) >= 3L, logical(1L))))
   expect_true(all(file.exists(rats)))
+  expect_setequal(
+    unname(vapply(rats, .bt_sha256_file, character(1L))),
+    catalog$RAT_SHA256_Checksum
+  )
 })
 
 test_that("example fixtures work through public package workflows", {
