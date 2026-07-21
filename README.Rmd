@@ -74,6 +74,7 @@ bathy_sf <- bluertopo(aoi_sf)
 
 | Function | Use it when you need | Return type |
 |---|---|---|
+| `bluertopo_tile_polygons()` | Every current BlueTopo tile polygon, with no AOI | `terra::SpatVector` |
 | `bluertopo_tiles()` | Tile discovery and coverage planning only | `terra::SpatVector` |
 | `bluertopo_download()` | Verified original GeoTIFF/RAT files and manifests | `bluertopo_downloads` data frame |
 | `bluertopo()` | Elevation, uncertainty, or contributor rasters | `terra::SpatRaster` or `terra::SpatRasterCollection` |
@@ -88,6 +89,17 @@ result$tiles
 result$downloads
 result$coverage
 result$provenance
+```
+
+## Get all BlueTopo tile polygons
+
+No AOI is needed to retrieve the complete current tile scheme:
+
+```r
+tile_polygons <- bluertopo_tile_polygons()
+plot(tile_polygons)
+
+writeVector(tile_polygons, "bluetopo-tile-polygons.gpkg", overwrite = TRUE)
 ```
 
 ## Download original BlueTopo assets

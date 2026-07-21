@@ -73,6 +73,7 @@ reference:
     contents:
       - bluertopo
       - bluertopo_download
+      - bluertopo_tile_polygons
       - bluertopo_tiles
   - title: Policies and cache
     desc: Configure native-resolution selection and package cache behavior.

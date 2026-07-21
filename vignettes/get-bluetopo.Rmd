@@ -88,6 +88,7 @@ provenance.
 
 | Call | Return value |
 |:---|:---|
+| `bluertopo_tile_polygons()` | A `terra::SpatVector` of every current tile footprint; no AOI required |
 | `bluertopo_tiles(aoi)` | A `terra::SpatVector` of selected tile footprints and metadata |
 | `bluertopo_download(aoi, path)` | A `bluertopo_downloads` data frame with one row per asset |
 | `bluertopo(aoi)` | A `terra::SpatRaster`, or a `terra::SpatRasterCollection` for incompatible native grids |

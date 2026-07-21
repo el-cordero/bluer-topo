@@ -47,6 +47,50 @@ bluertopo_tiles <- function(
   )$tiles
 }
 
+#' Retrieve all BlueTopo tile polygons
+#'
+#' Downloads or reuses the current NOAA BlueTopo tile-scheme catalog and
+#' returns every published tile footprint. This function does not require an
+#' area of interest and does not download any bathymetry rasters.
+#'
+#' @inheritParams bluertopo_tiles
+#'
+#' @return A `terra::SpatVector` containing all current BlueTopo tile polygons
+#'   and their standardized catalog metadata, including tile ID, native
+#'   resolution, UTM zone, source URLs, and expected SHA-256 checksums.
+#' @export
+#' @examples
+#' \donttest{
+#' \dontshow{
+#' host <- "noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com"
+#' bluertopo_tile_polygons <- function(...) if (!is.null(curl::nslookup(host, error = FALSE)))
+#'   tryCatch(
+#'     bluertopo::bluertopo_tile_polygons(...),
+#'     bluertopo_error = function(e) NULL
+#'   )
+#' }
+#' tile_polygons <- bluertopo_tile_polygons()
+#' }
+bluertopo_tile_polygons <- function(
+  cache_dir = bluertopo_cache_dir(),
+  refresh = "if_stale",
+  quiet = FALSE
+) {
+  catalog <- .bt_get_catalog(
+    cache_dir = cache_dir,
+    refresh = refresh,
+    quiet = quiet
+  )
+  tiles <- .bt_read_catalog_vector(catalog)
+  if (nrow(tiles) == 0L) {
+    .bt_abort(
+      "The current BlueTopo tile-scheme catalog does not contain any polygons.",
+      class = "bluertopo_error_catalog"
+    )
+  }
+  tiles
+}
+
 .bt_tiles_impl <- function(
   aoi,
   resolution,

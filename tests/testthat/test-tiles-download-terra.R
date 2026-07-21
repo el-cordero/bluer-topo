@@ -26,6 +26,25 @@ test_that("tile discovery applies resolution and coverage policies", {
   })
 })
 
+test_that("all tile polygons can be retrieved without an AOI", {
+  with_bt_fixture({
+    tiles <- bluertopo_tile_polygons()
+
+    expect_s4_class(tiles, "SpatVector")
+    expect_equal(nrow(tiles), 4L)
+    expect_setequal(
+      as.data.frame(tiles)$tile_id,
+      c("TILE_4M_A", "TILE_8M_B", "TILE_2M_C", "TILE_16M_D")
+    )
+    expect_true(all(c("geotiff_url", "resolution_m", "geotiff_sha256") %in% names(tiles)))
+    expect_false("aoi" %in% names(formals(bluertopo_tile_polygons)))
+    expect_identical(
+      attr(tiles, "bluertopo_catalog")$catalog_name,
+      basename(fixture$catalog)
+    )
+  })
+})
+
 test_that("downloader supports dry run, SHA-256 validation, RAT sidecars, and reuse", {
   with_bt_fixture({
     plan <- bluertopo_download(

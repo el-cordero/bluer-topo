@@ -112,6 +112,7 @@ test_that("public API exports and download cache control remain available", {
     c(
       "bluertopo",
       "bluertopo_download",
+      "bluertopo_tile_polygons",
       "bluertopo_tiles",
       "bluertopo_resolution",
       "bluertopo_cache_dir",
@@ -119,6 +120,7 @@ test_that("public API exports and download cache control remain available", {
     )
   )
   expect_true("cache_dir" %in% names(formals(bluertopo_download)))
+  expect_false("aoi" %in% names(formals(bluertopo_tile_polygons)))
 })
 
 test_that("example vignettes render without live NOAA network access", {

@@ -99,6 +99,7 @@ directly to `bluertopo()`, `bluertopo_tiles()`, and `bluertopo_download()`.
 
 | Function | Returns |
 |:---|:---|
+| `bluertopo_tile_polygons()` | Every current BlueTopo tile polygon; no AOI required |
 | `bluertopo_tiles(aoi)` | Selected tile footprints and metadata as a `terra::SpatVector` |
 | `bluertopo_download(aoi, path)` | Verified source-asset records as a data frame |
 | `bluertopo(aoi)` | A `terra::SpatRaster` or `terra::SpatRasterCollection` |
