@@ -2,6 +2,10 @@
 #'
 #' Returns the configured package cache directory without creating it.
 #'
+#' The default is a session-temporary directory so routine package calls do not
+#' write to the user's home directory. Set `options(bluertopo.cache_dir = ...)`
+#' when a persistent cache is wanted.
+#'
 #' @return A single character string.
 #' @export
 #' @examples
@@ -9,7 +13,7 @@
 bluertopo_cache_dir <- function() {
   path <- getOption("bluertopo.cache_dir", NULL)
   if (is.null(path) || !nzchar(path)) {
-    path <- tools::R_user_dir("bluertopo", "cache")
+    path <- file.path(tempdir(), "bluertopo-cache")
   }
   .bt_normalize_path(path, must_work = FALSE)
 }
@@ -24,7 +28,7 @@ bluertopo_cache_dir <- function() {
 #' @return A data frame summary with removed file count and bytes.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' bluertopo_cache_clear(confirm = TRUE)
 #' }
 bluertopo_cache_clear <- function(cache_dir = bluertopo_cache_dir(), confirm = interactive()) {

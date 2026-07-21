@@ -21,7 +21,7 @@ A data frame summary with removed file count and bytes.
 Deletes only the configured \code{bluertopo} package cache after path safeguards.
 }
 \examples{
-\dontrun{
+\donttest{
 bluertopo_cache_clear(confirm = TRUE)
 }
 }

@@ -47,7 +47,7 @@ NOAA's BlueTopo product page is the package's primary external reference:
 ```{r}
 assets <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   rat = TRUE
 )
 

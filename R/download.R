@@ -24,8 +24,17 @@
 #' @return A `bluertopo_downloads` data frame.
 #' @export
 #' @examples
-#' \dontrun{
-#' bluertopo_download(c(-66.2, 18.2, -66.1, 18.3), path = "data/bluetopo")
+#' \donttest{
+#' files <- tryCatch(
+#'   bluertopo_download(
+#'     c(-66.2, 18.2, -66.1, 18.3),
+#'     path = file.path(tempdir(), "bluertopo-downloads")
+#'   ),
+#'   bluertopo_error = function(e) {
+#'     message("Network-backed example skipped: ", conditionMessage(e))
+#'     NULL
+#'   }
+#' )
 #' }
 bluertopo_download <- function(
   aoi,

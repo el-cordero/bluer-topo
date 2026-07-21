@@ -4,11 +4,15 @@ Version: 0.0.1
 Authors@R: c(
     person("Elvin", "Cordero", email = "elvin.cordero@seamountgeo.com", role = c("aut", "cre", "cph"))
   )
-Description: Discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
-    GeoTIFF assets for user supplied areas of interest. The package keeps source
-    files intact by default, uses terra for spatial data access, supports
-    explicit native-resolution selection policies, and records provenance for
-    reproducible extraction workflows.
+Description: Discovers, downloads, verifies, and opens bathymetry assets from
+    the National Oceanic and Atmospheric Administration (NOAA) BlueTopo product
+    for user supplied areas of interest. The package keeps source files intact
+    by default, uses terra for spatial data access, supports explicit
+    native-resolution selection policies, and records provenance for
+    reproducible extraction workflows. It accesses the NOAA BlueTopo web
+    service at <https://noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com/> and
+    references product documentation at
+    <https://nauticalcharts.noaa.gov/data/bluetopo.html>.
 License: MIT + file LICENSE
 URL: https://el-cordero.github.io/bluer-topo/, https://github.com/el-cordero/bluer-topo
 BugReports: https://github.com/el-cordero/bluer-topo/issues

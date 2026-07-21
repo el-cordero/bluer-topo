@@ -1,3 +1,10 @@
+test_that("the default cache is session-temporary", {
+  withr::local_options(bluertopo.cache_dir = NULL)
+  cache <- bluertopo_cache_dir()
+  expect_true(startsWith(cache, paste0(tempdir(), .Platform$file.sep)))
+  expect_false(startsWith(path.expand(cache), path.expand("~")))
+})
+
 test_that("cache initialization writes and validates an ownership marker", {
   cache <- file.path(tempdir(), paste0("bluertopo-cache-", .bt_hash_object(stats::runif(1L))))
   withr::local_options(bluertopo.cache_dir = cache)

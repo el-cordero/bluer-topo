@@ -12,6 +12,11 @@ A single character string.
 \description{
 Returns the configured package cache directory without creating it.
 }
+\details{
+The default is a session-temporary directory so routine package calls do not
+write to the user's home directory. Set \code{options(bluertopo.cache_dir = ...)}
+when a persistent cache is wanted.
+}
 \examples{
 bluertopo_cache_dir()
 }

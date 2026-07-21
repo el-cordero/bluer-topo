@@ -22,3 +22,4 @@
 ^.*\.Rcheck$
 ^\.\.Rcheck$
 ^.*\.tar\.gz$
+^bluertopo-linkedin-showcase($|/)

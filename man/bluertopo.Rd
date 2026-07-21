@@ -78,7 +78,13 @@ for an AOI, downloads verified original source assets by default, and opens
 selected bands as lazy, file-backed \code{terra} objects.
 }
 \examples{
-\dontrun{
-bathy <- bluertopo(c(-66.2, 18.2, -66.1, 18.3))
+\donttest{
+bathy <- tryCatch(
+  bluertopo(c(-66.2, 18.2, -66.1, 18.3)),
+  bluertopo_error = function(e) {
+    message("Network-backed example skipped: ", conditionMessage(e))
+    NULL
+  }
+)
 }
 }

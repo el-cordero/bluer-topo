@@ -82,10 +82,11 @@ bt_mixed_example_aoi_id <- function() {
 }
 
 bt_real_example_cache_dir <- function() {
-  path.expand(Sys.getenv(
-    "BLUERTOPO_REAL_EXAMPLE_CACHE",
-    "~/.cache/bluertopo-pkgdown-real-examples"
-  ))
+  configured <- Sys.getenv("BLUERTOPO_REAL_EXAMPLE_CACHE", unset = "")
+  if (nzchar(configured)) {
+    return(path.expand(configured))
+  }
+  file.path(tempdir(), "bluertopo-pkgdown-real-examples")
 }
 
 bt_real_example_size_cap <- function() {

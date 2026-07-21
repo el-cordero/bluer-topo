@@ -21,7 +21,7 @@ default, and writes manifests for future auditing.
 ```{r}
 plan <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   coverage = "fill",
   dry_run = TRUE
 )
@@ -34,7 +34,7 @@ Dry runs return planned assets without creating the destination directory.
 ```{r}
 manifest <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   rat = TRUE,
   verify = "sha256",
   on_exists = "verify"
@@ -55,7 +55,7 @@ copies are written under `manifests/` when a query hash is available.
 ```{r}
 reused <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   on_exists = "verify"
 )
 ```
@@ -64,7 +64,9 @@ reused <- bluertopo_download(
 
 `bluertopo()` uses the package cache for catalog files, downloaded source
 assets, and VRTs. Cache roots are marked with `.bluertopo-cache.json` before
-package-owned content is written.
+package-owned content is written. The default cache is session-temporary; set
+`options(bluertopo.cache_dir = "/path/to/cache")` when a persistent cache is
+wanted.
 
 ```{r}
 bluertopo_cache_dir()
@@ -87,7 +89,7 @@ for transient transfer failures.
 ```{r}
 manifest <- bluertopo_download(
   aoi,
-  path = "data/raw/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   workers = 1,
   retries = 3
 )

@@ -62,7 +62,7 @@ object.
 ``` r
 files <- bluertopo_download(
   aoi,
-  path = "data/bluetopo",
+  path = file.path(tempdir(), "bluertopo-downloads"),
   rat = TRUE,
   verify = "sha256",
   coverage = "fill"
@@ -126,7 +126,10 @@ bathy_10m <- bluertopo(
 Package cache operations are intentionally conservative.
 `bluertopo_cache_clear()` clears only the configured `bluertopo` cache,
 requires confirmation in noninteractive sessions, and refuses to remove
-content unless a package-owned cache marker is present.
+content unless a package-owned cache marker is present. The default
+cache is session-temporary; set
+`options(bluertopo.cache_dir = "/path/to/cache")` when a persistent
+cache is wanted.
 
 ``` r
 bluertopo_cache_dir()

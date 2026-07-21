@@ -31,8 +31,14 @@
 #' `bluertopo_result` when `details = TRUE`.
 #' @export
 #' @examples
-#' \dontrun{
-#' bathy <- bluertopo(c(-66.2, 18.2, -66.1, 18.3))
+#' \donttest{
+#' bathy <- tryCatch(
+#'   bluertopo(c(-66.2, 18.2, -66.1, 18.3)),
+#'   bluertopo_error = function(e) {
+#'     message("Network-backed example skipped: ", conditionMessage(e))
+#'     NULL
+#'   }
+#' )
 #' }
 bluertopo <- function(
   aoi,

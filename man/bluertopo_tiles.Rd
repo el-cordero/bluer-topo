@@ -38,7 +38,13 @@ Returns selected NOAA BlueTopo tile footprints and standardized metadata
 without downloading raster assets.
 }
 \examples{
-\dontrun{
-tiles <- bluertopo_tiles(c(-66.2, 18.2, -66.1, 18.3))
+\donttest{
+tiles <- tryCatch(
+  bluertopo_tiles(c(-66.2, 18.2, -66.1, 18.3)),
+  bluertopo_error = function(e) {
+    message("Network-backed example skipped: ", conditionMessage(e))
+    NULL
+  }
+)
 }
 }
