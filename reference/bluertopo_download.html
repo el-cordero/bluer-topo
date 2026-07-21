@@ -85,7 +85,8 @@ optional RAT sidecars, verifies them, and writes download manifests.</p>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cache_dir <span class="op">=</span> <span class="fu"><a href="bluertopo_cache_dir.html">bluertopo_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,73 +95,119 @@ optional RAT sidecars, verifies them, and writes download manifests.</p>
 
 
 <dl><dt id="arg-aoi">aoi<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
-<dd><p>Area of interest.</p></dd>
+<dd><p>A polygonal area of interest in one of the formats listed in
+<strong>AOI inputs</strong> below.</p></dd>
 
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>Destination directory for original source assets.</p></dd>
+<dd><p>A non-empty character path to the destination directory for the
+original source assets and generated CSV/JSON manifests. The argument is
+required; there is no default write location.</p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>Native source-resolution policy.</p></dd>
+<dd><p>A native source-tile selection policy. Supply a shortcut
+such as <code>"native"</code>, <code>"finest"</code>, <code>"coarsest"</code>, <code>"best_available"</code>,
+<code>"coarsest_available"</code>, or <code>"dominant"</code>; a positive numeric meter value
+for an exact match; or a <code><a href="bluertopo_resolution.html">bluertopo_resolution()</a></code> object.</p></dd>
 
 
 <dt id="arg-coverage">coverage<a class="anchor" aria-label="anchor" href="#arg-coverage"></a></dt>
-<dd><p>Coverage policy.</p></dd>
+<dd><p>A character scalar controlling incomplete selected coverage:
+<code>"ignore"</code>, <code>"warn"</code>, <code>"error"</code>, or <code>"fill"</code>. <code>"fill"</code> adds fallback
+native resolutions in policy order until the target is met when possible.</p></dd>
 
 
 <dt id="arg-min-coverage">min_coverage<a class="anchor" aria-label="anchor" href="#arg-min-coverage"></a></dt>
-<dd><p>Target share of published tile coverage.</p></dd>
+<dd><p>A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.</p></dd>
 
 
 <dt id="arg-rat">rat<a class="anchor" aria-label="anchor" href="#arg-rat"></a></dt>
-<dd><p>Download RAT sidecars when available.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, download Raster Attribute Table
+(RAT) XML sidecars when the catalog provides them.</p></dd>
 
 
 <dt id="arg-refresh">refresh<a class="anchor" aria-label="anchor" href="#arg-refresh"></a></dt>
-<dd><p>Catalog refresh policy.</p></dd>
+<dd><p>A character scalar controlling catalog access:
+<code>"if_stale"</code>, <code>"never"</code>, or <code>"always"</code>. <code>"never"</code> requires an existing
+cached catalog and performs no catalog request.</p></dd>
 
 
 <dt id="arg-verify">verify<a class="anchor" aria-label="anchor" href="#arg-verify"></a></dt>
-<dd><p>Verification mode: <code>"sha256"</code>, <code>"size"</code>, or <code>"none"</code>.</p></dd>
+<dd><p>A character scalar download-verification mode: <code>"sha256"</code>
+(default), <code>"size"</code>, or <code>"none"</code>. <code>"none"</code> is explicitly unverified.</p></dd>
 
 
 <dt id="arg-workers">workers<a class="anchor" aria-label="anchor" href="#arg-workers"></a></dt>
-<dd><p>Worker count. Only <code>NULL</code>/<code>1</code> is currently supported; higher
-values are rejected until bounded parallel downloads are implemented.</p></dd>
+<dd><p><code>NULL</code> or the number <code>1</code>. Higher worker counts are rejected in
+this release.</p></dd>
 
 
 <dt id="arg-on-exists">on_exists<a class="anchor" aria-label="anchor" href="#arg-on-exists"></a></dt>
-<dd><p>Existing-file policy: <code>"verify"</code>, <code>"skip"</code>, or <code>"replace"</code>.</p></dd>
+<dd><p>A character scalar: <code>"verify"</code> reuses only files that pass
+verification, <code>"skip"</code> leaves existing files untouched, and <code>"replace"</code>
+downloads them again.</p></dd>
 
 
 <dt id="arg-on-error">on_error<a class="anchor" aria-label="anchor" href="#arg-on-error"></a></dt>
-<dd><p>Error policy: <code>"stop"</code> or <code>"continue"</code>.</p></dd>
+<dd><p>A character scalar: <code>"stop"</code> aborts after an asset failure;
+<code>"continue"</code> records the failure and processes the remaining assets.</p></dd>
 
 
 <dt id="arg-retries">retries<a class="anchor" aria-label="anchor" href="#arg-retries"></a></dt>
-<dd><p>Number of download attempts for each asset.</p></dd>
+<dd><p>A positive whole number giving the maximum attempts per
+asset.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>Optional curl timeout in seconds.</p></dd>
+<dd><p><code>NULL</code> or a positive numeric timeout in seconds for each HTTP
+request.</p></dd>
 
 
 <dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>
-<dd><p>Return the plan without writing tile files.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, return the planned assets
+without downloading source files.</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
-<dd><p>Show routine progress messages.</p></dd>
+<dd><p>A length-one logical controlling routine download progress.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Suppress routine messages.</p></dd>
+<dd><p>A length-one logical suppressing routine informational messages.</p></dd>
+
+
+<dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
+<dd><p>A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>bluertopo_downloads</code> data frame.</p>
+    <p>A <code>bluertopo_downloads</code> data frame with one row per planned asset.
+Important columns include <code>tile_id</code>, <code>asset_type</code>, <code>source_url</code>,
+<code>local_path</code>, <code>status</code>, <code>verification_mode</code>, <code>verified</code>, byte counts,
+checksums, attempts, and any recorded error. CSV and JSON copies are
+written below <code>path</code> unless <code>dry_run = TRUE</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="aoi-inputs">AOI inputs<a class="anchor" aria-label="anchor" href="#aoi-inputs"></a></h2>
+
+
+<p><code>aoi</code> must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:</p><ul><li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code>;</p></li>
+<li><p>an <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf::sf</a></code> data frame or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc</a></code> geometry vector;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, whose extent and CRS define the AOI;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatExtent-class.html" class="external-link">terra::SpatExtent</a></code>, interpreted as longitude/latitude in EPSG:4326;</p></li>
+<li><p>a numeric <code>c(xmin, ymin, xmax, ymax)</code> bounding box in EPSG:4326;</p></li>
+<li><p>a local vector-file path readable by <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">terra::vect()</a></code>; or</p></li>
+<li><p>a WKT or GeoJSON character string, interpreted as EPSG:4326.</p></li>
+</ul><p>Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.</p>
     </div>
 
     <div class="section level2">

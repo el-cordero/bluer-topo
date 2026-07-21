@@ -22,7 +22,8 @@ bluertopo_download(
   timeout = NULL,
   dry_run = FALSE,
   progress = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  cache_dir = bluertopo_cache_dir()
 )
 ```
 
@@ -30,72 +31,137 @@ bluertopo_download(
 
 - aoi:
 
-  Area of interest.
+  A polygonal area of interest in one of the formats listed in **AOI
+  inputs** below.
 
 - path:
 
-  Destination directory for original source assets.
+  A non-empty character path to the destination directory for the
+  original source assets and generated CSV/JSON manifests. The argument
+  is required; there is no default write location.
 
 - resolution:
 
-  Native source-resolution policy.
+  A native source-tile selection policy. Supply a shortcut such as
+  `"native"`, `"finest"`, `"coarsest"`, `"best_available"`,
+  `"coarsest_available"`, or `"dominant"`; a positive numeric meter
+  value for an exact match; or a
+  [`bluertopo_resolution()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_resolution.md)
+  object.
 
 - coverage:
 
-  Coverage policy.
+  A character scalar controlling incomplete selected coverage:
+  `"ignore"`, `"warn"`, `"error"`, or `"fill"`. `"fill"` adds fallback
+  native resolutions in policy order until the target is met when
+  possible.
 
 - min_coverage:
 
-  Target share of published tile coverage.
+  A numeric value from 0 through 1 giving the target share of published
+  tile-index coverage. This is geometric catalog coverage, not a
+  data-quality measure.
 
 - rat:
 
-  Download RAT sidecars when available.
+  A length-one logical. If `TRUE`, download Raster Attribute Table (RAT)
+  XML sidecars when the catalog provides them.
 
 - refresh:
 
-  Catalog refresh policy.
+  A character scalar controlling catalog access: `"if_stale"`,
+  `"never"`, or `"always"`. `"never"` requires an existing cached
+  catalog and performs no catalog request.
 
 - verify:
 
-  Verification mode: `"sha256"`, `"size"`, or `"none"`.
+  A character scalar download-verification mode: `"sha256"` (default),
+  `"size"`, or `"none"`. `"none"` is explicitly unverified.
 
 - workers:
 
-  Worker count. Only `NULL`/`1` is currently supported; higher values
-  are rejected until bounded parallel downloads are implemented.
+  `NULL` or the number `1`. Higher worker counts are rejected in this
+  release.
 
 - on_exists:
 
-  Existing-file policy: `"verify"`, `"skip"`, or `"replace"`.
+  A character scalar: `"verify"` reuses only files that pass
+  verification, `"skip"` leaves existing files untouched, and
+  `"replace"` downloads them again.
 
 - on_error:
 
-  Error policy: `"stop"` or `"continue"`.
+  A character scalar: `"stop"` aborts after an asset failure;
+  `"continue"` records the failure and processes the remaining assets.
 
 - retries:
 
-  Number of download attempts for each asset.
+  A positive whole number giving the maximum attempts per asset.
 
 - timeout:
 
-  Optional curl timeout in seconds.
+  `NULL` or a positive numeric timeout in seconds for each HTTP request.
 
 - dry_run:
 
-  Return the plan without writing tile files.
+  A length-one logical. If `TRUE`, return the planned assets without
+  downloading source files.
 
 - progress:
 
-  Show routine progress messages.
+  A length-one logical controlling routine download progress.
 
 - quiet:
 
-  Suppress routine messages.
+  A length-one logical suppressing routine informational messages.
+
+- cache_dir:
+
+  A non-empty character path for the package cache. The
+  session-temporary default avoids writing to the user's home directory.
+  Set an explicit path to reuse catalogs, source files, and VRTs across
+  sessions.
 
 ## Value
 
-A `bluertopo_downloads` data frame.
+A `bluertopo_downloads` data frame with one row per planned asset.
+Important columns include `tile_id`, `asset_type`, `source_url`,
+`local_path`, `status`, `verification_mode`, `verified`, byte counts,
+checksums, attempts, and any recorded error. CSV and JSON copies are
+written below `path` unless `dry_run = TRUE`.
+
+## AOI inputs
+
+`aoi` must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:
+
+- a
+  [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html);
+
+- an [`sf::sf`](https://r-spatial.github.io/sf/reference/sf.html) data
+  frame or
+  [`sf::sfc`](https://r-spatial.github.io/sf/reference/sfc.html)
+  geometry vector;
+
+- a
+  [`terra::SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.html),
+  whose extent and CRS define the AOI;
+
+- a
+  [`terra::SpatExtent`](https://rspatial.github.io/terra/reference/SpatExtent-class.html),
+  interpreted as longitude/latitude in EPSG:4326;
+
+- a numeric `c(xmin, ymin, xmax, ymax)` bounding box in EPSG:4326;
+
+- a local vector-file path readable by
+  [`terra::vect()`](https://rspatial.github.io/terra/reference/vect.html);
+  or
+
+- a WKT or GeoJSON character string, interpreted as EPSG:4326.
+
+Remote AOI URLs are refused. Numeric bounding boxes must be ordered and
+fall within valid longitude/latitude bounds. Point and line geometries
+are not accepted as areas of interest.
 
 ## Examples
 

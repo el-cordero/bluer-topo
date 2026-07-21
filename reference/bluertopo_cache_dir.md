@@ -10,7 +10,7 @@ bluertopo_cache_dir()
 
 ## Value
 
-A single character string.
+A length-one character vector containing the normalized cache path.
 
 ## Details
 
@@ -22,5 +22,5 @@ not write to the user's home directory. Set
 
 ``` r
 bluertopo_cache_dir()
-#> [1] "/tmp/RtmpAdKN4v/bluertopo-cache"
+#> [1] "/tmp/RtmpILxmbU/bluertopo-cache"
 ```

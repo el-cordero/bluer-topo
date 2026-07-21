@@ -95,49 +95,66 @@ explicit output grid.</p>
 
 
 <dl><dt id="arg-strategy">strategy<a class="anchor" aria-label="anchor" href="#arg-strategy"></a></dt>
-<dd><p>Resolution strategy.</p></dd>
+<dd><p>A character scalar naming a strategy: <code>"native"</code>,
+<code>"finest"</code>, <code>"coarsest"</code>, <code>"best_available"</code>,
+<code>"coarsest_available"</code>, <code>"dominant"</code>, <code>"exact"</code>, <code>"nearest"</code>,
+<code>"finer_or_equal"</code>, <code>"coarser_or_equal"</code>, <code>"between"</code>, <code>"rank"</code>,
+<code>"finest_n"</code>, <code>"coarsest_n"</code>, <code>"target"</code>, or <code>"coverage"</code>.
+<code>"highest"</code> and <code>"lowest"</code> are aliases for <code>"finest"</code> and
+<code>"coarsest"</code>.</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>A single meter value used by target-like strategies.</p></dd>
+<dd><p><code>NULL</code> or one positive numeric native cell size in meters.
+Required by <code>"nearest"</code>, <code>"target"</code>, <code>"finer_or_equal"</code>, and
+<code>"coarser_or_equal"</code>.</p></dd>
 
 
 <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
-<dd><p>One or more exact meter values.</p></dd>
+<dd><p><code>NULL</code> or a numeric vector of positive native cell sizes in
+meters. Required by <code>"exact"</code>.</p></dd>
 
 
 <dt id="arg-min-m-max-m">min_m, max_m<a class="anchor" aria-label="anchor" href="#arg-min-m-max-m"></a></dt>
-<dd><p>Inclusive meter bounds.</p></dd>
+<dd><p><code>NULL</code> or positive numeric inclusive bounds in meters.
+Both are required by <code>"between"</code>.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>Rank or count for rank-based strategies.</p></dd>
+<dd><p><code>NULL</code> or a positive whole number used by <code>"rank"</code>, <code>"finest_n"</code>,
+and <code>"coarsest_n"</code>.</p></dd>
 
 
 <dt id="arg-scope">scope<a class="anchor" aria-label="anchor" href="#arg-scope"></a></dt>
-<dd><p><code>"global"</code>. <code>"local"</code> is reserved for a future AOI-local
-ranking implementation and is rejected in this release.</p></dd>
+<dd><p>A character scalar. Only <code>"global"</code> is implemented;
+<code>"local"</code> is reserved and rejected.</p></dd>
 
 
 <dt id="arg-tie">tie<a class="anchor" aria-label="anchor" href="#arg-tie"></a></dt>
-<dd><p>Tie preference for nearest/target strategies.</p></dd>
+<dd><p>A character scalar, <code>"finer"</code> or <code>"coarser"</code>, used when two
+native resolutions are equally close to a target.</p></dd>
 
 
 <dt id="arg-prefer">prefer<a class="anchor" aria-label="anchor" href="#arg-prefer"></a></dt>
-<dd><p>Preference direction for coverage/rank strategies.</p></dd>
+<dd><p>A character scalar, <code>"finest"</code> or <code>"coarsest"</code>, controlling
+ordering for coverage and rank strategies.</p></dd>
 
 
 <dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
-<dd><p>Whether fallback must remain inside hard constraints.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, coverage fallback stays within
+hard resolution constraints.</p></dd>
 
 
 <dt id="arg-min-coverage">min_coverage<a class="anchor" aria-label="anchor" href="#arg-min-coverage"></a></dt>
-<dd><p>Coverage target for coverage-oriented strategies.</p></dd>
+<dd><p>A numeric value from 0 through 1 used by the
+<code>"coverage"</code> strategy.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>bluertopo_resolution</code> S3 object.</p>
+    <p>A <code>bluertopo_resolution</code> S3 object containing the normalized policy
+fields. Pass it to the <code>resolution</code> argument of <code><a href="bluertopo.html">bluertopo()</a></code>,
+<code><a href="bluertopo_tiles.html">bluertopo_tiles()</a></code>, or <code><a href="bluertopo_download.html">bluertopo_download()</a></code>.</p>
     </div>
 
     <div class="section level2">

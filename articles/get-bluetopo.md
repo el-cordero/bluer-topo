@@ -16,10 +16,23 @@ Reference: NOAA,
 
 ## Define an AOI
 
-Use a
-[`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html),
-`sf` object, bbox vector, WKT string, GeoJSON string, or a local vector
-file path. Remote AOI URLs are intentionally refused.
+Every AOI must resolve to polygon or multipolygon geometry. `terra`,
+`sf`, and file inputs must carry a known coordinate reference system
+(CRS).
+
+| Input type | Accepted form | CRS handling |
+|:---|:---|:---|
+| `terra` vector | `SpatVector` | Uses the object’s CRS |
+| `sf` vector | `sf` or `sfc` | Uses the object’s CRS |
+| `terra` raster | `SpatRaster` | Uses its extent and CRS |
+| `terra` extent | `SpatExtent` | Assumed EPSG:4326 |
+| Numeric bbox | `c(xmin, ymin, xmax, ymax)` | Assumed EPSG:4326 |
+| Local vector file | A path readable by [`terra::vect()`](https://rspatial.github.io/terra/reference/vect.html) | Uses the file’s CRS |
+| Geometry text | WKT or GeoJSON polygon text | Assumed EPSG:4326 |
+
+Remote URLs are intentionally refused. Points, lines, missing CRS
+values, unordered bounding boxes, and invalid longitude/latitude bounds
+fail early with an explanatory `bluertopo_error_aoi` condition.
 
 ``` r
 
@@ -30,6 +43,16 @@ aoi <- vect("project_area.gpkg")
 
 # Or a bbox: c(xmin, ymin, xmax, ymax) in EPSG:4326.
 aoi <- c(-66.2, 18.2, -66.1, 18.3)
+```
+
+Pass `sf` objects directly; no conversion is required:
+
+``` r
+
+library(sf)
+
+aoi_sf <- st_read("project_area.gpkg", quiet = TRUE)
+bathy <- bluertopo(aoi_sf)
 ```
 
 ## Discover tiles first
@@ -75,6 +98,15 @@ Set `details = TRUE` when provenance matters. The result includes
 selected tiles, download statuses, query metadata, coverage diagnostics,
 and catalog provenance.
 
+## Know what comes back
+
+| Call | Return value |
+|:---|:---|
+| `bluertopo_tiles(aoi)` | A [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html) of selected tile footprints and metadata |
+| `bluertopo_download(aoi, path)` | A `bluertopo_downloads` data frame with one row per asset |
+| `bluertopo(aoi)` | A [`terra::SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.html), or a [`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) for incompatible native grids |
+| `bluertopo(aoi, details = TRUE)` | A `bluertopo_result` list containing `data`, `tiles`, `downloads`, `query`, `coverage`, and `provenance` |
+
 ## Choose layers
 
 BlueTopo source GeoTIFFs currently expose elevation, vertical
@@ -111,3 +143,9 @@ bathy_10m <- bluertopo(
   combine = "single"
 )
 ```
+
+`crop = TRUE` crops to the AOI extent. `mask = TRUE` additionally
+removes cells outside the polygon. `combine = "auto"` preserves
+compatible native grids as one raster and returns a collection for
+incompatible grids. Supplying both `output_crs` and `output_resolution`
+creates one explicit resampled output grid.

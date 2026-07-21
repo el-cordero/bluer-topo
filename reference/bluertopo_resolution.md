@@ -28,48 +28,65 @@ bluertopo_resolution(
 
 - strategy:
 
-  Resolution strategy.
+  A character scalar naming a strategy: `"native"`, `"finest"`,
+  `"coarsest"`, `"best_available"`, `"coarsest_available"`,
+  `"dominant"`, `"exact"`, `"nearest"`, `"finer_or_equal"`,
+  `"coarser_or_equal"`, `"between"`, `"rank"`, `"finest_n"`,
+  `"coarsest_n"`, `"target"`, or `"coverage"`. `"highest"` and
+  `"lowest"` are aliases for `"finest"` and `"coarsest"`.
 
 - value:
 
-  A single meter value used by target-like strategies.
+  `NULL` or one positive numeric native cell size in meters. Required by
+  `"nearest"`, `"target"`, `"finer_or_equal"`, and `"coarser_or_equal"`.
 
 - values:
 
-  One or more exact meter values.
+  `NULL` or a numeric vector of positive native cell sizes in meters.
+  Required by `"exact"`.
 
 - min_m, max_m:
 
-  Inclusive meter bounds.
+  `NULL` or positive numeric inclusive bounds in meters. Both are
+  required by `"between"`.
 
 - n:
 
-  Rank or count for rank-based strategies.
+  `NULL` or a positive whole number used by `"rank"`, `"finest_n"`, and
+  `"coarsest_n"`.
 
 - scope:
 
-  `"global"`. `"local"` is reserved for a future AOI-local ranking
-  implementation and is rejected in this release.
+  A character scalar. Only `"global"` is implemented; `"local"` is
+  reserved and rejected.
 
 - tie:
 
-  Tie preference for nearest/target strategies.
+  A character scalar, `"finer"` or `"coarser"`, used when two native
+  resolutions are equally close to a target.
 
 - prefer:
 
-  Preference direction for coverage/rank strategies.
+  A character scalar, `"finest"` or `"coarsest"`, controlling ordering
+  for coverage and rank strategies.
 
 - strict:
 
-  Whether fallback must remain inside hard constraints.
+  A length-one logical. If `TRUE`, coverage fallback stays within hard
+  resolution constraints.
 
 - min_coverage:
 
-  Coverage target for coverage-oriented strategies.
+  A numeric value from 0 through 1 used by the `"coverage"` strategy.
 
 ## Value
 
-A `bluertopo_resolution` S3 object.
+A `bluertopo_resolution` S3 object containing the normalized policy
+fields. Pass it to the `resolution` argument of
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md),
+[`bluertopo_tiles()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tiles.md),
+or
+[`bluertopo_download()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md).
 
 ## Examples
 

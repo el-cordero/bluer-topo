@@ -85,37 +85,69 @@ without downloading raster assets.</p>
 
 
 <dl><dt id="arg-aoi">aoi<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
-<dd><p>Area of interest.</p></dd>
+<dd><p>A polygonal area of interest in one of the formats listed in
+<strong>AOI inputs</strong> below.</p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>Native source-resolution policy.</p></dd>
+<dd><p>A native source-tile selection policy. Supply a shortcut
+such as <code>"native"</code>, <code>"finest"</code>, <code>"coarsest"</code>, <code>"best_available"</code>,
+<code>"coarsest_available"</code>, or <code>"dominant"</code>; a positive numeric meter value
+for an exact match; or a <code><a href="bluertopo_resolution.html">bluertopo_resolution()</a></code> object.</p></dd>
 
 
 <dt id="arg-coverage">coverage<a class="anchor" aria-label="anchor" href="#arg-coverage"></a></dt>
-<dd><p>Coverage policy: <code>"ignore"</code>, <code>"warn"</code>, <code>"error"</code>, or <code>"fill"</code>.</p></dd>
+<dd><p>A character scalar controlling incomplete selected coverage:
+<code>"ignore"</code>, <code>"warn"</code>, <code>"error"</code>, or <code>"fill"</code>. <code>"fill"</code> adds fallback
+native resolutions in policy order until the target is met when possible.</p></dd>
 
 
 <dt id="arg-min-coverage">min_coverage<a class="anchor" aria-label="anchor" href="#arg-min-coverage"></a></dt>
-<dd><p>Target share of published tile coverage.</p></dd>
+<dd><p>A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.</p></dd>
 
 
 <dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
-<dd><p>Package cache directory.</p></dd>
+<dd><p>A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.</p></dd>
 
 
 <dt id="arg-refresh">refresh<a class="anchor" aria-label="anchor" href="#arg-refresh"></a></dt>
-<dd><p>Catalog refresh policy.</p></dd>
+<dd><p>A character scalar controlling catalog access:
+<code>"if_stale"</code>, <code>"never"</code>, or <code>"always"</code>. <code>"never"</code> requires an existing
+cached catalog and performs no catalog request.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Suppress routine messages.</p></dd>
+<dd><p>A length-one logical suppressing routine informational messages.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code> with selected tile metadata. Coverage
-diagnostics are attached as an attribute.</p>
+diagnostics are attached as the <code>"coverage"</code> attribute and the normalized
+native-resolution policy as <code>"resolution_spec"</code>. Important fields include
+tile ID, native resolution, UTM zone, delivery date, intersection area and
+fraction, source URLs, expected SHA-256 checksums, selection rank/reason,
+and whether the tile was added as a coverage fallback.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="aoi-inputs">AOI inputs<a class="anchor" aria-label="anchor" href="#aoi-inputs"></a></h2>
+
+
+<p><code>aoi</code> must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:</p><ul><li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code>;</p></li>
+<li><p>an <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf::sf</a></code> data frame or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc</a></code> geometry vector;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, whose extent and CRS define the AOI;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatExtent-class.html" class="external-link">terra::SpatExtent</a></code>, interpreted as longitude/latitude in EPSG:4326;</p></li>
+<li><p>a numeric <code>c(xmin, ymin, xmax, ymax)</code> bounding box in EPSG:4326;</p></li>
+<li><p>a local vector-file path readable by <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">terra::vect()</a></code>; or</p></li>
+<li><p>a WKT or GeoJSON character string, interpreted as EPSG:4326.</p></li>
+</ul><p>Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.</p>
     </div>
 
     <div class="section level2">

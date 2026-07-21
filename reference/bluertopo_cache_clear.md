@@ -16,15 +16,16 @@ bluertopo_cache_clear(
 
 - cache_dir:
 
-  Cache directory to clear.
+  Length-one character path to a package-owned cache directory.
 
 - confirm:
 
-  Required as `TRUE` in noninteractive sessions.
+  A length-one logical. Must be `TRUE` in noninteractive sessions.
 
 ## Value
 
-A data frame summary with removed file count and bytes.
+A one-row data frame with `cache_dir`, `removed_files`, and
+`removed_bytes` columns.
 
 ## Examples
 
@@ -32,7 +33,7 @@ A data frame summary with removed file count and bytes.
 # \donttest{
 bluertopo_cache_clear(confirm = TRUE)
 #> <bluertopo_cache_clear>
-#>   cache_dir: /tmp/RtmpAdKN4v/bluertopo-cache 
+#>   cache_dir: /tmp/RtmpILxmbU/bluertopo-cache 
 #>   removed_files: 2 
 #>   removed_bytes: 6247341 
 # }

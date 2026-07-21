@@ -49,6 +49,20 @@ bathy <- bluertopo(aoi)
 plot(bathy)
 ```
 
+[`sf::sf`](https://r-spatial.github.io/sf/reference/sf.html) and
+[`sf::sfc`](https://r-spatial.github.io/sf/reference/sfc.html) polygon
+objects with a known CRS can also be passed directly to
+[`bluertopo()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo.md),
+[`bluertopo_tiles()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_tiles.md),
+and
+[`bluertopo_download()`](https://el-cordero.github.io/bluer-topo/reference/bluertopo_download.md).
+
+| Function | Returns |
+|:---|:---|
+| `bluertopo_tiles(aoi)` | Selected tile footprints and metadata as a [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html) |
+| `bluertopo_download(aoi, path)` | Verified source-asset records as a data frame |
+| `bluertopo(aoi)` | A [`terra::SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) or [`terra::SpatRasterCollection`](https://rspatial.github.io/terra/reference/SpatRaster-class.html) |
+
 ## Provenance workflow
 
 ``` r

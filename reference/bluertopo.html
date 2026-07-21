@@ -100,95 +100,169 @@ selected bands as lazy, file-backed <code>terra</code> objects.</p>
 
 
 <dl><dt id="arg-aoi">aoi<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
-<dd><p>Area of interest.</p></dd>
+<dd><p>A polygonal area of interest in one of the formats listed in
+<strong>AOI inputs</strong> below.</p></dd>
 
 
 <dt id="arg-layers">layers<a class="anchor" aria-label="anchor" href="#arg-layers"></a></dt>
-<dd><p><code>"elevation"</code>, <code>"uncertainty"</code>, <code>"contributor"</code>, <code>"all"</code>, or a
-character vector of canonical layer names.</p></dd>
+<dd><p>A character vector containing <code>"elevation"</code>, <code>"uncertainty"</code>,
+or <code>"contributor"</code>; use <code>"all"</code> for all three source bands. Elevation and
+uncertainty are continuous values. Contributor identifiers are categorical.</p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>Native source-resolution policy.</p></dd>
+<dd><p>A native source-tile selection policy. Supply a shortcut
+such as <code>"native"</code>, <code>"finest"</code>, <code>"coarsest"</code>, <code>"best_available"</code>,
+<code>"coarsest_available"</code>, or <code>"dominant"</code>; a positive numeric meter value
+for an exact match; or a <code><a href="bluertopo_resolution.html">bluertopo_resolution()</a></code> object.</p></dd>
 
 
 <dt id="arg-coverage">coverage<a class="anchor" aria-label="anchor" href="#arg-coverage"></a></dt>
-<dd><p>Coverage policy.</p></dd>
+<dd><p>A character scalar controlling incomplete selected coverage:
+<code>"ignore"</code>, <code>"warn"</code>, <code>"error"</code>, or <code>"fill"</code>. <code>"fill"</code> adds fallback
+native resolutions in policy order until the target is met when possible.</p></dd>
 
 
 <dt id="arg-min-coverage">min_coverage<a class="anchor" aria-label="anchor" href="#arg-min-coverage"></a></dt>
-<dd><p>Target share of published tile coverage.</p></dd>
+<dd><p>A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.</p></dd>
 
 
 <dt id="arg-access">access<a class="anchor" aria-label="anchor" href="#arg-access"></a></dt>
-<dd><p><code>"download"</code> or opt-in <code>"stream"</code>.</p></dd>
+<dd><p>A character scalar. <code>"download"</code> stores and SHA-256 verifies
+source files before opening them; <code>"stream"</code> uses GDAL <code>/vsicurl/</code> access
+without local checksum verification.</p></dd>
 
 
 <dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
-<dd><p>Package cache directory.</p></dd>
+<dd><p>A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.</p></dd>
 
 
 <dt id="arg-refresh">refresh<a class="anchor" aria-label="anchor" href="#arg-refresh"></a></dt>
-<dd><p>Catalog refresh policy.</p></dd>
+<dd><p>A character scalar controlling catalog access:
+<code>"if_stale"</code>, <code>"never"</code>, or <code>"always"</code>. <code>"never"</code> requires an existing
+cached catalog and performs no catalog request.</p></dd>
 
 
 <dt id="arg-crop">crop<a class="anchor" aria-label="anchor" href="#arg-crop"></a></dt>
-<dd><p>Crop each result to the AOI extent.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, crop each output to the AOI
+bounding extent.</p></dd>
 
 
 <dt id="arg-mask">mask<a class="anchor" aria-label="anchor" href="#arg-mask"></a></dt>
-<dd><p>Mask each result to the AOI polygon. Implies <code>crop = TRUE</code>.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, mask cells outside the AOI
+polygon and also enable cropping.</p></dd>
 
 
 <dt id="arg-combine">combine<a class="anchor" aria-label="anchor" href="#arg-combine"></a></dt>
-<dd><p><code>"auto"</code>, <code>"collection"</code>, or <code>"single"</code>.</p></dd>
+<dd><p>A character scalar controlling multiple native grids:
+<code>"auto"</code> returns one raster when compatible and a collection otherwise;
+<code>"collection"</code> always returns a collection; <code>"single"</code> requires compatible
+grids or an explicit output grid.</p></dd>
 
 
 <dt id="arg-output-crs">output_crs<a class="anchor" aria-label="anchor" href="#arg-output-crs"></a></dt>
-<dd><p>Optional explicit output CRS.</p></dd>
+<dd><p><code>NULL</code> or a non-empty character projected CRS accepted by
+<code>terra</code>, such as <code>"EPSG:26918"</code> or WKT. Supply it together with
+<code>output_resolution</code> to request one resampled output grid.</p></dd>
 
 
 <dt id="arg-output-resolution">output_resolution<a class="anchor" aria-label="anchor" href="#arg-output-resolution"></a></dt>
-<dd><p>Optional explicit output-grid resolution in target
-CRS units.</p></dd>
+<dd><p><code>NULL</code> or one positive numeric cell size in
+<code>output_crs</code> units. It must be supplied together with <code>output_crs</code>.</p></dd>
 
 
 <dt id="arg-resampling">resampling<a class="anchor" aria-label="anchor" href="#arg-resampling"></a></dt>
-<dd><p>Optional named resampling methods by layer.</p></dd>
+<dd><p><code>NULL</code>, a named character vector, or a named list keyed by
+layer. Allowed methods are <code>"near"</code>, <code>"bilinear"</code>, <code>"cubic"</code>,
+<code>"cubicspline"</code>, <code>"lanczos"</code>, <code>"average"</code>, and <code>"mode"</code>. Defaults are
+bilinear for elevation/uncertainty and nearest-neighbor for contributor;
+contributor cannot use a non-nearest method.</p></dd>
 
 
 <dt id="arg-verify">verify<a class="anchor" aria-label="anchor" href="#arg-verify"></a></dt>
-<dd><p>Download verification mode.</p></dd>
+<dd><p>A character scalar download-verification mode: <code>"sha256"</code>
+(default), <code>"size"</code>, or <code>"none"</code>. <code>"none"</code> is explicitly unverified.</p></dd>
 
 
 <dt id="arg-workers">workers<a class="anchor" aria-label="anchor" href="#arg-workers"></a></dt>
-<dd><p>Worker count. Only <code>NULL</code>/<code>1</code> is currently supported; higher
-values are rejected until bounded parallel downloads are implemented.</p></dd>
+<dd><p><code>NULL</code> or the number <code>1</code>. Higher worker counts are rejected in
+this release.</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
-<dd><p>Show routine progress messages.</p></dd>
+<dd><p>A length-one logical controlling routine download progress.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Suppress routine messages.</p></dd>
+<dd><p>A length-one logical suppressing routine informational messages.</p></dd>
 
 
 <dt id="arg-details">details<a class="anchor" aria-label="anchor" href="#arg-details"></a></dt>
-<dd><p>Return a <code>bluertopo_result</code> instead of only the terra object.</p></dd>
+<dd><p>A length-one logical. If <code>TRUE</code>, return data plus tile,
+download, query, coverage, and provenance records.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRasterCollection</a></code>, or
-<code>bluertopo_result</code> when <code>details = TRUE</code>.</p>
+    <p>A <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRasterCollection</a></code>, or a
+<code>bluertopo_result</code> list as described in <strong>Output behavior</strong>.</p>
     </div>
+    <div class="section level2">
+    <h2 id="aoi-inputs">AOI inputs<a class="anchor" aria-label="anchor" href="#aoi-inputs"></a></h2>
+
+
+<p><code>aoi</code> must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:</p><ul><li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatVector-class.html" class="external-link">terra::SpatVector</a></code>;</p></li>
+<li><p>an <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf::sf</a></code> data frame or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc</a></code> geometry vector;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code>, whose extent and CRS define the AOI;</p></li>
+<li><p>a <code><a href="https://rspatial.github.io/terra/reference/SpatExtent-class.html" class="external-link">terra::SpatExtent</a></code>, interpreted as longitude/latitude in EPSG:4326;</p></li>
+<li><p>a numeric <code>c(xmin, ymin, xmax, ymax)</code> bounding box in EPSG:4326;</p></li>
+<li><p>a local vector-file path readable by <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">terra::vect()</a></code>; or</p></li>
+<li><p>a WKT or GeoJSON character string, interpreted as EPSG:4326.</p></li>
+</ul><p>Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="output-behavior">Output behavior<a class="anchor" aria-label="anchor" href="#output-behavior"></a></h2>
+
+
+<p>Native source grids are preserved unless both <code>output_crs</code> and
+<code>output_resolution</code> are supplied. With <code>details = FALSE</code>, the function
+returns a <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRaster</a></code> for one compatible grid or a
+<code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">terra::SpatRasterCollection</a></code> for multiple incompatible native grids. With
+<code>details = TRUE</code>, it returns a <code>bluertopo_result</code> list containing:</p><ul><li><p><code>data</code>: the raster or raster collection;</p></li>
+<li><p><code>tiles</code>: selected tile footprints and catalog metadata;</p></li>
+<li><p><code>downloads</code>: one record per source asset;</p></li>
+<li><p><code>query</code>: normalized request settings and query hash;</p></li>
+<li><p><code>coverage</code>: geometric coverage diagnostics; and</p></li>
+<li><p><code>provenance</code>: catalog, checksum, source, and vertical-reference records.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">66.2</span>, <span class="fl">18.2</span>, <span class="op">-</span><span class="fl">66.1</span>, <span class="fl">18.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># sf and sfc polygon objects with a known CRS can be passed directly.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"sf"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">aoi</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    name <span class="op">=</span> <span class="st">"example"</span>,</span></span>
+<span class="r-in"><span>    geometry <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html" class="external-link">st_as_sfc</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="st">"POLYGON ((-66.2 18.2, -66.1 18.2, -66.1 18.3, -66.2 18.3, -66.2 18.2))"</span>,</span></span>
+<span class="r-in"><span>      crs <span class="op">=</span> <span class="fl">4326</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">aoi</span> <span class="op">&lt;-</span> <span class="va">bbox</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">bathy</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">bluertopo</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">66.2</span>, <span class="fl">18.2</span>, <span class="op">-</span><span class="fl">66.1</span>, <span class="fl">18.3</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">bluertopo</span><span class="op">(</span><span class="va">aoi</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  bluertopo_error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Network-backed example skipped: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="cn">NULL</span></span></span>
