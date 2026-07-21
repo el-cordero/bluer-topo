@@ -33,7 +33,7 @@ A one-row data frame with `cache_dir`, `removed_files`, and
 # \donttest{
 bluertopo_cache_clear(confirm = TRUE)
 #> <bluertopo_cache_clear>
-#>   cache_dir: /tmp/RtmpNTE56v/bluertopo-cache 
+#>   cache_dir: /tmp/RtmpbbL7qB/bluertopo-cache 
 #>   removed_files: 11 
 #>   removed_bytes: 16394846 
 # }

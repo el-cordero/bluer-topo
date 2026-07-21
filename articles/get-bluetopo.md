@@ -33,7 +33,6 @@ fail early with an explanatory `bluertopo_error_aoi` condition.
 ``` r
 
 library(bluertopo)
-library(terra)
 
 aoi <- vect("project_area.gpkg")
 

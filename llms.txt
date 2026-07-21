@@ -42,7 +42,6 @@ contours, and the example-area boundary.
 ``` r
 
 library(bluertopo)
-library(terra)
 
 aoi <- vect("my_area.gpkg")
 bathy <- bluertopo(aoi)
