@@ -206,6 +206,7 @@ test_that("README and pkgdown config describe public examples", {
   expect_match(readme, "New\\s+York Harbor")
   expect_match(readme, "Normal\\s+package tests use\\s+small synthetic fixtures")
   expect_match(readme, "bathy <- bluertopo\\(aoi\\)")
+  expect_false(grepl("library(terra)", readme, fixed = TRUE))
   expect_match(readme, "aoi_sf <- sf::st_read", fixed = TRUE)
   expect_match(readme, "terra::SpatRasterCollection", fixed = TRUE)
   expect_match(readme, "c\\(xmin, ymin, xmax, ymax\\)")
@@ -213,6 +214,7 @@ test_that("README and pkgdown config describe public examples", {
 
   index <- paste(readLines(index_path, warn = FALSE), collapse = "\n")
   expect_match(index, "National Oceanic and\\s+Atmospheric Administration \\(NOAA\\)")
+  expect_false(grepl("library(terra)", index, fixed = TRUE))
   expect_match(index, "bt_plot_bathy_map\\(real_bathy\\$data")
   expect_match(index, "This example demonstrates tile discovery, verified asset retrieval")
 

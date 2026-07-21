@@ -44,8 +44,6 @@ and [BlueTopo specifications](https://nauticalcharts.noaa.gov/data/bluetopo_spec
 ## New York Harbor example
 
 ```{r example-setup, include=FALSE}
-library(terra)
-
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 real_tiles <- real$tiles
@@ -90,7 +88,6 @@ bt_display_table(example_summary)
 
 ```r
 library(bluertopo)
-library(terra)
 
 aoi <- vect("my_area.gpkg")
 bathy <- bluertopo(aoi)

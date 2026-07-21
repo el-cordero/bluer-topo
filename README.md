@@ -50,7 +50,6 @@ explanatory error.
 
 ``` r
 library(bluertopo)
-library(terra)
 
 aoi <- vect("my_area.gpkg")
 

@@ -4,5 +4,6 @@
 #' GeoTIFF/RAT assets with checksum validation, and opens selected raster bands
 #' as file-backed `terra` objects.
 #'
+#' @importFrom terra plot
 #' @keywords internal
 "_PACKAGE"

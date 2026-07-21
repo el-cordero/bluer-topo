@@ -29,8 +29,6 @@ Coverage is geometric tile-index coverage rather than a data-quality measure.
 ## Example area
 
 ```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
-library(terra)
-
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 ```

@@ -32,8 +32,6 @@ native extraction does not intentionally resample.
 ## Example area
 
 ```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
-library(terra)
-
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 ```

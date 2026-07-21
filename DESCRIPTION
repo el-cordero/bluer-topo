@@ -17,14 +17,14 @@ License: MIT + file LICENSE
 URL: https://el-cordero.github.io/bluer-topo/, https://github.com/el-cordero/bluer-topo
 BugReports: https://github.com/el-cordero/bluer-topo/issues
 Depends:
-    R (>= 4.1)
+    R (>= 4.1),
+    terra
 Imports:
     cli,
     curl,
     digest,
     jsonlite,
     stats,
-    terra,
     tools,
     utils,
     xml2

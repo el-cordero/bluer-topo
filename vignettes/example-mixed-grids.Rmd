@@ -34,8 +34,6 @@ contributor resampling must be nearest-neighbor.
 ## Example area
 
 ```{r setup, include=FALSE, eval=bt_real_examples_enabled()}
-library(terra)
-
 real <- bt_mixed_example_setup()
 real_aoi <- real$aoi
 ```

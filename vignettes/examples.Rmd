@@ -70,8 +70,6 @@ bt_display_table(gallery)
 ## Example area
 
 ```{r real-setup, include=FALSE, eval=bt_real_examples_enabled()}
-library(terra)
-
 real <- bt_real_example_setup()
 real_aoi <- real$aoi
 real_tiles <- real$tiles
