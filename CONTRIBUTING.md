@@ -12,6 +12,5 @@ Before opening a pull request:
 3. Run `devtools::check(args = "--as-cran")` when possible.
 4. Keep normal tests network-free.
 
-Do not add features that imply navigation fitness, vertical-datum conversion,
-terrain derivatives, interpolation, permanent mosaics, or non-BlueTopo data
-products.
+Keep terrain derivatives, interpolation, permanent mosaics, and non-BlueTopo
+data products outside this package.

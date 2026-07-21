@@ -89,29 +89,21 @@
 #'   `bluertopo_result` list as described in **Output behavior**.
 #' @export
 #' @examples
-#' bbox <- c(-66.2, 18.2, -66.1, 18.3)
+#' aoi <- c(xmin = -74.045, ymin = 40.675, xmax = -73.995, ymax = 40.715)
 #'
-#' # sf and sfc polygon objects with a known CRS can be passed directly.
-#' if (requireNamespace("sf", quietly = TRUE)) {
-#'   aoi <- sf::st_sf(
-#'     name = "example",
-#'     geometry = sf::st_as_sfc(
-#'       "POLYGON ((-66.2 18.2, -66.1 18.2, -66.1 18.3, -66.2 18.3, -66.2 18.2))",
-#'       crs = 4326
-#'     )
-#'   )
-#' } else {
-#'   aoi <- bbox
-#' }
+#' # sf and sfc polygons with a known CRS can be passed directly:
+#' # aoi <- sf::st_read("my_area.gpkg")
 #'
 #' \donttest{
-#' bathy <- tryCatch(
-#'   bluertopo(aoi),
-#'   bluertopo_error = function(e) {
-#'     message("Network-backed example skipped: ", conditionMessage(e))
-#'     NULL
-#'   }
-#' )
+#' \dontshow{
+#' host <- "noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com"
+#' bluertopo <- function(...) if (!is.null(curl::nslookup(host, error = FALSE)))
+#'   tryCatch(
+#'     bluertopo::bluertopo(...),
+#'     bluertopo_error = function(e) NULL
+#'   )
+#' }
+#' bathy <- bluertopo(aoi)
 #' }
 bluertopo <- function(
   aoi,

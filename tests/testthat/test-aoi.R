@@ -36,6 +36,18 @@ test_that("AOI normalization accepts sf and sfc polygons directly", {
   expect_identical(.bt_normalize_aoi(sf_aoi)$source_type, "sf")
 })
 
+test_that("projected NAD83 AOIs normalize without remote PROJ grids", {
+  aoi <- terra::as.polygons(
+    terra::ext(580000, 584000, 4503000, 4507000),
+    crs = "EPSG:26918"
+  )
+  normalized <- .bt_normalize_aoi(aoi)
+
+  expect_true(all(is.finite(normalized$bbox)))
+  expect_true(terra::is.lonlat(normalized$wgs84))
+  expect_equal(normalized$source_type, "SpatVector")
+})
+
 test_that("AOI normalization rejects non-polygon geometry and missing CRS", {
   point <- terra::vect(cbind(-74, 40.7), type = "points", crs = "EPSG:4326")
   line <- terra::vect(cbind(c(-74.1, -73.9), c(40.6, 40.8)), type = "lines", crs = "EPSG:4326")

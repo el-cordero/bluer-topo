@@ -28,7 +28,6 @@ New York Harbor example is a compact 4 m native-resolution plan, so policy
 differences mainly demonstrate selection rules rather than a dramatic visual
 change.
 
-BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Smaller meter values mean finer native source resolution. `resolution` selects
 source tiles; it does not resample. `coverage = "fill"` can add fallback source
 tiles. `output_resolution` is the argument that changes the output grid.

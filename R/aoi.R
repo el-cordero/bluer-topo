@@ -47,8 +47,14 @@
     )
   }
   v <- .bt_make_valid(v)
-  .bt_guard_antimeridian(v)
-  wgs84 <- terra::project(v, "EPSG:4326")
+  wgs84 <- .bt_project_horizontal(v, "EPSG:4326")
+  if (is.null(wgs84)) {
+    .bt_abort(
+      "Could not transform `aoi` coordinates to EPSG:4326.",
+      class = "bluertopo_error_aoi"
+    )
+  }
+  .bt_guard_antimeridian(wgs84)
   list(
     vector = v,
     wgs84 = wgs84,
@@ -126,7 +132,7 @@
 }
 
 .bt_guard_antimeridian <- function(v) {
-  wgs <- tryCatch(terra::project(v, "EPSG:4326"), error = function(e) NULL)
+  wgs <- .bt_project_horizontal(v, "EPSG:4326")
   if (is.null(wgs)) {
     return(invisible(FALSE))
   }
@@ -150,9 +156,59 @@
 }
 
 .bt_project_aoi <- function(aoi_normalized, crs) {
-  if (identical(terra::crs(aoi_normalized$vector), crs)) {
-    aoi_normalized$vector
-  } else {
-    terra::project(aoi_normalized$vector, crs)
+  projected <- .bt_project_horizontal(aoi_normalized$vector, crs)
+  if (is.null(projected)) {
+    .bt_abort(
+      "Could not transform the AOI to the BlueTopo catalog CRS.",
+      class = "bluertopo_error_aoi"
+    )
   }
+  projected
+}
+
+.bt_project_horizontal <- function(v, target_crs) {
+  target_wkt <- terra::crs(target_crs)
+  if (!nzchar(target_wkt)) {
+    return(NULL)
+  }
+  if (isTRUE(terra::same.crs(v, target_wkt))) {
+    return(v)
+  }
+
+  projected <- tryCatch(
+    suppressWarnings(terra::project(v, target_wkt)),
+    error = function(e) NULL
+  )
+  if (.bt_has_finite_extent(projected)) {
+    return(projected)
+  }
+
+  source_local <- .bt_grid_free_crs(v)
+  target_local <- .bt_grid_free_crs(target_wkt)
+  if (!nzchar(source_local) || !nzchar(target_local)) {
+    return(NULL)
+  }
+  local_v <- v
+  terra::crs(local_v) <- source_local
+  projected <- tryCatch(
+    suppressWarnings(terra::project(local_v, target_local)),
+    error = function(e) NULL
+  )
+  if (!.bt_has_finite_extent(projected)) {
+    return(NULL)
+  }
+  terra::crs(projected) <- target_wkt
+  projected
+}
+
+.bt_grid_free_crs <- function(x) {
+  crs <- terra::crs(x, proj = TRUE)
+  crs <- gsub("\\s+\\+vunits=[^ ]+", "", crs)
+  crs <- sub("+datum=NAD83", "+ellps=GRS80", crs, fixed = TRUE)
+  crs <- sub("+datum=WGS84", "+ellps=WGS84", crs, fixed = TRUE)
+  crs
+}
+
+.bt_has_finite_extent <- function(x) {
+  !is.null(x) && all(is.finite(as.vector(terra::ext(x))))
 }

@@ -151,7 +151,7 @@ test_that("real example setup is opt-in", {
   expect_error(env$bt_real_example_setup(), "Website data examples are disabled")
 })
 
-test_that("public examples are network-gated and not fixture-rendered", {
+test_that("public examples are network-gated, concise, and not fixture-rendered", {
   example_vignettes <- public_example_vignettes()
   skip_if(!length(example_vignettes), "vignette sources are not available in this test context")
   text <- lapply(example_vignettes, readLines, warn = FALSE)
@@ -166,8 +166,11 @@ test_that("public examples are network-gated and not fixture-rendered", {
     collapsed <- paste(content, collapse = "\n")
     expect_match(collapsed, "eval=bt_real_examples_enabled\\(\\)")
     expect_false(grepl("Synthetic miniature BlueTopo", collapsed, fixed = TRUE))
-    expect_match(tolower(collapsed), "not for navigation")
-    expect_match(tolower(collapsed), "vertical-datum")
+    expect_false(grepl(
+      "not for navigation|vertical-datum|not affiliated|intentionally small",
+      collapsed,
+      ignore.case = TRUE
+    ))
     expect_match(collapsed, "BlueTopo (source )?tiles|BlueTopo tiles")
     expect_false(grepl(forbidden_promotional_language, collapsed, ignore.case = TRUE))
   }
@@ -199,7 +202,7 @@ test_that("README and pkgdown config describe public examples", {
 
   readme <- paste(readLines(readme_path, warn = FALSE), collapse = "\n")
   expect_false(grepl("Examples tab uses synthetic", readme, fixed = TRUE))
-  expect_match(readme, "uses NOAA BlueTopo source tiles for New\\s+York Harbor")
+  expect_match(readme, "uses BlueTopo source tiles for New\\s+York Harbor")
   expect_match(readme, "New\\s+York Harbor")
   expect_match(readme, "Normal\\s+package tests use\\s+small synthetic fixtures")
   expect_match(readme, "bathy <- bluertopo\\(aoi\\)")
@@ -209,14 +212,44 @@ test_that("README and pkgdown config describe public examples", {
   expect_match(readme, "https://nauticalcharts.noaa.gov/data/bluetopo_specs.html", fixed = TRUE)
 
   index <- paste(readLines(index_path, warn = FALSE), collapse = "\n")
+  expect_match(index, "National Oceanic and\\s+Atmospheric Administration \\(NOAA\\)")
   expect_match(index, "bt_plot_bathy_map\\(real_bathy\\$data")
   expect_match(index, "This example demonstrates tile discovery, verified asset retrieval")
+
+  public_text <- c(
+    index,
+    readme,
+    vapply(public_example_vignettes(), function(path) {
+      paste(readLines(path, warn = FALSE), collapse = "\n")
+    }, character(1L))
+  )
+  caveat_counts <- lengths(regmatches(
+    tolower(public_text),
+    gregexpr("blue ?topo is not for navigation", tolower(public_text), perl = TRUE)
+  ))
+  expect_equal(sum(caveat_counts), 1L)
 
   config <- paste(readLines(config_path, warn = FALSE), collapse = "\n")
   expect_match(config, "left: \\[intro, reference, examples, articles, news\\]")
   expect_match(config, "text: Examples", fixed = TRUE)
   expect_match(config, "href: articles/examples.html", fixed = TRUE)
   expect_match(config, "div.sourceCode pre", fixed = TRUE)
+})
+
+test_that("public function examples use the current concise AOI", {
+  source_paths <- c(
+    project_file("R", "bluertopo.R"),
+    project_file("R", "tiles.R"),
+    project_file("R", "download.R")
+  )
+  skip_if(any(is.na(source_paths)), "API source files are not available in this installed test context")
+  content <- paste(unlist(lapply(source_paths, readLines, warn = FALSE)), collapse = "\n")
+
+  expect_false(grepl("-66.2", content, fixed = TRUE))
+  expect_match(content, "xmin = -74.045")
+  expect_match(content, "\\\\dontshow\\{")
+  expect_match(content, "curl::nslookup")
+  expect_false(grepl("Network-backed example skipped", content, fixed = TRUE))
 })
 
 test_that("public markdown chunks do not start with blank lines", {

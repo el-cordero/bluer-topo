@@ -127,6 +127,42 @@ test_that("bluertopo returns lazy terra outputs and detailed provenance", {
   })
 })
 
+test_that("compound BlueTopo CRS cropping does not require remote PROJ grids", {
+  horizontal <- terra::crs("EPSG:26918")
+  vertical <- paste0(
+    "VERTCRS[\"NAVD88 height\",",
+    "VDATUM[\"North American Vertical Datum 1988\"],",
+    "CS[vertical,1],",
+    "AXIS[\"gravity-related height (H)\",up,LENGTHUNIT[\"metre\",1]]]"
+  )
+  compound <- paste0(
+    "COMPOUNDCRS[\"NAD83 / UTM zone 18N + NAVD88 height\",",
+    horizontal,
+    ",",
+    vertical,
+    "]"
+  )
+  r <- terra::rast(
+    nrows = 100,
+    ncols = 100,
+    xmin = 575000,
+    xmax = 585000,
+    ymin = 4494000,
+    ymax = 4506000,
+    crs = compound
+  )
+  terra::values(r) <- 1
+  aoi <- .bt_normalize_aoi(c(-74.05, 40.65, -74.00, 40.70))
+
+  projected <- .bt_project_aoi_to_raster(aoi, r)
+  expect_true(all(is.finite(as.vector(terra::ext(projected)))))
+  expect_equal(terra::crs(projected), terra::crs(r))
+
+  cropped <- .bt_crop_mask_raster(r, aoi, crop = TRUE, mask = FALSE)
+  expect_s4_class(cropped, "SpatRaster")
+  expect_gt(terra::ncell(cropped), 0)
+})
+
 test_that("explicit output grid produces one raster and rejects geographic target resolution", {
   with_bt_fixture({
     expect_warning(

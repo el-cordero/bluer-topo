@@ -25,7 +25,7 @@ template:
 
 home:
   title: "bluertopo"
-  description: "Verified NOAA BlueTopo downloads and terra extraction for submerged terrain."
+  description: "Verified BlueTopo downloads and terra extraction for submerged terrain."
   sidebar: false
 
 navbar:
@@ -69,7 +69,7 @@ navbar:
 
 reference:
   - title: Core workflows
-    desc: Discover, download, and open NOAA BlueTopo assets.
+    desc: Discover, download, and open BlueTopo assets.
     contents:
       - bluertopo
       - bluertopo_download

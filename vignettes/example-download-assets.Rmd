@@ -25,9 +25,6 @@ demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
 raster access with `terra`. Raster Attribute Table (RAT) sidecars are retained
 with the source GeoTIFF assets.
 
-BlueTopo is not for navigation. No vertical-datum conversion is performed.
-Example downloads are intentionally small and are cached during website builds.
-
 ## Example area
 
 ```{r setup, include=FALSE, eval=bt_real_examples_enabled()}

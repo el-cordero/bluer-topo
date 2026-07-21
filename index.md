@@ -5,11 +5,11 @@
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/el-cordero/bluer-topo/blob/main/LICENSE.md)
 
-`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo
-bathymetry for an area of interest using `terra`. The package keeps
-source GeoTIFF and RAT sidecar files intact by default, records query
-and catalog provenance, and makes native source-resolution choices
-explicit.
+`bluertopo` discovers, downloads, verifies, and opens National Oceanic
+and Atmospheric Administration (NOAA) BlueTopo bathymetry for an area of
+interest using `terra`. The package keeps source GeoTIFF and RAT sidecar
+files intact by default, records query and catalog provenance, and makes
+native source-resolution choices explicit.
 
 BlueTopo is not for navigation. This package performs no vertical-datum
 conversion and is not affiliated with, endorsed by, or supported by

@@ -39,19 +39,13 @@ bt_real_example_description <- function() {
 }
 
 bt_real_example_label <- paste(
-  "This example uses BlueTopo source tiles from the NOAA National Bathymetric",
+  "This example uses BlueTopo source tiles from the National Bathymetric",
   "Source catalog. The build verifies the downloaded assets and records their",
   "source metadata."
 )
 
 bt_offline_note <- paste(
   "In CRAN or offline builds, network-dependent chunks are not evaluated."
-)
-
-bt_noaa_caveat <- paste(
-  "BlueTopo is not for navigation. `bluertopo` is not affiliated with,",
-  "endorsed by, or supported by NOAA, and it performs no vertical-datum",
-  "conversion."
 )
 
 bt_real_example_aoi <- function() {
@@ -690,16 +684,12 @@ bt_catalog_table <- function(setup) {
       "Catalog",
       "Catalog last modified",
       "Package version",
-      "Navigation status",
-      "Vertical-datum conversion",
       "Planned download (MB)"
     ),
     value = c(
       catalog$catalog_name %||% NA_character_,
       catalog$last_modified %||% NA_character_,
       catalog$package_version %||% NA_character_,
-      "BlueTopo is not for navigation",
-      "none performed by bluertopo",
       bt_bytes_mb(setup$planned_bytes)
     ),
     stringsAsFactors = FALSE

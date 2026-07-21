@@ -113,16 +113,20 @@ accepted as areas of interest.
 }
 
 \examples{
+aoi <- c(xmin = -74.045, ymin = 40.675, xmax = -73.995, ymax = 40.715)
+
 \donttest{
-files <- tryCatch(
-  bluertopo_download(
-    c(-66.2, 18.2, -66.1, 18.3),
-    path = file.path(tempdir(), "bluertopo-downloads")
-  ),
-  bluertopo_error = function(e) {
-    message("Network-backed example skipped: ", conditionMessage(e))
-    NULL
-  }
+\dontshow{
+host <- "noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com"
+bluertopo_download <- function(...) if (!is.null(curl::nslookup(host, error = FALSE)))
+  tryCatch(
+    bluertopo::bluertopo_download(...),
+    bluertopo_error = function(e) NULL
+  )
+}
+files <- bluertopo_download(
+  aoi,
+  path = file.path(tempdir(), "bluertopo-downloads")
 )
 }
 }

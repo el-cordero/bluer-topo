@@ -73,13 +73,17 @@ accepted as areas of interest.
 }
 
 \examples{
+aoi <- c(xmin = -74.045, ymin = 40.675, xmax = -73.995, ymax = 40.715)
+
 \donttest{
-tiles <- tryCatch(
-  bluertopo_tiles(c(-66.2, 18.2, -66.1, 18.3)),
-  bluertopo_error = function(e) {
-    message("Network-backed example skipped: ", conditionMessage(e))
-    NULL
-  }
-)
+\dontshow{
+host <- "noaa-ocs-nationalbathymetry-pds.s3.amazonaws.com"
+bluertopo_tiles <- function(...) if (!is.null(curl::nslookup(host, error = FALSE)))
+  tryCatch(
+    bluertopo::bluertopo_tiles(...),
+    bluertopo_error = function(e) NULL
+  )
+}
+tiles <- bluertopo_tiles(aoi)
 }
 }

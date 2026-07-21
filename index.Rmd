@@ -29,10 +29,11 @@ knitr::opts_chunk$set(
 [![pkgdown](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/el-cordero/bluer-topo/actions/workflows/pkgdown.yaml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/el-cordero/bluer-topo/blob/main/LICENSE.md)
 
-`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo bathymetry
-for an area of interest using `terra`. The package keeps source GeoTIFF and RAT
-sidecar files intact by default, records query and catalog provenance, and makes
-native source-resolution choices explicit.
+`bluertopo` discovers, downloads, verifies, and opens National Oceanic and
+Atmospheric Administration (NOAA) BlueTopo bathymetry for an area of interest
+using `terra`. The package keeps source GeoTIFF and RAT sidecar files intact by
+default, records query and catalog provenance, and makes native
+source-resolution choices explicit.
 
 BlueTopo is not for navigation. This package performs no vertical-datum
 conversion and is not affiliated with, endorsed by, or supported by NOAA.
@@ -65,7 +66,7 @@ bathymetry extraction for New York Harbor. The area includes portions of Lower
 Manhattan, Governors Island, Upper New York Bay, and the East River entrance.
 
 ```{r bathy-map, echo=FALSE, fig.cap="BlueTopo bathymetry for New York Harbor, displayed with hillshade, contours, and the example-area boundary.", fig.alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary."}
-bt_plot_bathy_map(real_bathy$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
+bt_plot_bathy_map(real_bathy$data, real_aoi, main = "New York Harbor BlueTopo bathymetry")
 ```
 
 ```{r example-summary, echo=FALSE}

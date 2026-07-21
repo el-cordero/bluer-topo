@@ -8,15 +8,11 @@
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/el-cordero/bluer-topo/blob/main/LICENSE.md)
 
-`bluertopo` discovers, downloads, verifies, and opens NOAA BlueTopo
-bathymetry for an area of interest using `terra`. The package keeps
-source GeoTIFF and RAT sidecar files intact by default, records query
-and catalog provenance, and makes native source-resolution choices
-explicit.
-
-BlueTopo is not for navigation. This package performs no vertical-datum
-conversion and is not affiliated with, endorsed by, or supported by
-NOAA.
+`bluertopo` discovers, downloads, verifies, and opens National Oceanic
+and Atmospheric Administration (NOAA) BlueTopo bathymetry for an area of
+interest using `terra`. The package keeps source GeoTIFF and RAT sidecar
+files intact by default, records query and catalog provenance, and makes
+native source-resolution choices explicit.
 
 Reference: NOAA,
 [BlueTopo](https://nauticalcharts.noaa.gov/data/bluetopo.html) and
@@ -89,19 +85,16 @@ result$coverage
 result$provenance
 ```
 
-## Download original NOAA assets
+## Download original BlueTopo assets
 
 Use `bluertopo_download()` when the durable deliverable is the original
-NOAA GeoTIFF plus optional RAT sidecars rather than an extracted raster
+GeoTIFF plus optional RAT sidecars rather than an extracted raster
 object.
 
 ``` r
 files <- bluertopo_download(
   aoi,
-  path = file.path(tempdir(), "bluertopo-downloads"),
-  rat = TRUE,
-  verify = "sha256",
-  coverage = "fill"
+  path = file.path(tempdir(), "bluertopo-downloads")
 )
 ```
 
@@ -181,11 +174,9 @@ bluertopo_cache_clear(confirm = TRUE)
 
 The [Examples
 tab](https://el-cordero.github.io/bluer-topo/articles/examples.html) on
-the pkgdown site uses NOAA BlueTopo source tiles for New York Harbor,
-with a documented secondary AOI only for the mixed-grid page. Normal
-package tests use small synthetic fixtures so checks remain
-network-free. Example downloads are intentionally small and cached
-during website builds; asset sizes vary by location.
+the pkgdown site uses BlueTopo source tiles for New York Harbor, with a
+documented secondary AOI only for the mixed-grid page. Normal package
+tests use small synthetic fixtures so checks remain network-free.
 
 - [Example
   gallery](https://el-cordero.github.io/bluer-topo/articles/examples.html)

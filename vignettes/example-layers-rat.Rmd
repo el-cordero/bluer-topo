@@ -27,10 +27,9 @@ layers, then reads Raster Attribute Table (RAT) sidecars for contributor
 metadata. Elevation is shown with hillshade and contours; uncertainty and
 contributor IDs are plotted as their own source layers.
 
-BlueTopo is not for navigation. No vertical-datum conversion is performed. The
-contributor band contains IDs, not continuous values. Contributor IDs must not
-be averaged. RAT sidecars carry contributor metadata, and `bluertopo` preserves
-original RAT files.
+The contributor band contains IDs, not continuous values. Contributor IDs must
+not be averaged. RAT sidecars carry contributor metadata, and `bluertopo`
+preserves original RAT files.
 
 ## Example area
 

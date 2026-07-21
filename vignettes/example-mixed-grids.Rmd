@@ -26,7 +26,6 @@ Key West and Boca Chica Channel because the documented secondary AOI currently
 intersects 4 m and 8 m source grids and therefore demonstrates mixed native-grid
 behavior.
 
-BlueTopo is not for navigation. No vertical-datum conversion is performed.
 Mixed native grids are preserved unless the user asks for a single output grid.
 `combine = "single"` needs an explicit output grid when native grids are
 incompatible. Resampled uncertainty values are not original source cells, and

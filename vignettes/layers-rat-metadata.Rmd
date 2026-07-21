@@ -57,14 +57,9 @@ subset(assets, asset_type == "rat")
 ## Vertical-reference metadata
 
 `bluertopo(details = TRUE)` includes vertical-reference text discovered by
-`terra`/GDAL metadata inspection when available. This is provenance text, not a
-datum conversion.
+`terra`/GDAL metadata inspection when available.
 
 ```{r}
 result <- bluertopo(aoi, details = TRUE)
 result$provenance$vertical_reference_text
-result$provenance$no_vertical_datum_conversion_performed
 ```
-
-Use a domain-appropriate vertical-datum transformation outside `bluertopo` when
-an analysis requires one.

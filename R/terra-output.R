@@ -139,7 +139,7 @@
   if (!crop && !mask) {
     return(r)
   }
-  aoi_raster <- terra::project(aoi$vector, terra::crs(r))
+  aoi_raster <- .bt_project_aoi_to_raster(aoi, r)
   if (crop) {
     r <- terra::crop(r, aoi_raster)
   }
@@ -149,13 +149,24 @@
   r
 }
 
-.bt_project_to_output_grid <- function(rasters, aoi, output_crs, output_resolution, layers, resampling) {
-  aoi_target <- tryCatch(terra::project(aoi$vector, output_crs), error = function(e) {
-    .bt_abort("Could not project AOI to `output_crs`.",
-      class = "bluertopo_error_mixed_grid",
-      parent = e
+.bt_project_aoi_to_raster <- function(aoi, r) {
+  projected <- .bt_project_horizontal(aoi$vector, terra::crs(r))
+  if (is.null(projected)) {
+    .bt_abort(
+      "Could not project the AOI to the BlueTopo raster's horizontal CRS.",
+      class = "bluertopo_error_raster"
     )
-  })
+  }
+  projected
+}
+
+.bt_project_to_output_grid <- function(rasters, aoi, output_crs, output_resolution, layers, resampling) {
+  aoi_target <- .bt_project_horizontal(aoi$vector, output_crs)
+  if (is.null(aoi_target)) {
+    .bt_abort("Could not project AOI to `output_crs`.",
+      class = "bluertopo_error_mixed_grid"
+    )
+  }
   template <- terra::rast(ext = terra::ext(aoi_target), resolution = output_resolution, crs = output_crs)
   if (terra::is.lonlat(template)) {
     .bt_abort(

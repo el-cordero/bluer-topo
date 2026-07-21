@@ -25,7 +25,6 @@ demonstrates tile discovery, checksum-verified asset retrieval, and file-backed
 raster access with `terra`. Raster Attribute Table (RAT) sidecars are retained
 with the source GeoTIFF assets.
 
-BlueTopo is not for navigation. No vertical-datum conversion is performed.
 `bluertopo()` returns terra objects and, with `details = TRUE`, exposes selected
 tiles, downloads, query metadata, provenance, and coverage diagnostics. Normal
 native extraction does not intentionally resample.
@@ -105,7 +104,7 @@ bt_display_table(bt_catalog_table(real))
 ## Elevation preview
 
 ```{r elevation-figure, echo=FALSE, eval=bt_real_examples_enabled(), fig.cap="BlueTopo bathymetry for New York Harbor, displayed with hillshade, contours, and the example-area boundary.", fig.alt="BlueTopo bathymetry for New York Harbor with hillshade, contours, and the example-area boundary."}
-bt_plot_bathy_map(result$data, real_aoi, main = "New York Harbor NOAA BlueTopo bathymetry")
+bt_plot_bathy_map(result$data, real_aoi, main = "New York Harbor BlueTopo bathymetry")
 ```
 
 When native source grids differ, the result can be a `SpatRasterCollection`.
