@@ -33,7 +33,8 @@ test_that("downloader supports dry run, SHA-256 validation, RAT sidecars, and re
       path = fixture$downloads,
       coverage = "fill",
       dry_run = TRUE,
-      progress = FALSE
+      progress = FALSE,
+      cache_dir = fixture$cache
     )
     expect_s3_class(plan, "bluertopo_downloads")
     expect_true(all(plan$status == "planned"))
@@ -74,6 +75,15 @@ test_that("downloader supports dry run, SHA-256 validation, RAT sidecars, and re
         progress = FALSE
       ),
       class = "bluertopo_error_download"
+    )
+    expect_error(
+      bluertopo_download(
+        fixture$aoi,
+        path = file.path(fixture$root, "invalid-retries"),
+        retries = 1.5,
+        progress = FALSE
+      ),
+      class = "bluertopo_error_argument"
     )
     expect_error(
       bluertopo_download(
@@ -143,6 +153,16 @@ test_that("explicit output grid produces one raster and rejects geographic targe
         progress = FALSE
       ),
       class = "bluertopo_error_mixed_grid"
+    )
+    expect_error(
+      bluertopo(
+        fixture$aoi,
+        cache_dir = fixture$cache,
+        output_crs = 26918,
+        output_resolution = 10,
+        progress = FALSE
+      ),
+      class = "bluertopo_error_argument"
     )
   })
 })

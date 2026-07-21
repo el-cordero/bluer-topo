@@ -19,29 +19,46 @@ bluertopo_resolution(
 )
 }
 \arguments{
-\item{strategy}{Resolution strategy.}
+\item{strategy}{A character scalar naming a strategy: \code{"native"},
+\code{"finest"}, \code{"coarsest"}, \code{"best_available"},
+\code{"coarsest_available"}, \code{"dominant"}, \code{"exact"}, \code{"nearest"},
+\code{"finer_or_equal"}, \code{"coarser_or_equal"}, \code{"between"}, \code{"rank"},
+\code{"finest_n"}, \code{"coarsest_n"}, \code{"target"}, or \code{"coverage"}.
+\code{"highest"} and \code{"lowest"} are aliases for \code{"finest"} and
+\code{"coarsest"}.}
 
-\item{value}{A single meter value used by target-like strategies.}
+\item{value}{\code{NULL} or one positive numeric native cell size in meters.
+Required by \code{"nearest"}, \code{"target"}, \code{"finer_or_equal"}, and
+\code{"coarser_or_equal"}.}
 
-\item{values}{One or more exact meter values.}
+\item{values}{\code{NULL} or a numeric vector of positive native cell sizes in
+meters. Required by \code{"exact"}.}
 
-\item{min_m, max_m}{Inclusive meter bounds.}
+\item{min_m, max_m}{\code{NULL} or positive numeric inclusive bounds in meters.
+Both are required by \code{"between"}.}
 
-\item{n}{Rank or count for rank-based strategies.}
+\item{n}{\code{NULL} or a positive whole number used by \code{"rank"}, \code{"finest_n"},
+and \code{"coarsest_n"}.}
 
-\item{scope}{\code{"global"}. \code{"local"} is reserved for a future AOI-local
-ranking implementation and is rejected in this release.}
+\item{scope}{A character scalar. Only \code{"global"} is implemented;
+\code{"local"} is reserved and rejected.}
 
-\item{tie}{Tie preference for nearest/target strategies.}
+\item{tie}{A character scalar, \code{"finer"} or \code{"coarser"}, used when two
+native resolutions are equally close to a target.}
 
-\item{prefer}{Preference direction for coverage/rank strategies.}
+\item{prefer}{A character scalar, \code{"finest"} or \code{"coarsest"}, controlling
+ordering for coverage and rank strategies.}
 
-\item{strict}{Whether fallback must remain inside hard constraints.}
+\item{strict}{A length-one logical. If \code{TRUE}, coverage fallback stays within
+hard resolution constraints.}
 
-\item{min_coverage}{Coverage target for coverage-oriented strategies.}
+\item{min_coverage}{A numeric value from 0 through 1 used by the
+\code{"coverage"} strategy.}
 }
 \value{
-A \code{bluertopo_resolution} S3 object.
+A \code{bluertopo_resolution} S3 object containing the normalized policy
+fields. Pass it to the \code{resolution} argument of \code{\link[=bluertopo]{bluertopo()}},
+\code{\link[=bluertopo_tiles]{bluertopo_tiles()}}, or \code{\link[=bluertopo_download]{bluertopo_download()}}.
 }
 \description{
 \code{bluertopo_resolution()} creates an explicit native source-tile selection

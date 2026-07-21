@@ -3,6 +3,7 @@
   refresh = c("if_stale", "never", "always"),
   quiet = FALSE
 ) {
+  quiet <- .bt_validate_bool(quiet, "quiet")
   refresh <- .bt_match_arg(refresh[1L], c("if_stale", "never", "always"), "refresh")
   override <- getOption("bluertopo.catalog.path", NULL)
   if (!is.null(override)) {

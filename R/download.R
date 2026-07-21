@@ -3,25 +3,30 @@
 #' Discovers selected BlueTopo tiles, downloads original GeoTIFF files and
 #' optional RAT sidecars, verifies them, and writes download manifests.
 #'
-#' @param aoi Area of interest.
-#' @param path Destination directory for original source assets.
-#' @param resolution Native source-resolution policy.
-#' @param coverage Coverage policy.
-#' @param min_coverage Target share of published tile coverage.
-#' @param rat Download RAT sidecars when available.
-#' @param refresh Catalog refresh policy.
-#' @param verify Verification mode: `"sha256"`, `"size"`, or `"none"`.
-#' @param workers Worker count. Only `NULL`/`1` is currently supported; higher
-#' values are rejected until bounded parallel downloads are implemented.
-#' @param on_exists Existing-file policy: `"verify"`, `"skip"`, or `"replace"`.
-#' @param on_error Error policy: `"stop"` or `"continue"`.
-#' @param retries Number of download attempts for each asset.
-#' @param timeout Optional curl timeout in seconds.
-#' @param dry_run Return the plan without writing tile files.
-#' @param progress Show routine progress messages.
-#' @param quiet Suppress routine messages.
+#' @inheritParams bluertopo
+#' @inheritSection bluertopo AOI inputs
+#' @param path A non-empty character path to the destination directory for the
+#'   original source assets and generated CSV/JSON manifests. The argument is
+#'   required; there is no default write location.
+#' @param rat A length-one logical. If `TRUE`, download Raster Attribute Table
+#'   (RAT) XML sidecars when the catalog provides them.
+#' @param on_exists A character scalar: `"verify"` reuses only files that pass
+#'   verification, `"skip"` leaves existing files untouched, and `"replace"`
+#'   downloads them again.
+#' @param on_error A character scalar: `"stop"` aborts after an asset failure;
+#'   `"continue"` records the failure and processes the remaining assets.
+#' @param retries A positive whole number giving the maximum attempts per
+#'   asset.
+#' @param timeout `NULL` or a positive numeric timeout in seconds for each HTTP
+#'   request.
+#' @param dry_run A length-one logical. If `TRUE`, return the planned assets
+#'   without downloading source files.
 #'
-#' @return A `bluertopo_downloads` data frame.
+#' @return A `bluertopo_downloads` data frame with one row per planned asset.
+#'   Important columns include `tile_id`, `asset_type`, `source_url`,
+#'   `local_path`, `status`, `verification_mode`, `verified`, byte counts,
+#'   checksums, attempts, and any recorded error. CSV and JSON copies are
+#'   written below `path` unless `dry_run = TRUE`.
 #' @export
 #' @examples
 #' \donttest{
@@ -52,7 +57,8 @@ bluertopo_download <- function(
   timeout = NULL,
   dry_run = FALSE,
   progress = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  cache_dir = bluertopo_cache_dir()
 ) {
   if (missing(path) || !.bt_is_scalar_character(path) || !nzchar(path)) {
     .bt_abort("`path` is required for `bluertopo_download()`.", class = "bluertopo_error_argument")
@@ -64,7 +70,7 @@ bluertopo_download <- function(
     coverage = coverage,
     min_coverage = min_coverage,
     rat = rat,
-    cache_dir = bluertopo_cache_dir(),
+    cache_dir = cache_dir,
     refresh = refresh,
     verify = verify,
     workers = workers,
@@ -105,7 +111,7 @@ bluertopo_download <- function(
   on_exists <- .bt_match_arg(on_exists, c("verify", "skip", "replace"), "on_exists")
   on_error <- .bt_match_arg(on_error, c("stop", "continue"), "on_error")
   workers <- .bt_validate_workers(workers)
-  retries <- as.integer(.bt_validate_number(retries, "retries"))
+  retries <- .bt_validate_count(retries, "retries")
   if (!is.null(timeout)) {
     timeout <- .bt_validate_number(timeout, "timeout")
   }

@@ -3,16 +3,15 @@
 #' Returns selected NOAA BlueTopo tile footprints and standardized metadata
 #' without downloading raster assets.
 #'
-#' @param aoi Area of interest.
-#' @param resolution Native source-resolution policy.
-#' @param coverage Coverage policy: `"ignore"`, `"warn"`, `"error"`, or `"fill"`.
-#' @param min_coverage Target share of published tile coverage.
-#' @param cache_dir Package cache directory.
-#' @param refresh Catalog refresh policy.
-#' @param quiet Suppress routine messages.
+#' @inheritParams bluertopo
+#' @inheritSection bluertopo AOI inputs
 #'
 #' @return A `terra::SpatVector` with selected tile metadata. Coverage
-#' diagnostics are attached as an attribute.
+#'   diagnostics are attached as the `"coverage"` attribute and the normalized
+#'   native-resolution policy as `"resolution_spec"`. Important fields include
+#'   tile ID, native resolution, UTM zone, delivery date, intersection area and
+#'   fraction, source URLs, expected SHA-256 checksums, selection rank/reason,
+#'   and whether the tile was added as a coverage fallback.
 #' @export
 #' @examples
 #' \donttest{

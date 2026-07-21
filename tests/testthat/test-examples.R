@@ -102,7 +102,7 @@ test_that("example fixtures work through public package workflows", {
   expect_true(inherits(result$data, "SpatRaster") || inherits(result$data, "SpatRasterCollection"))
 })
 
-test_that("public API remains unchanged", {
+test_that("public API exports and download cache control remain available", {
   expect_setequal(
     getNamespaceExports("bluertopo"),
     c(
@@ -114,6 +114,7 @@ test_that("public API remains unchanged", {
       "bluertopo_cache_clear"
     )
   )
+  expect_true("cache_dir" %in% names(formals(bluertopo_download)))
 })
 
 test_that("example vignettes render without live NOAA network access", {
@@ -151,6 +152,11 @@ test_that("public examples are network-gated and not fixture-rendered", {
   skip_if(!length(example_vignettes), "vignette sources are not available in this test context")
   text <- lapply(example_vignettes, readLines, warn = FALSE)
   names(text) <- basename(example_vignettes)
+  forbidden_promotional_language <- paste(c(
+    "Real NOAA Proof", "homepage proof", "Actual NOAA", "real NOAA",
+    "real BlueTopo", "real data", "public site uses real", "live BlueTopo",
+    "Real Example Setup", "without synthetic rasters"
+  ), collapse = "|")
 
   for (content in text) {
     collapsed <- paste(content, collapse = "\n")
@@ -159,7 +165,7 @@ test_that("public examples are network-gated and not fixture-rendered", {
     expect_match(tolower(collapsed), "not for navigation")
     expect_match(tolower(collapsed), "vertical-datum")
     expect_match(collapsed, "BlueTopo (source )?tiles|BlueTopo tiles")
-    expect_false(grepl("Real NOAA Proof|homepage proof|Actual NOAA|real NOAA|real BlueTopo|real data|public site uses real|live BlueTopo|Real Example Setup|without synthetic rasters", collapsed, ignore.case = TRUE))
+    expect_false(grepl(forbidden_promotional_language, collapsed, ignore.case = TRUE))
   }
 })
 
@@ -193,6 +199,9 @@ test_that("README and pkgdown config describe public examples", {
   expect_match(readme, "New\\s+York Harbor")
   expect_match(readme, "Normal\\s+package tests use\\s+small synthetic fixtures")
   expect_match(readme, "bathy <- bluertopo\\(aoi\\)")
+  expect_match(readme, "aoi_sf <- sf::st_read", fixed = TRUE)
+  expect_match(readme, "terra::SpatRasterCollection", fixed = TRUE)
+  expect_match(readme, "c\\(xmin, ymin, xmax, ymax\\)")
   expect_match(readme, "https://nauticalcharts.noaa.gov/data/bluetopo_specs.html", fixed = TRUE)
 
   index <- paste(readLines(index_path, warn = FALSE), collapse = "\n")

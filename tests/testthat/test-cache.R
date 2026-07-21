@@ -19,6 +19,12 @@ test_that("cache initialization writes and validates an ownership marker", {
   expect_identical(as.integer(marker$cache_format_version), 1L)
 })
 
+test_that("cache paths must be non-empty character scalars", {
+  expect_error(.bt_init_cache(NULL), class = "bluertopo_error_argument")
+  expect_error(.bt_init_cache(""), class = "bluertopo_error_argument")
+  expect_error(.bt_init_cache(1), class = "bluertopo_error_argument")
+})
+
 test_that("cache clear refuses unmarked, mismatched, and suspicious paths", {
   root <- file.path(tempdir(), paste0("bluertopo-cache-test-", .bt_hash_object(stats::runif(1L))))
   cache <- file.path(root, "cache")

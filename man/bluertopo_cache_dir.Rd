@@ -7,7 +7,7 @@
 bluertopo_cache_dir()
 }
 \value{
-A single character string.
+A length-one character vector containing the normalized cache path.
 }
 \description{
 Returns the configured package cache directory without creating it.

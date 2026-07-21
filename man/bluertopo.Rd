@@ -27,60 +27,139 @@ bluertopo(
 )
 }
 \arguments{
-\item{aoi}{Area of interest.}
+\item{aoi}{A polygonal area of interest in one of the formats listed in
+\strong{AOI inputs} below.}
 
-\item{layers}{\code{"elevation"}, \code{"uncertainty"}, \code{"contributor"}, \code{"all"}, or a
-character vector of canonical layer names.}
+\item{layers}{A character vector containing \code{"elevation"}, \code{"uncertainty"},
+or \code{"contributor"}; use \code{"all"} for all three source bands. Elevation and
+uncertainty are continuous values. Contributor identifiers are categorical.}
 
-\item{resolution}{Native source-resolution policy.}
+\item{resolution}{A native source-tile selection policy. Supply a shortcut
+such as \code{"native"}, \code{"finest"}, \code{"coarsest"}, \code{"best_available"},
+\code{"coarsest_available"}, or \code{"dominant"}; a positive numeric meter value
+for an exact match; or a \code{\link[=bluertopo_resolution]{bluertopo_resolution()}} object.}
 
-\item{coverage}{Coverage policy.}
+\item{coverage}{A character scalar controlling incomplete selected coverage:
+\code{"ignore"}, \code{"warn"}, \code{"error"}, or \code{"fill"}. \code{"fill"} adds fallback
+native resolutions in policy order until the target is met when possible.}
 
-\item{min_coverage}{Target share of published tile coverage.}
+\item{min_coverage}{A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.}
 
-\item{access}{\code{"download"} or opt-in \code{"stream"}.}
+\item{access}{A character scalar. \code{"download"} stores and SHA-256 verifies
+source files before opening them; \code{"stream"} uses GDAL \verb{/vsicurl/} access
+without local checksum verification.}
 
-\item{cache_dir}{Package cache directory.}
+\item{cache_dir}{A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.}
 
-\item{refresh}{Catalog refresh policy.}
+\item{refresh}{A character scalar controlling catalog access:
+\code{"if_stale"}, \code{"never"}, or \code{"always"}. \code{"never"} requires an existing
+cached catalog and performs no catalog request.}
 
-\item{crop}{Crop each result to the AOI extent.}
+\item{crop}{A length-one logical. If \code{TRUE}, crop each output to the AOI
+bounding extent.}
 
-\item{mask}{Mask each result to the AOI polygon. Implies \code{crop = TRUE}.}
+\item{mask}{A length-one logical. If \code{TRUE}, mask cells outside the AOI
+polygon and also enable cropping.}
 
-\item{combine}{\code{"auto"}, \code{"collection"}, or \code{"single"}.}
+\item{combine}{A character scalar controlling multiple native grids:
+\code{"auto"} returns one raster when compatible and a collection otherwise;
+\code{"collection"} always returns a collection; \code{"single"} requires compatible
+grids or an explicit output grid.}
 
-\item{output_crs}{Optional explicit output CRS.}
+\item{output_crs}{\code{NULL} or a non-empty character projected CRS accepted by
+\code{terra}, such as \code{"EPSG:26918"} or WKT. Supply it together with
+\code{output_resolution} to request one resampled output grid.}
 
-\item{output_resolution}{Optional explicit output-grid resolution in target
-CRS units.}
+\item{output_resolution}{\code{NULL} or one positive numeric cell size in
+\code{output_crs} units. It must be supplied together with \code{output_crs}.}
 
-\item{resampling}{Optional named resampling methods by layer.}
+\item{resampling}{\code{NULL}, a named character vector, or a named list keyed by
+layer. Allowed methods are \code{"near"}, \code{"bilinear"}, \code{"cubic"},
+\code{"cubicspline"}, \code{"lanczos"}, \code{"average"}, and \code{"mode"}. Defaults are
+bilinear for elevation/uncertainty and nearest-neighbor for contributor;
+contributor cannot use a non-nearest method.}
 
-\item{verify}{Download verification mode.}
+\item{verify}{A character scalar download-verification mode: \code{"sha256"}
+(default), \code{"size"}, or \code{"none"}. \code{"none"} is explicitly unverified.}
 
-\item{workers}{Worker count. Only \code{NULL}/\code{1} is currently supported; higher
-values are rejected until bounded parallel downloads are implemented.}
+\item{workers}{\code{NULL} or the number \code{1}. Higher worker counts are rejected in
+this release.}
 
-\item{progress}{Show routine progress messages.}
+\item{progress}{A length-one logical controlling routine download progress.}
 
-\item{quiet}{Suppress routine messages.}
+\item{quiet}{A length-one logical suppressing routine informational messages.}
 
-\item{details}{Return a \code{bluertopo_result} instead of only the terra object.}
+\item{details}{A length-one logical. If \code{TRUE}, return data plus tile,
+download, query, coverage, and provenance records.}
 }
 \value{
-A \code{terra::SpatRaster}, \code{terra::SpatRasterCollection}, or
-\code{bluertopo_result} when \code{details = TRUE}.
+A \code{terra::SpatRaster}, \code{terra::SpatRasterCollection}, or a
+\code{bluertopo_result} list as described in \strong{Output behavior}.
 }
 \description{
 \code{bluertopo()} is the main extraction workflow. It discovers BlueTopo tiles
 for an AOI, downloads verified original source assets by default, and opens
 selected bands as lazy, file-backed \code{terra} objects.
 }
+\section{AOI inputs}{
+
+\code{aoi} must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:
+\itemize{
+\item a \code{terra::SpatVector};
+\item an \code{sf::sf} data frame or \code{sf::sfc} geometry vector;
+\item a \code{terra::SpatRaster}, whose extent and CRS define the AOI;
+\item a \code{terra::SpatExtent}, interpreted as longitude/latitude in EPSG:4326;
+\item a numeric \code{c(xmin, ymin, xmax, ymax)} bounding box in EPSG:4326;
+\item a local vector-file path readable by \code{\link[terra:vect]{terra::vect()}}; or
+\item a WKT or GeoJSON character string, interpreted as EPSG:4326.
+}
+
+Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.
+}
+
+\section{Output behavior}{
+
+Native source grids are preserved unless both \code{output_crs} and
+\code{output_resolution} are supplied. With \code{details = FALSE}, the function
+returns a \code{terra::SpatRaster} for one compatible grid or a
+\code{terra::SpatRasterCollection} for multiple incompatible native grids. With
+\code{details = TRUE}, it returns a \code{bluertopo_result} list containing:
+\itemize{
+\item \code{data}: the raster or raster collection;
+\item \code{tiles}: selected tile footprints and catalog metadata;
+\item \code{downloads}: one record per source asset;
+\item \code{query}: normalized request settings and query hash;
+\item \code{coverage}: geometric coverage diagnostics; and
+\item \code{provenance}: catalog, checksum, source, and vertical-reference records.
+}
+}
+
 \examples{
+bbox <- c(-66.2, 18.2, -66.1, 18.3)
+
+# sf and sfc polygon objects with a known CRS can be passed directly.
+if (requireNamespace("sf", quietly = TRUE)) {
+  aoi <- sf::st_sf(
+    name = "example",
+    geometry = sf::st_as_sfc(
+      "POLYGON ((-66.2 18.2, -66.1 18.2, -66.1 18.3, -66.2 18.3, -66.2 18.2))",
+      crs = 4326
+    )
+  )
+} else {
+  aoi <- bbox
+}
+
 \donttest{
 bathy <- tryCatch(
-  bluertopo(c(-66.2, 18.2, -66.1, 18.3)),
+  bluertopo(aoi),
   bluertopo_error = function(e) {
     message("Network-backed example skipped: ", conditionMessage(e))
     NULL

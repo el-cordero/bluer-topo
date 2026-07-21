@@ -53,6 +53,16 @@ bathy <- bluertopo(aoi)
 plot(bathy)
 ```
 
+`sf::sf` and `sf::sfc` polygon objects with a known CRS can also be
+passed directly to `bluertopo()`, `bluertopo_tiles()`, and
+`bluertopo_download()`.
+
+| Function | Returns |
+|:---|:---|
+| `bluertopo_tiles(aoi)` | Selected tile footprints and metadata as a `terra::SpatVector` |
+| `bluertopo_download(aoi, path)` | Verified source-asset records as a data frame |
+| `bluertopo(aoi)` | A `terra::SpatRaster` or `terra::SpatRasterCollection` |
+
 ## Provenance workflow
 
 ``` r

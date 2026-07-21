@@ -10,12 +10,14 @@ bluertopo_cache_clear(
 )
 }
 \arguments{
-\item{cache_dir}{Cache directory to clear.}
+\item{cache_dir}{Length-one character path to a package-owned cache directory.}
 
-\item{confirm}{Required as \code{TRUE} in noninteractive sessions.}
+\item{confirm}{A length-one logical. Must be \code{TRUE} in noninteractive
+sessions.}
 }
 \value{
-A data frame summary with removed file count and bytes.
+A one-row data frame with \code{cache_dir}, \code{removed_files}, and
+\code{removed_bytes} columns.
 }
 \description{
 Deletes only the configured \code{bluertopo} package cache after path safeguards.

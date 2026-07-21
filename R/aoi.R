@@ -40,6 +40,12 @@
   if (!nzchar(terra::crs(v))) {
     .bt_abort("`aoi` must have a known CRS.", class = "bluertopo_error_aoi")
   }
+  if (!identical(terra::geomtype(v), "polygons")) {
+    .bt_abort(
+      "`aoi` must contain polygon or multipolygon geometry; points and lines are not areas of interest.",
+      class = "bluertopo_error_aoi"
+    )
+  }
   v <- .bt_make_valid(v)
   .bt_guard_antimeridian(v)
   wgs84 <- terra::project(v, "EPSG:4326")

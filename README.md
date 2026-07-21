@@ -30,6 +30,26 @@ specifications](https://nauticalcharts.noaa.gov/data/bluetopo_specs.html).
 pak::pak("el-cordero/bluer-topo")
 ```
 
+## Define an area of interest
+
+Every area of interest (AOI) must be polygon or multipolygon geometry.
+Spatial objects and files must have a known coordinate reference system
+(CRS).
+
+| AOI input | Example | CRS rule |
+|----|----|----|
+| `terra::SpatVector` | `terra::vect("my_area.gpkg")` | Uses the object’s CRS |
+| `sf::sf` or `sf::sfc` | `sf::st_read("my_area.gpkg")` | Uses the object’s CRS |
+| `terra::SpatRaster` | `terra::rast("template.tif")` | Uses the raster extent and CRS |
+| `terra::SpatExtent` | `terra::ext(-74.1, -73.9, 40.6, 40.8)` | Interpreted as EPSG:4326 |
+| Numeric bbox | `c(xmin, ymin, xmax, ymax)` | Interpreted as EPSG:4326 |
+| Local vector path | `"my_area.gpkg"` | Uses the file’s CRS |
+| WKT or GeoJSON string | Polygon text | Interpreted as EPSG:4326 |
+
+Remote AOI URLs, points, lines, missing CRS values, unordered bounding
+boxes, and invalid longitude/latitude bounds are rejected with an
+explanatory error.
+
 ## Basic workflow
 
 ``` r
@@ -41,6 +61,22 @@ aoi <- vect("my_area.gpkg")
 bathy <- bluertopo(aoi)
 plot(bathy)
 ```
+
+An `sf` object can be passed without converting it to `terra` first:
+
+``` r
+aoi_sf <- sf::st_read("my_area.gpkg", quiet = TRUE)
+bathy_sf <- bluertopo(aoi_sf)
+```
+
+## Choose the right function
+
+| Function | Use it when you need | Return type |
+|----|----|----|
+| `bluertopo_tiles()` | Tile discovery and coverage planning only | `terra::SpatVector` |
+| `bluertopo_download()` | Verified original GeoTIFF/RAT files and manifests | `bluertopo_downloads` data frame |
+| `bluertopo()` | Elevation, uncertainty, or contributor rasters | `terra::SpatRaster` or `terra::SpatRasterCollection` |
+| `bluertopo(..., details = TRUE)` | Rasters plus tiles, downloads, query, coverage, and provenance | `bluertopo_result` list |
 
 ## Provenance workflow
 
@@ -120,6 +156,11 @@ bathy_10m <- bluertopo(
   combine = "single"
 )
 ```
+
+Use `crop = TRUE` to crop to the AOI extent and `mask = TRUE` to remove
+cells outside the AOI polygon. Supplying both `output_crs` and
+`output_resolution` requests a resampled output grid; omitting both
+preserves native source grids.
 
 ## Cache operations
 

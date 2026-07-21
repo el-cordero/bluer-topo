@@ -5,19 +5,36 @@
 #' requests output resampling; use `output_resolution` in [bluertopo()] for an
 #' explicit output grid.
 #'
-#' @param strategy Resolution strategy.
-#' @param value A single meter value used by target-like strategies.
-#' @param values One or more exact meter values.
-#' @param min_m,max_m Inclusive meter bounds.
-#' @param n Rank or count for rank-based strategies.
-#' @param scope `"global"`. `"local"` is reserved for a future AOI-local
-#' ranking implementation and is rejected in this release.
-#' @param tie Tie preference for nearest/target strategies.
-#' @param prefer Preference direction for coverage/rank strategies.
-#' @param strict Whether fallback must remain inside hard constraints.
-#' @param min_coverage Coverage target for coverage-oriented strategies.
+#' @param strategy A character scalar naming a strategy: `"native"`,
+#'   `"finest"`, `"coarsest"`, `"best_available"`,
+#'   `"coarsest_available"`, `"dominant"`, `"exact"`, `"nearest"`,
+#'   `"finer_or_equal"`, `"coarser_or_equal"`, `"between"`, `"rank"`,
+#'   `"finest_n"`, `"coarsest_n"`, `"target"`, or `"coverage"`.
+#'   `"highest"` and `"lowest"` are aliases for `"finest"` and
+#'   `"coarsest"`.
+#' @param value `NULL` or one positive numeric native cell size in meters.
+#'   Required by `"nearest"`, `"target"`, `"finer_or_equal"`, and
+#'   `"coarser_or_equal"`.
+#' @param values `NULL` or a numeric vector of positive native cell sizes in
+#'   meters. Required by `"exact"`.
+#' @param min_m,max_m `NULL` or positive numeric inclusive bounds in meters.
+#'   Both are required by `"between"`.
+#' @param n `NULL` or a positive whole number used by `"rank"`, `"finest_n"`,
+#'   and `"coarsest_n"`.
+#' @param scope A character scalar. Only `"global"` is implemented;
+#'   `"local"` is reserved and rejected.
+#' @param tie A character scalar, `"finer"` or `"coarser"`, used when two
+#'   native resolutions are equally close to a target.
+#' @param prefer A character scalar, `"finest"` or `"coarsest"`, controlling
+#'   ordering for coverage and rank strategies.
+#' @param strict A length-one logical. If `TRUE`, coverage fallback stays within
+#'   hard resolution constraints.
+#' @param min_coverage A numeric value from 0 through 1 used by the
+#'   `"coverage"` strategy.
 #'
-#' @return A `bluertopo_resolution` S3 object.
+#' @return A `bluertopo_resolution` S3 object containing the normalized policy
+#'   fields. Pass it to the `resolution` argument of [bluertopo()],
+#'   [bluertopo_tiles()], or [bluertopo_download()].
 #' @export
 #' @examples
 #' bluertopo_resolution("nearest", value = 10, tie = "finer")

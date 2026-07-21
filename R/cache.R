@@ -6,7 +6,7 @@
 #' write to the user's home directory. Set `options(bluertopo.cache_dir = ...)`
 #' when a persistent cache is wanted.
 #'
-#' @return A single character string.
+#' @return A length-one character vector containing the normalized cache path.
 #' @export
 #' @examples
 #' bluertopo_cache_dir()
@@ -22,10 +22,12 @@ bluertopo_cache_dir <- function() {
 #'
 #' Deletes only the configured `bluertopo` package cache after path safeguards.
 #'
-#' @param cache_dir Cache directory to clear.
-#' @param confirm Required as `TRUE` in noninteractive sessions.
+#' @param cache_dir Length-one character path to a package-owned cache directory.
+#' @param confirm A length-one logical. Must be `TRUE` in noninteractive
+#'   sessions.
 #'
-#' @return A data frame summary with removed file count and bytes.
+#' @return A one-row data frame with `cache_dir`, `removed_files`, and
+#'   `removed_bytes` columns.
 #' @export
 #' @examples
 #' \donttest{
@@ -120,6 +122,9 @@ bluertopo_cache_clear <- function(cache_dir = bluertopo_cache_dir(), confirm = i
 }
 
 .bt_init_cache <- function(cache_dir = bluertopo_cache_dir()) {
+  if (!.bt_is_scalar_character(cache_dir) || !nzchar(cache_dir)) {
+    .bt_abort("`cache_dir` must be a non-empty character path.", class = "bluertopo_error_argument")
+  }
   if (.bt_is_symlink_path(cache_dir)) {
     .bt_abort("Refusing to use a cache path reached through a symlink.",
       class = "bluertopo_error_filesystem"

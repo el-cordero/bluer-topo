@@ -15,28 +15,63 @@ bluertopo_tiles(
 )
 }
 \arguments{
-\item{aoi}{Area of interest.}
+\item{aoi}{A polygonal area of interest in one of the formats listed in
+\strong{AOI inputs} below.}
 
-\item{resolution}{Native source-resolution policy.}
+\item{resolution}{A native source-tile selection policy. Supply a shortcut
+such as \code{"native"}, \code{"finest"}, \code{"coarsest"}, \code{"best_available"},
+\code{"coarsest_available"}, or \code{"dominant"}; a positive numeric meter value
+for an exact match; or a \code{\link[=bluertopo_resolution]{bluertopo_resolution()}} object.}
 
-\item{coverage}{Coverage policy: \code{"ignore"}, \code{"warn"}, \code{"error"}, or \code{"fill"}.}
+\item{coverage}{A character scalar controlling incomplete selected coverage:
+\code{"ignore"}, \code{"warn"}, \code{"error"}, or \code{"fill"}. \code{"fill"} adds fallback
+native resolutions in policy order until the target is met when possible.}
 
-\item{min_coverage}{Target share of published tile coverage.}
+\item{min_coverage}{A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.}
 
-\item{cache_dir}{Package cache directory.}
+\item{cache_dir}{A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.}
 
-\item{refresh}{Catalog refresh policy.}
+\item{refresh}{A character scalar controlling catalog access:
+\code{"if_stale"}, \code{"never"}, or \code{"always"}. \code{"never"} requires an existing
+cached catalog and performs no catalog request.}
 
-\item{quiet}{Suppress routine messages.}
+\item{quiet}{A length-one logical suppressing routine informational messages.}
 }
 \value{
 A \code{terra::SpatVector} with selected tile metadata. Coverage
-diagnostics are attached as an attribute.
+diagnostics are attached as the \code{"coverage"} attribute and the normalized
+native-resolution policy as \code{"resolution_spec"}. Important fields include
+tile ID, native resolution, UTM zone, delivery date, intersection area and
+fraction, source URLs, expected SHA-256 checksums, selection rank/reason,
+and whether the tile was added as a coverage fallback.
 }
 \description{
 Returns selected NOAA BlueTopo tile footprints and standardized metadata
 without downloading raster assets.
 }
+\section{AOI inputs}{
+
+\code{aoi} must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:
+\itemize{
+\item a \code{terra::SpatVector};
+\item an \code{sf::sf} data frame or \code{sf::sfc} geometry vector;
+\item a \code{terra::SpatRaster}, whose extent and CRS define the AOI;
+\item a \code{terra::SpatExtent}, interpreted as longitude/latitude in EPSG:4326;
+\item a numeric \code{c(xmin, ymin, xmax, ymax)} bounding box in EPSG:4326;
+\item a local vector-file path readable by \code{\link[terra:vect]{terra::vect()}}; or
+\item a WKT or GeoJSON character string, interpreted as EPSG:4326.
+}
+
+Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.
+}
+
 \examples{
 \donttest{
 tiles <- tryCatch(

@@ -38,6 +38,11 @@
   }
   combine <- .bt_match_arg(combine, c("auto", "collection", "single"), "combine")
   access <- .bt_match_arg(access, c("download", "stream"), "access")
+  if (!is.null(output_crs) && (!.bt_is_scalar_character(output_crs) || !nzchar(output_crs))) {
+    .bt_abort("`output_crs` must be NULL or a non-empty character CRS.",
+      class = "bluertopo_error_argument"
+    )
+  }
   if (nrow(geotiffs) == 0L) {
     .bt_abort("No GeoTIFF assets are available for terra assembly.",
       class = "bluertopo_error_no_coverage"

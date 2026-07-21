@@ -20,50 +20,98 @@ bluertopo_download(
   timeout = NULL,
   dry_run = FALSE,
   progress = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  cache_dir = bluertopo_cache_dir()
 )
 }
 \arguments{
-\item{aoi}{Area of interest.}
+\item{aoi}{A polygonal area of interest in one of the formats listed in
+\strong{AOI inputs} below.}
 
-\item{path}{Destination directory for original source assets.}
+\item{path}{A non-empty character path to the destination directory for the
+original source assets and generated CSV/JSON manifests. The argument is
+required; there is no default write location.}
 
-\item{resolution}{Native source-resolution policy.}
+\item{resolution}{A native source-tile selection policy. Supply a shortcut
+such as \code{"native"}, \code{"finest"}, \code{"coarsest"}, \code{"best_available"},
+\code{"coarsest_available"}, or \code{"dominant"}; a positive numeric meter value
+for an exact match; or a \code{\link[=bluertopo_resolution]{bluertopo_resolution()}} object.}
 
-\item{coverage}{Coverage policy.}
+\item{coverage}{A character scalar controlling incomplete selected coverage:
+\code{"ignore"}, \code{"warn"}, \code{"error"}, or \code{"fill"}. \code{"fill"} adds fallback
+native resolutions in policy order until the target is met when possible.}
 
-\item{min_coverage}{Target share of published tile coverage.}
+\item{min_coverage}{A numeric value from 0 through 1 giving the target share
+of published tile-index coverage. This is geometric catalog coverage, not
+a data-quality measure.}
 
-\item{rat}{Download RAT sidecars when available.}
+\item{rat}{A length-one logical. If \code{TRUE}, download Raster Attribute Table
+(RAT) XML sidecars when the catalog provides them.}
 
-\item{refresh}{Catalog refresh policy.}
+\item{refresh}{A character scalar controlling catalog access:
+\code{"if_stale"}, \code{"never"}, or \code{"always"}. \code{"never"} requires an existing
+cached catalog and performs no catalog request.}
 
-\item{verify}{Verification mode: \code{"sha256"}, \code{"size"}, or \code{"none"}.}
+\item{verify}{A character scalar download-verification mode: \code{"sha256"}
+(default), \code{"size"}, or \code{"none"}. \code{"none"} is explicitly unverified.}
 
-\item{workers}{Worker count. Only \code{NULL}/\code{1} is currently supported; higher
-values are rejected until bounded parallel downloads are implemented.}
+\item{workers}{\code{NULL} or the number \code{1}. Higher worker counts are rejected in
+this release.}
 
-\item{on_exists}{Existing-file policy: \code{"verify"}, \code{"skip"}, or \code{"replace"}.}
+\item{on_exists}{A character scalar: \code{"verify"} reuses only files that pass
+verification, \code{"skip"} leaves existing files untouched, and \code{"replace"}
+downloads them again.}
 
-\item{on_error}{Error policy: \code{"stop"} or \code{"continue"}.}
+\item{on_error}{A character scalar: \code{"stop"} aborts after an asset failure;
+\code{"continue"} records the failure and processes the remaining assets.}
 
-\item{retries}{Number of download attempts for each asset.}
+\item{retries}{A positive whole number giving the maximum attempts per
+asset.}
 
-\item{timeout}{Optional curl timeout in seconds.}
+\item{timeout}{\code{NULL} or a positive numeric timeout in seconds for each HTTP
+request.}
 
-\item{dry_run}{Return the plan without writing tile files.}
+\item{dry_run}{A length-one logical. If \code{TRUE}, return the planned assets
+without downloading source files.}
 
-\item{progress}{Show routine progress messages.}
+\item{progress}{A length-one logical controlling routine download progress.}
 
-\item{quiet}{Suppress routine messages.}
+\item{quiet}{A length-one logical suppressing routine informational messages.}
+
+\item{cache_dir}{A non-empty character path for the package cache. The
+session-temporary default avoids writing to the user's home directory. Set
+an explicit path to reuse catalogs, source files, and VRTs across sessions.}
 }
 \value{
-A \code{bluertopo_downloads} data frame.
+A \code{bluertopo_downloads} data frame with one row per planned asset.
+Important columns include \code{tile_id}, \code{asset_type}, \code{source_url},
+\code{local_path}, \code{status}, \code{verification_mode}, \code{verified}, byte counts,
+checksums, attempts, and any recorded error. CSV and JSON copies are
+written below \code{path} unless \code{dry_run = TRUE}.
 }
 \description{
 Discovers selected BlueTopo tiles, downloads original GeoTIFF files and
 optional RAT sidecars, verifies them, and writes download manifests.
 }
+\section{AOI inputs}{
+
+\code{aoi} must resolve to polygon or multipolygon geometry with a known
+coordinate reference system (CRS). Accepted inputs are:
+\itemize{
+\item a \code{terra::SpatVector};
+\item an \code{sf::sf} data frame or \code{sf::sfc} geometry vector;
+\item a \code{terra::SpatRaster}, whose extent and CRS define the AOI;
+\item a \code{terra::SpatExtent}, interpreted as longitude/latitude in EPSG:4326;
+\item a numeric \code{c(xmin, ymin, xmax, ymax)} bounding box in EPSG:4326;
+\item a local vector-file path readable by \code{\link[terra:vect]{terra::vect()}}; or
+\item a WKT or GeoJSON character string, interpreted as EPSG:4326.
+}
+
+Remote AOI URLs are refused. Numeric bounding boxes must be ordered and fall
+within valid longitude/latitude bounds. Point and line geometries are not
+accepted as areas of interest.
+}
+
 \examples{
 \donttest{
 files <- tryCatch(
